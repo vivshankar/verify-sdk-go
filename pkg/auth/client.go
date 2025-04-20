@@ -6,6 +6,7 @@ import (
 	"net/url"
 
 	"github.com/google/uuid"
+	errorsx "github.com/ibm-verify/verify-sdk-go/pkg/core/errors"
 	"github.com/ibm-verify/verify-sdk-go/x/randx"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/clientcredentials"
@@ -102,12 +103,12 @@ func (c *Client) AuthorizeWithBrowserFlow(ctx context.Context, parameters url.Va
 func (c *Client) TokenWithAuthCode(ctx context.Context, authResponse *AuthorizeResponse, callbackParams url.Values) (*TokenResponse, error) {
 	// verify if the flow has failed
 	if callbackParams.Get("error") != "" {
-		return nil, fmt.Errorf("error: %s, description: %s", callbackParams.Get("error"), callbackParams.Get("error_description"))
+		return nil, errorsx.G11NError("error: %s, description: %s", callbackParams.Get("error"), callbackParams.Get("error_description"))
 	}
 
 	// check if the state matches
 	if callbackParams.Get("state") != authResponse.State {
-		return nil, fmt.Errorf("'state' does not match.")
+		return nil, errorsx.G11NError("'state' does not match.")
 	}
 
 	// do the biz

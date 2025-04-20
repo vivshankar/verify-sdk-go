@@ -43,3 +43,10 @@ func (e *TemplateError) ConvertToError() *errorsx.VerifyError {
 		MessageDescription: *e.MessageDescription,
 	}
 }
+
+func (e *ErrorBean) ConvertToError() *errorsx.VerifyError {
+	return &errorsx.VerifyError{
+		MessageID:          e.MessageID,
+		MessageDescription: e.MessageDescription,
+	}
+}

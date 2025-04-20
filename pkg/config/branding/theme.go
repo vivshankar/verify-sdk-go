@@ -67,7 +67,7 @@ func NewListThemesResponse(r *openapi.ThemeRegistrationPaginatedResponseContaine
 }
 
 type ThemeClient struct {
-	httpClient *http.Client
+	Client *http.Client
 }
 
 func NewThemeClient() *ThemeClient {
@@ -76,7 +76,7 @@ func NewThemeClient() *ThemeClient {
 
 func (c *ThemeClient) ListThemes(ctx context.Context, count int, page int, limit int) (*ListThemesResponse, string, error) {
 	vc := contextx.GetVerifyContext(ctx)
-	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.httpClient)
+	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
 
 	pagination := url.Values{}
 	if count > 0 {
@@ -154,7 +154,7 @@ func (c *ThemeClient) ListThemes(ctx context.Context, count int, page int, limit
 	if resp.StatusCode() != http.StatusOK {
 		// something fell through the cracks
 		vc.Logger.Errorf("responseCode=%d, responseBody=%s", resp.StatusCode(), string(resp.Body))
-		return nil, "", fmt.Errorf("unable to get the themes")
+		return nil, "", errorsx.G11NError("unable to get the themes")
 	}
 
 	return NewListThemesResponse(resp.JSON200), resp.HTTPResponse.Request.URL.String(), nil
@@ -162,7 +162,7 @@ func (c *ThemeClient) ListThemes(ctx context.Context, count int, page int, limit
 
 func (c *ThemeClient) GetTheme(ctx context.Context, themeID string, customizedOnly bool) ([]byte, string, error) {
 	vc := contextx.GetVerifyContext(ctx)
-	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.httpClient)
+	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
 
 	params := &openapi.DownloadThemeTemplatesParams{}
 	params.CustomizedOnly = &customizedOnly
@@ -183,7 +183,7 @@ func (c *ThemeClient) GetTheme(ctx context.Context, themeID string, customizedOn
 		}
 
 		vc.Logger.Errorf("unable to get the theme with ID %s; responseCode=%d, responseBody=%s", themeID, resp.StatusCode(), string(resp.Body))
-		return nil, "", fmt.Errorf("unable to get the theme")
+		return nil, "", errorsx.G11NError("unable to get the theme")
 	}
 	return resp.Body, resp.HTTPResponse.Request.URL.String(), nil
 }
@@ -191,7 +191,7 @@ func (c *ThemeClient) GetTheme(ctx context.Context, themeID string, customizedOn
 func (c *ThemeClient) GetFile(ctx context.Context, themeID string, path string) ([]byte, string, error) {
 	vc := contextx.GetVerifyContext(ctx)
 	fmt.Println("Tenant:", vc.Tenant)
-	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.httpClient)
+	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
 
 	resp, err := client.GetTemplate0WithResponse(ctx, themeID, path, openapi.DefaultRequestEditors(ctx, vc.Token)...)
 	if err != nil {
@@ -206,7 +206,7 @@ func (c *ThemeClient) GetFile(ctx context.Context, themeID string, path string) 
 		}
 
 		vc.Logger.Errorf("unable to get the theme with ID %s and path %s; responseCode=%d, responseBody=%s", themeID, path, resp.StatusCode(), string(resp.Body))
-		return nil, "", fmt.Errorf("unable to get the file")
+		return nil, "", errorsx.G11NError("unable to get the file")
 	}
 
 	return resp.Body, resp.HTTPResponse.Request.URL.String(), nil
@@ -214,7 +214,7 @@ func (c *ThemeClient) GetFile(ctx context.Context, themeID string, path string) 
 
 func (c *ThemeClient) UpdateFile(ctx context.Context, themeID string, path string, data []byte) error {
 	vc := contextx.GetVerifyContext(ctx)
-	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.httpClient)
+	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
 
 	buffer, err := httpx.MultipartBuffer(ctx, map[string][]byte{
 		"file": data,
@@ -237,7 +237,7 @@ func (c *ThemeClient) UpdateFile(ctx context.Context, themeID string, path strin
 		}
 
 		vc.Logger.Errorf("unable to update the theme with ID %s and path %s; responseCode=%d, responseBody=%s", themeID, path, response.StatusCode(), string(response.Body))
-		return fmt.Errorf("unable to update the file")
+		return errorsx.G11NError("unable to update the file")
 	}
 
 	return nil
@@ -245,7 +245,7 @@ func (c *ThemeClient) UpdateFile(ctx context.Context, themeID string, path strin
 
 func (c *ThemeClient) UpdateTheme(ctx context.Context, themeID string, data []byte, metadata map[string]interface{}) error {
 	vc := contextx.GetVerifyContext(ctx)
-	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.httpClient)
+	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
 
 	fields := map[string]string{}
 	if len(metadata) > 0 {
@@ -275,7 +275,7 @@ func (c *ThemeClient) UpdateTheme(ctx context.Context, themeID string, data []by
 		}
 
 		vc.Logger.Errorf("unable to update the theme with ID %s; responseCode=%d, responseBody=%s", themeID, response.StatusCode(), string(response.Body))
-		return fmt.Errorf("unable to update the theme")
+		return errorsx.G11NError("unable to update the theme")
 	}
 
 	return nil
