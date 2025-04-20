@@ -8,21 +8,35 @@ import (
 
 type Logger struct {
 	*slog.Logger
+
+	AddNewline bool
 }
 
 func (l *Logger) Errorf(str string, args ...interface{}) {
+	if l.AddNewline {
+		str = str + "\n"
+	}
 	l.Error(fmt.Sprintf(str, args...))
 }
 
 func (l *Logger) Infof(str string, args ...interface{}) {
+	if l.AddNewline {
+		str = str + "\n"
+	}
 	l.Info(fmt.Sprintf(str, args...))
 }
 
 func (l *Logger) Warnf(str string, args ...interface{}) {
+	if l.AddNewline {
+		str = str + "\n"
+	}
 	l.Warn(fmt.Sprintf(str, args...))
 }
 
 func (l *Logger) Debugf(str string, args ...interface{}) {
+	if l.AddNewline {
+		str = str + "\n"
+	}
 	l.Debug(fmt.Sprintf(str, args...))
 }
 
