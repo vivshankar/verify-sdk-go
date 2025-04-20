@@ -409,52 +409,52 @@ const (
 // APIClientAdditionalConfig defines model for APIClientAdditionalConfig.
 type APIClientAdditionalConfig struct {
 	// AllowedClientAssertionVerificationKeys a list of the allowed client assertion verification keys
-	AllowedClientAssertionVerificationKeys *[]string `json:"allowedClientAssertionVerificationKeys,omitempty"`
+	AllowedClientAssertionVerificationKeys *[]string `json:"allowedClientAssertionVerificationKeys,omitempty" yaml:"allowedClientAssertionVerificationKeys,omitempty"`
 
 	// ClientAuthMethod the authentication method type
-	ClientAuthMethod *string `json:"clientAuthMethod,omitempty"`
+	ClientAuthMethod *string `json:"clientAuthMethod,omitempty" yaml:"clientAuthMethod,omitempty"`
 
 	// ValidateClientAssertionJti a Boolean value that indicates whether or not to validate the client assertion JTI
-	ValidateClientAssertionJti *bool `json:"validateClientAssertionJti,omitempty"`
+	ValidateClientAssertionJti *bool `json:"validateClientAssertionJti,omitempty" yaml:"validateClientAssertionJti,omitempty"`
 }
 
 // APIClientConfig defines model for APIClientConfig.
 type APIClientConfig struct {
-	AdditionalConfig *APIClientAdditionalConfig `json:"additionalConfig,omitempty"`
+	AdditionalConfig *APIClientAdditionalConfig `json:"additionalConfig,omitempty" yaml:"additionalConfig,omitempty"`
 
 	// AdditionalProperties additional properties for the client
-	AdditionalProperties *map[string]interface{} `json:"additionalProperties,omitempty"`
+	AdditionalProperties *map[string]interface{} `json:"additionalProperties,omitempty" yaml:"additionalProperties,omitempty"`
 
 	// ClientID the generated client id for authorization
-	ClientID *string `json:"clientId,omitempty"`
+	ClientID *string `json:"clientId,omitempty" yaml:"clientId,omitempty"`
 
 	// ClientName the friendly name of the client
-	ClientName string `json:"clientName"`
+	ClientName string `json:"clientName" yaml:"clientName"`
 
 	// ClientSecret the generated client secret for authorization
-	ClientSecret *string `json:"clientSecret,omitempty"`
+	ClientSecret *string `json:"clientSecret,omitempty" yaml:"clientSecret,omitempty"`
 
 	// Description a description of the client
-	Description *string `json:"description,omitempty"`
+	Description *string `json:"description,omitempty" yaml:"description,omitempty"`
 
 	// Enabled whether or not the client can be used to generate tokens
-	Enabled *bool `json:"enabled,omitempty"`
+	Enabled *bool `json:"enabled,omitempty" yaml:"enabled,omitempty"`
 
 	// Entitlements the list of entitlements assigned to the client
-	Entitlements []string `json:"entitlements"`
+	Entitlements []string `json:"entitlements" yaml:"entitlements"`
 
 	// ID the unique id for the client
-	ID *string `json:"id,omitempty"`
+	ID *string `json:"id,omitempty" yaml:"id,omitempty"`
 
 	// IPFilterOp the operation of the ip filter. The default setting is null, which means that the ip filter is disabled
-	IPFilterOp *APIClientConfigIPFilterOp `json:"ipFilterOp,omitempty"`
+	IPFilterOp *APIClientConfigIPFilterOp `json:"ipFilterOp,omitempty" yaml:"ipFilterOp,omitempty"`
 
 	// IPFilters the list of ips
-	IPFilters *[]string `json:"ipFilters,omitempty"`
+	IPFilters *[]string `json:"ipFilters,omitempty" yaml:"ipFilters,omitempty"`
 
 	// JwkURI the JSON web key URI endpoint
-	JwkURI           *string                    `json:"jwkUri,omitempty"`
-	OverrideSettings *APIClientOverrideSettings `json:"overrideSettings,omitempty"`
+	JwkURI           *string                    `json:"jwkUri,omitempty" yaml:"jwkUri,omitempty"`
+	OverrideSettings *APIClientOverrideSettings `json:"overrideSettings,omitempty" yaml:"overrideSettings,omitempty"`
 }
 
 // APIClientConfigIPFilterOp the operation of the ip filter. The default setting is null, which means that the ip filter is disabled
@@ -462,47 +462,47 @@ type APIClientConfigIPFilterOp string
 
 // APIClientConfigPaginatedResponseContainer defines model for APIClientConfigPaginatedResponseContainer.
 type APIClientConfigPaginatedResponseContainer struct {
-	APIClients *[]APIClientConfig `json:"apiClients,omitempty"`
-	Count      *int32             `json:"count,omitempty"`
-	Limit      *int32             `json:"limit,omitempty"`
-	Page       *int32             `json:"page,omitempty"`
-	Total      *int32             `json:"total,omitempty"`
+	APIClients *[]APIClientConfig `json:"apiClients,omitempty" yaml:"apiClients,omitempty"`
+	Count      *int32             `json:"count,omitempty" yaml:"count,omitempty"`
+	Limit      *int32             `json:"limit,omitempty" yaml:"limit,omitempty"`
+	Page       *int32             `json:"page,omitempty" yaml:"page,omitempty"`
+	Total      *int32             `json:"total,omitempty" yaml:"total,omitempty"`
 }
 
 // APIClientConfigRequest defines model for APIClientConfigRequest.
 type APIClientConfigRequest struct {
-	AdditionalConfig *APIClientAdditionalConfig `json:"additionalConfig,omitempty"`
+	AdditionalConfig *APIClientAdditionalConfig `json:"additionalConfig,omitempty" yaml:"additionalConfig,omitempty"`
 
 	// AdditionalProperties additional properties for the client
-	AdditionalProperties *map[string]map[string]interface{} `json:"additionalProperties,omitempty"`
+	AdditionalProperties *map[string]map[string]interface{} `json:"additionalProperties,omitempty" yaml:"additionalProperties,omitempty"`
 
 	// ClientID the unique identifier of the client
-	ClientID *string `json:"clientId,omitempty"`
+	ClientID *string `json:"clientId,omitempty" yaml:"clientId,omitempty"`
 
 	// ClientName the friendly name of the client
-	ClientName string `json:"clientName"`
+	ClientName string `json:"clientName" yaml:"clientName"`
 
 	// ClientSecret the generated client secret for authorization. If unspecified, a random client secret is generated
-	ClientSecret *string `json:"clientSecret,omitempty"`
+	ClientSecret *string `json:"clientSecret,omitempty" yaml:"clientSecret,omitempty"`
 
 	// Description a description of the client
-	Description *string `json:"description,omitempty"`
+	Description *string `json:"description,omitempty" yaml:"description,omitempty"`
 
 	// Enabled whether or not the client can be used to generate tokens
-	Enabled bool `json:"enabled"`
+	Enabled bool `json:"enabled" yaml:"enabled"`
 
 	// Entitlements the list of entitlements assigned to the client
-	Entitlements []string `json:"entitlements"`
+	Entitlements []string `json:"entitlements" yaml:"entitlements"`
 
 	// IPFilterOp the operation of the ip filter. The default setting is null, which means that the ip filter is disabled
-	IPFilterOp *APIClientConfigRequestIPFilterOp `json:"ipFilterOp,omitempty"`
+	IPFilterOp *APIClientConfigRequestIPFilterOp `json:"ipFilterOp,omitempty" yaml:"ipFilterOp,omitempty"`
 
 	// IPFilters the list of ips
-	IPFilters *[]string `json:"ipFilters,omitempty"`
+	IPFilters *[]string `json:"ipFilters,omitempty" yaml:"ipFilters,omitempty"`
 
 	// JwkURI the JSON web key URI endpoint
-	JwkURI           *string                    `json:"jwkUri,omitempty"`
-	OverrideSettings *APIClientOverrideSettings `json:"overrideSettings,omitempty"`
+	JwkURI           *string                    `json:"jwkUri,omitempty" yaml:"jwkUri,omitempty"`
+	OverrideSettings *APIClientOverrideSettings `json:"overrideSettings,omitempty" yaml:"overrideSettings,omitempty"`
 }
 
 // APIClientConfigRequestIPFilterOp the operation of the ip filter. The default setting is null, which means that the ip filter is disabled
@@ -511,44 +511,44 @@ type APIClientConfigRequestIPFilterOp string
 // APIClientOverrideSettings defines model for APIClientOverrideSettings.
 type APIClientOverrideSettings struct {
 	// RestrictScopes boolean value that determines whether or not to restrict scopes
-	RestrictScopes *bool              `json:"restrictScopes,omitempty"`
-	Scopes         *[]APIClientScopes `json:"scopes,omitempty"`
+	RestrictScopes *bool              `json:"restrictScopes,omitempty" yaml:"restrictScopes,omitempty"`
+	Scopes         *[]APIClientScopes `json:"scopes,omitempty" yaml:"scopes,omitempty"`
 }
 
 // APIClientScopes defines model for APIClientScopes.
 type APIClientScopes struct {
 	// Description a description of the scope
-	Description *string `json:"description,omitempty"`
+	Description *string `json:"description,omitempty" yaml:"description,omitempty"`
 
 	// Name the name of the scope
-	Name *string `json:"name,omitempty"`
+	Name *string `json:"name,omitempty" yaml:"name,omitempty"`
 }
 
 // Address defines model for Address.
 type Address struct {
 	// Country The country name component. Maximum length is 128 characters.
-	Country *string `json:"country,omitempty"`
+	Country *string `json:"country,omitempty" yaml:"country,omitempty"`
 
 	// Formatted The formatted value of the address. Maximum length is 500 characters.
-	Formatted *string `json:"formatted,omitempty"`
+	Formatted *string `json:"formatted,omitempty" yaml:"formatted,omitempty"`
 
 	// Locality The city or locality component. Maximum length is 128 characters.
-	Locality *string `json:"locality,omitempty"`
+	Locality *string `json:"locality,omitempty" yaml:"locality,omitempty"`
 
 	// PostalCode The postal code. Maximum length is 40 characters.
-	PostalCode *string `json:"postalCode,omitempty"`
+	PostalCode *string `json:"postalCode,omitempty" yaml:"postalCode,omitempty"`
 
 	// Primary Indicates whether this is address is the primary address for correspondence.
-	Primary *bool `json:"primary,omitempty"`
+	Primary *bool `json:"primary,omitempty" yaml:"primary,omitempty"`
 
 	// Region The region. Maximum length is 128 characters.
-	Region *string `json:"region,omitempty"`
+	Region *string `json:"region,omitempty" yaml:"region,omitempty"`
 
 	// StreetAddress The street address. Maximum length is 128 characters.
-	StreetAddress *string `json:"streetAddress,omitempty"`
+	StreetAddress *string `json:"streetAddress,omitempty" yaml:"streetAddress,omitempty"`
 
 	// Type A label that indicates the attribute's function; for example, "work" or "home".
-	Type *AddressType `json:"type,omitempty"`
+	Type *AddressType `json:"type,omitempty" yaml:"type,omitempty"`
 }
 
 // AddressType A label that indicates the attribute's function; for example, "work" or "home".
@@ -557,40 +557,40 @@ type AddressType string
 // AllowBlockListInputOutput Object used to represent an allowlist and blocklist.
 type AllowBlockListInputOutput struct {
 	// AGroup Specifies if the filter refers to a group. The values are true or false.
-	AGroup *bool `json:"aGroup,omitempty"`
+	AGroup *bool `json:"aGroup,omitempty" yaml:"aGroup,omitempty"`
 
 	// AccountOwnershipType Account ownership type.
-	AccountOwnershipType *string `json:"accountOwnershipType,omitempty"`
+	AccountOwnershipType *string `json:"accountOwnershipType,omitempty" yaml:"accountOwnershipType,omitempty"`
 
 	// AccountStatus To filter the account status.
-	AccountStatus *AllowBlockListInputOutputAccountStatus `json:"accountStatus,omitempty"`
+	AccountStatus *AllowBlockListInputOutputAccountStatus `json:"accountStatus,omitempty" yaml:"accountStatus,omitempty"`
 
 	// Description Description of group
-	Description *string `json:"description,omitempty"`
+	Description *string `json:"description,omitempty" yaml:"description,omitempty"`
 
 	// Email The email address of the user.
-	Email *string `json:"email,omitempty"`
+	Email *string `json:"email,omitempty" yaml:"email,omitempty"`
 
 	// FamilyName The family name of the user, or the last name in most Western languages. For example, Jensen is the family name from the full name Ms. Barbara J Jensen, PhD.
-	FamilyName *string `json:"familyName,omitempty"`
+	FamilyName *string `json:"familyName,omitempty" yaml:"familyName,omitempty"`
 
 	// Formatted The full name of the user that includes  user name, middle name, and suffix, that are formatted for display.
-	Formatted *string `json:"formatted,omitempty"`
+	Formatted *string `json:"formatted,omitempty" yaml:"formatted,omitempty"`
 
 	// GivenName The given name of the user, or first name in most Western languages. For example, Barbara is the given name from the full name Ms. Barbara J Jensen, PhD.
-	GivenName *string `json:"givenName,omitempty"`
+	GivenName *string `json:"givenName,omitempty" yaml:"givenName,omitempty"`
 
 	// ID The user identifier of the user to be filtered.
-	ID *string `json:"id,omitempty"`
+	ID *string `json:"id,omitempty" yaml:"id,omitempty"`
 
 	// Name The userName or groupName of the user or group.
-	Name *string `json:"name,omitempty"`
+	Name *string `json:"name,omitempty" yaml:"name,omitempty"`
 
 	// Realm The realm to which the user belongs. It is always "cloudIdentityRealm" for regular users. Maximum length is 240 characters.
-	Realm *string `json:"realm,omitempty"`
+	Realm *string `json:"realm,omitempty" yaml:"realm,omitempty"`
 
 	// UserType The type of the user. For example, regular, federated.
-	UserType *string `json:"userType,omitempty"`
+	UserType *string `json:"userType,omitempty" yaml:"userType,omitempty"`
 }
 
 // AllowBlockListInputOutputAccountStatus To filter the account status.
@@ -598,31 +598,31 @@ type AllowBlockListInputOutputAccountStatus string
 
 // ApplicationV1 defines model for ApplicationV1.
 type ApplicationV1 struct {
-	Description *string `json:"description,omitempty"`
-	Icon        *string `json:"icon,omitempty"`
-	ID          *string `json:"id,omitempty"`
-	Name        *string `json:"name,omitempty"`
-	URL         *string `json:"url,omitempty"`
+	Description *string `json:"description,omitempty" yaml:"description,omitempty"`
+	Icon        *string `json:"icon,omitempty" yaml:"icon,omitempty"`
+	ID          *string `json:"id,omitempty" yaml:"id,omitempty"`
+	Name        *string `json:"name,omitempty" yaml:"name,omitempty"`
+	URL         *string `json:"url,omitempty" yaml:"url,omitempty"`
 }
 
 // AsyncContext defines model for AsyncContext.
 type AsyncContext struct {
-	Request  *ServletRequest  `json:"request,omitempty"`
-	Response *ServletResponse `json:"response,omitempty"`
-	Timeout  *int64           `json:"timeout,omitempty"`
+	Request  *ServletRequest  `json:"request,omitempty" yaml:"request,omitempty"`
+	Response *ServletResponse `json:"response,omitempty" yaml:"response,omitempty"`
+	Timeout  *int64           `json:"timeout,omitempty" yaml:"timeout,omitempty"`
 }
 
 // AttributeMapping defines model for AttributeMapping.
 type AttributeMapping struct {
 	// AttrID The IBM Security Verify Cloud Directory attribute identifier.
-	AttrID string `json:"attrId"`
+	AttrID string `json:"attrId" yaml:"attrId"`
 
 	// IdsAttrName The external identity source attribute name. Only required if identity source is not Cloud Directory.
-	IdsAttrName string `json:"idsAttrName"`
+	IdsAttrName string `json:"idsAttrName" yaml:"idsAttrName"`
 
 	// JitpOption The IBM Security Verify Cloud Directory attribute identifier.
-	JitpOption AttributeMappingJitpOption `json:"jitpOption"`
-	PostEval   *PostEval                  `json:"postEval,omitempty"`
+	JitpOption AttributeMappingJitpOption `json:"jitpOption" yaml:"jitpOption"`
+	PostEval   *PostEval                  `json:"postEval,omitempty" yaml:"postEval,omitempty"`
 }
 
 // AttributeMappingJitpOption The IBM Security Verify Cloud Directory attribute identifier.
@@ -630,43 +630,43 @@ type AttributeMappingJitpOption string
 
 // Attribute0 defines model for Attribute_0.
 type Attribute0 struct {
-	Constraints *Constraints `json:"constraints,omitempty"`
+	Constraints *Constraints `json:"constraints,omitempty" yaml:"constraints,omitempty"`
 
 	// CredName The name of the attribute in the login session credentials. Maximum length is 2048 characters
-	CredName *string `json:"credName,omitempty"`
+	CredName *string `json:"credName,omitempty" yaml:"credName,omitempty"`
 
 	// CredNameOverrides Realm specific name of the attribute in the login session credentials. This property is specified in the form of key-value pairs where the key is the name of the realm  and the value is the name of the attribute used to override the 'credName' property. Maximum length is 2048 characters
-	CredNameOverrides *map[string]string `json:"credNameOverrides,omitempty"`
+	CredNameOverrides *map[string]string `json:"credNameOverrides,omitempty" yaml:"credNameOverrides,omitempty"`
 
 	// CustomProperties Identifies the attribute custom properties that are attached to this attribute
-	CustomProperties *map[string]string `json:"customProperties,omitempty"`
+	CustomProperties *map[string]string `json:"customProperties,omitempty" yaml:"customProperties,omitempty"`
 
 	// Datatype The type of derived data that is expected for the attribute. Defaults to string. The integer datatype is used for any numerical value.
-	Datatype Attribute0Datatype `json:"datatype"`
+	Datatype Attribute0Datatype `json:"datatype" yaml:"datatype"`
 
 	// Description The description of the attribute. Maximum length is 2048 characters
-	Description *string   `json:"description,omitempty"`
-	Function    *Function `json:"function,omitempty"`
+	Description *string   `json:"description,omitempty" yaml:"description,omitempty"`
+	Function    *Function `json:"function,omitempty" yaml:"function,omitempty"`
 
 	// ID The unique identifier for the attribute
-	ID *string `json:"id,omitempty"`
+	ID *string `json:"id,omitempty" yaml:"id,omitempty"`
 
 	// Name The human-readable name of the attribute. Maximum length is 2048 characters
-	Name             string            `json:"name"`
-	ProfileAttribute *ProfileAttribute `json:"profileAttribute,omitempty"`
-	SchemaAttribute  *SchemaAttribute  `json:"schemaAttribute,omitempty"`
+	Name             string            `json:"name" yaml:"name"`
+	ProfileAttribute *ProfileAttribute `json:"profileAttribute,omitempty" yaml:"profileAttribute,omitempty"`
+	SchemaAttribute  *SchemaAttribute  `json:"schemaAttribute,omitempty" yaml:"schemaAttribute,omitempty"`
 
 	// Scope Identifies whether the attribute is defined globally by the system or specific to the tenant
-	Scope *string `json:"scope,omitempty"`
+	Scope *string `json:"scope,omitempty" yaml:"scope,omitempty"`
 
 	// SourceType The type of the attribute source from which the attribute value is derived
-	SourceType Attribute0SourceType `json:"sourceType"`
+	SourceType Attribute0SourceType `json:"sourceType" yaml:"sourceType"`
 
 	// Tags The tags used to categorize attributes. Maximum number of tags is 25
-	Tags *[]string `json:"tags,omitempty"`
+	Tags *[]string `json:"tags,omitempty" yaml:"tags,omitempty"`
 
 	// Value The default value of the attribute. This value also refers to the fixed value for sourceType="static". Maximum length is 2048 characters
-	Value *string `json:"value,omitempty"`
+	Value *string `json:"value,omitempty" yaml:"value,omitempty"`
 }
 
 // Attribute0Datatype The type of derived data that is expected for the attribute. Defaults to string. The integer datatype is used for any numerical value.
@@ -678,10 +678,10 @@ type Attribute0SourceType string
 // BadRequest0 defines model for BadRequest_0.
 type BadRequest0 struct {
 	// MessageDescription A requester locale-specific descriptive message.
-	MessageDescription string `json:"messageDescription"`
+	MessageDescription string `json:"messageDescription" yaml:"messageDescription"`
 
 	// MessageID The message key identifier.
-	MessageID string `json:"messageId"`
+	MessageID string `json:"messageId" yaml:"messageId"`
 }
 
 // BufferedReader defines model for BufferedReader.
@@ -689,27 +689,27 @@ type BufferedReader = map[string]interface{}
 
 // BulkOperation defines model for BulkOperation.
 type BulkOperation struct {
-	Op   *string `json:"op,omitempty"`
-	Path *string `json:"path,omitempty"`
+	Op   *string `json:"op,omitempty" yaml:"op,omitempty"`
+	Path *string `json:"path,omitempty" yaml:"path,omitempty"`
 }
 
 // BulkResponse defines model for BulkResponse.
 type BulkResponse struct {
 	// MessageDescription Requester locale specific descriptive message.
-	MessageDescription *string `json:"messageDescription,omitempty"`
+	MessageDescription *string `json:"messageDescription,omitempty" yaml:"messageDescription,omitempty"`
 
 	// MessageID The message key identifier.
-	MessageID *string       `json:"messageId,omitempty"`
-	Results   *[]BulkResult `json:"results,omitempty"`
+	MessageID *string       `json:"messageId,omitempty" yaml:"messageId,omitempty"`
+	Results   *[]BulkResult `json:"results,omitempty" yaml:"results,omitempty"`
 }
 
 // BulkResult defines model for BulkResult.
 type BulkResult struct {
 	// Error this field will not be included if the operation was successful
-	Error  *string           `json:"error,omitempty"`
-	Op     *BulkResultOp     `json:"op,omitempty"`
-	Path   *string           `json:"path,omitempty"`
-	Result *BulkResultResult `json:"result,omitempty"`
+	Error  *string           `json:"error,omitempty" yaml:"error,omitempty"`
+	Op     *BulkResultOp     `json:"op,omitempty" yaml:"op,omitempty"`
+	Path   *string           `json:"path,omitempty" yaml:"path,omitempty"`
+	Result *BulkResultResult `json:"result,omitempty" yaml:"result,omitempty"`
 }
 
 // BulkResultOp defines model for BulkResult.Op.
@@ -721,31 +721,31 @@ type BulkResultResult string
 // CICCustomGroup defines model for CICCustomGroup.
 type CICCustomGroup struct {
 	// Description The description for the group that is being created.
-	Description *string `json:"description,omitempty"`
+	Description *string `json:"description,omitempty" yaml:"description,omitempty"`
 
 	// Owners A list of owners for the group.  When the scope of an admin role restricts groups, the members of that role can access only those restricted groups and any other groups that they own.  Members of a scoped role are also automatically assigned as the group owner when creating the group by calling the POST /v2.0/Groups API.
-	Owners *[]GroupOwner `json:"owners,omitempty"`
+	Owners *[]GroupOwner `json:"owners,omitempty" yaml:"owners,omitempty"`
 }
 
 // CICCustomGroupResponse defines model for CICCustomGroupResponse.
 type CICCustomGroupResponse struct {
 	// Description The description for the group.
-	Description *string `json:"description,omitempty"`
+	Description *string `json:"description,omitempty" yaml:"description,omitempty"`
 
 	// GroupType The group type. This value is read-only.
-	GroupType *CICCustomGroupResponseGroupType `json:"groupType,omitempty"`
+	GroupType *CICCustomGroupResponseGroupType `json:"groupType,omitempty" yaml:"groupType,omitempty"`
 
 	// MemberStartIndex The start index of members that are returned on the page.
-	MemberStartIndex *int32 `json:"memberStartIndex,omitempty"`
+	MemberStartIndex *int32 `json:"memberStartIndex,omitempty" yaml:"memberStartIndex,omitempty"`
 
 	// MembersPerPage Members per page.  For large group support, this property is the count of members returned in the members array.
-	MembersPerPage *int32 `json:"membersPerPage,omitempty"`
+	MembersPerPage *int32 `json:"membersPerPage,omitempty" yaml:"membersPerPage,omitempty"`
 
 	// Owners A list of owners for the group.  For large group support, the group ownership is automatically set and enforced when the request has restricted groups that are associated with the access token's user subject identifier.
-	Owners *[]GroupOwner `json:"owners,omitempty"`
+	Owners *[]GroupOwner `json:"owners,omitempty" yaml:"owners,omitempty"`
 
 	// TotalMembers The total number of members that are in the group.
-	TotalMembers int32 `json:"totalMembers"`
+	TotalMembers int32 `json:"totalMembers" yaml:"totalMembers"`
 }
 
 // CICCustomGroupResponseGroupType The group type. This value is read-only.
@@ -754,13 +754,13 @@ type CICCustomGroupResponseGroupType string
 // CICCustomLargeGroupResponse defines model for CICCustomLargeGroupResponse.
 type CICCustomLargeGroupResponse struct {
 	// Description The description for the group.
-	Description *string `json:"description,omitempty"`
+	Description *string `json:"description,omitempty" yaml:"description,omitempty"`
 
 	// GroupType The group type. This value is read-only.
-	GroupType *CICCustomLargeGroupResponseGroupType `json:"groupType,omitempty"`
+	GroupType *CICCustomLargeGroupResponseGroupType `json:"groupType,omitempty" yaml:"groupType,omitempty"`
 
 	// TotalMembers The total number of members that are in the group.
-	TotalMembers int32 `json:"totalMembers"`
+	TotalMembers int32 `json:"totalMembers" yaml:"totalMembers"`
 }
 
 // CICCustomLargeGroupResponseGroupType The group type. This value is read-only.
@@ -769,31 +769,31 @@ type CICCustomLargeGroupResponseGroupType string
 // CICCustomUser defines model for CICCustomUser.
 type CICCustomUser struct {
 	// AccountExpires The expiration date of the account.  The value is a date and time of the form  yyyy-mm-ddThh:mm:ssZ.  For example, an account expiration of 2021-04-01T16:00:00Z, expires on year 2021, April 1 at 16 hundred hours GMT.  When an account is expired, the account's active flag is set to false to prevent login.The process that checks for expired accounts runs every 15 minutes at the top of the hour in GMT+0 time.
-	AccountExpires *string `json:"accountExpires,omitempty"`
+	AccountExpires *string `json:"accountExpires,omitempty" yaml:"accountExpires,omitempty"`
 
 	// CustomAttributes The custom attributes for the user. For the GET /Users API, custom attributes can be referenced by using the fully qualified name. The schema URI is urn:ietf:params:scim:schemas:extension:ibm:2.0:User:customAttributes.scimName, where scimName is the SCIM name of the custom schema attribute that was created with the POST /Schema/attributes API.
-	CustomAttributes *[]CustomAttribute `json:"customAttributes,omitempty"`
+	CustomAttributes *[]CustomAttribute `json:"customAttributes,omitempty" yaml:"customAttributes,omitempty"`
 
 	// Delegate The "ID" of the target entry to which the approval and re-certification records that are assigned to this identity are to be delegated.
-	Delegate *string `json:"delegate,omitempty"`
+	Delegate *string `json:"delegate,omitempty" yaml:"delegate,omitempty"`
 
 	// EmailVerified The field that indicates the timestamp at which the user's email was verified.
-	EmailVerified *int64 `json:"emailVerified,omitempty"`
+	EmailVerified *int64 `json:"emailVerified,omitempty" yaml:"emailVerified,omitempty"`
 
 	// LinkedAccounts The linked accounts for the user.
-	LinkedAccounts *[]LinkedAccount `json:"linkedAccounts,omitempty"`
+	LinkedAccounts *[]LinkedAccount `json:"linkedAccounts,omitempty" yaml:"linkedAccounts,omitempty"`
 
 	// Realm The realm to which the user belongs. It is always "cloudIdentityRealm" for regular users. Maximum length is 240 characters.
-	Realm *string `json:"realm,omitempty"`
+	Realm *string `json:"realm,omitempty" yaml:"realm,omitempty"`
 
 	// TwoFactorAuthentication Indicates whether two factor authentication is required. It defaults to "false" if not provided.
-	TwoFactorAuthentication *bool `json:"twoFactorAuthentication,omitempty"`
+	TwoFactorAuthentication *bool `json:"twoFactorAuthentication,omitempty" yaml:"twoFactorAuthentication,omitempty"`
 
 	// UnqualifiedUserName An unqualified federated user name. This field is read-only.
-	UnqualifiedUserName *string `json:"unqualifiedUserName,omitempty"`
+	UnqualifiedUserName *string `json:"unqualifiedUserName,omitempty" yaml:"unqualifiedUserName,omitempty"`
 
 	// UserCategory The user category. If not provided, it defaults to "regular".
-	UserCategory *CICCustomUserUserCategory `json:"userCategory,omitempty"`
+	UserCategory *CICCustomUserUserCategory `json:"userCategory,omitempty" yaml:"userCategory,omitempty"`
 }
 
 // CICCustomUserUserCategory The user category. If not provided, it defaults to "regular".
@@ -802,61 +802,61 @@ type CICCustomUserUserCategory string
 // CICCustomUserResponse defines model for CICCustomUserResponse.
 type CICCustomUserResponse struct {
 	// AccountExpires The expiration date of the account.  The value is a date and time of the form  yyyy-mm-ddThh:mm:ssZ.  For example, an account expiration of 2021-04-01T16:00:00Z, expires on year 2021, April 1 at 16 hundred hours GMT.  When an account is expired, the account's active flag is set to false to prevent login.The process that checks for expired accounts runs every 15 minutes at the top of the hour in GMT+0 time.
-	AccountExpires *string `json:"accountExpires,omitempty"`
+	AccountExpires *string `json:"accountExpires,omitempty" yaml:"accountExpires,omitempty"`
 
 	// CustomAttributes The custom attributes for the user. For the GET /Users API, custom attributes can be referenced by using the fully qualified name. The schema URI is urn:ietf:params:scim:schemas:extension:ibm:2.0:User:customAttributes.scimName, where scimName is the SCIM name of the custom schema attribute that was created with the POST /Schema/attributes API.
-	CustomAttributes *[]CustomAttribute `json:"customAttributes,omitempty"`
+	CustomAttributes *[]CustomAttribute `json:"customAttributes,omitempty" yaml:"customAttributes,omitempty"`
 
 	// Delegate The "id" of the entry to which approval and re-certification records assigned to this identity will be delegated.
-	Delegate *string `json:"delegate,omitempty"`
+	Delegate *string `json:"delegate,omitempty" yaml:"delegate,omitempty"`
 
 	// EmailVerified A timestamp that indicates when the user's email was verified.
-	EmailVerified *string `json:"emailVerified,omitempty"`
+	EmailVerified *string `json:"emailVerified,omitempty" yaml:"emailVerified,omitempty"`
 
 	// LastLogin Indicates the time of the last login for the current user entry.  Value is a date and time of the form yyyy-mm-ddThh:mm:ssZ.
-	LastLogin *string `json:"lastLogin,omitempty"`
+	LastLogin *string `json:"lastLogin,omitempty" yaml:"lastLogin,omitempty"`
 
 	// LastLoginRealm Indicates the realm used for the last login for the current user entry.
-	LastLoginRealm *string `json:"lastLoginRealm,omitempty"`
+	LastLoginRealm *string `json:"lastLoginRealm,omitempty" yaml:"lastLoginRealm,omitempty"`
 
 	// LastLoginType Indicates the login type used for the last login for the current user entry.
-	LastLoginType *string `json:"lastLoginType,omitempty"`
+	LastLoginType *string `json:"lastLoginType,omitempty" yaml:"lastLoginType,omitempty"`
 
 	// LastMFA The last MFAs for the user.
-	LastMFA *[]LastMFA `json:"lastMFA,omitempty"`
+	LastMFA *[]LastMFA `json:"lastMFA,omitempty" yaml:"lastMFA,omitempty"`
 
 	// LinkedAccounts The linked accounts for the user.
-	LinkedAccounts *[]LinkedAccount `json:"linkedAccounts,omitempty"`
+	LinkedAccounts *[]LinkedAccount `json:"linkedAccounts,omitempty" yaml:"linkedAccounts,omitempty"`
 
 	// PwdAccountLockedTime A field that indicates the timestamp at which the user's password was locked. The value of this field is in milliseconds and is read-only.
-	PwdAccountLockedTime *string `json:"pwdAccountLockedTime,omitempty"`
+	PwdAccountLockedTime *string `json:"pwdAccountLockedTime,omitempty" yaml:"pwdAccountLockedTime,omitempty"`
 
 	// PwdChangedTime Indicates the time when the password was changed for the current user entry. This value is read-only.
-	PwdChangedTime *string `json:"pwdChangedTime,omitempty"`
+	PwdChangedTime *string `json:"pwdChangedTime,omitempty" yaml:"pwdChangedTime,omitempty"`
 
 	// PwdExpirationWarned A field that indicates the timestamp at which the user's password expiration is set. The value of this field is in milliseconds and is read-only.
-	PwdExpirationWarned *string `json:"pwdExpirationWarned,omitempty"`
+	PwdExpirationWarned *string `json:"pwdExpirationWarned,omitempty" yaml:"pwdExpirationWarned,omitempty"`
 
 	// PwdFailureTime A field that indicates a list of timestamps at which the user attempted to log in with the wrong password The value of this field is in milliseconds and is read-only.
-	PwdFailureTime *[]string `json:"pwdFailureTime,omitempty"`
+	PwdFailureTime *[]string `json:"pwdFailureTime,omitempty" yaml:"pwdFailureTime,omitempty"`
 
 	// PwdGraceUseTime A field that indicates a list of timestamps at which the user attempted to see extended or grace time. The value of this field is in milliseconds and is read-only.
-	PwdGraceUseTime *[]string `json:"pwdGraceUseTime,omitempty"`
+	PwdGraceUseTime *[]string `json:"pwdGraceUseTime,omitempty" yaml:"pwdGraceUseTime,omitempty"`
 
 	// PwdReset Indicates whether the password is reset for the current user entry. This value is read-only.
-	PwdReset *bool `json:"pwdReset,omitempty"`
+	PwdReset *bool `json:"pwdReset,omitempty" yaml:"pwdReset,omitempty"`
 
 	// Realm The realm to which the user belongs. It is always "cloudIdentityRealm" for non-federated users.
-	Realm *string `json:"realm,omitempty"`
+	Realm *string `json:"realm,omitempty" yaml:"realm,omitempty"`
 
 	// TwoFactorAuthentication Indicates whether two factory authentication is required. It defaults to "false" if not provided.
-	TwoFactorAuthentication *bool `json:"twoFactorAuthentication,omitempty"`
+	TwoFactorAuthentication *bool `json:"twoFactorAuthentication,omitempty" yaml:"twoFactorAuthentication,omitempty"`
 
 	// UnqualifiedUserName An unqualified, federated user name. This field is read-only.
-	UnqualifiedUserName *string `json:"unqualifiedUserName,omitempty"`
+	UnqualifiedUserName *string `json:"unqualifiedUserName,omitempty" yaml:"unqualifiedUserName,omitempty"`
 
 	// UserCategory The user category.
-	UserCategory *CICCustomUserResponseUserCategory `json:"userCategory,omitempty"`
+	UserCategory *CICCustomUserResponseUserCategory `json:"userCategory,omitempty" yaml:"userCategory,omitempty"`
 }
 
 // CICCustomUserResponseUserCategory The user category.
@@ -865,125 +865,125 @@ type CICCustomUserResponseUserCategory string
 // CampaignConfigurationOutput Representation of a campaign configuration for REST APIs
 type CampaignConfigurationOutput struct {
 	// AllowSupervisorEscalation Allow escalation to the supervisors.
-	AllowSupervisorEscalation *bool `json:"allowSupervisorEscalation,omitempty"`
+	AllowSupervisorEscalation *bool `json:"allowSupervisorEscalation,omitempty" yaml:"allowSupervisorEscalation,omitempty"`
 
 	// Allowlist List of users or groups that are allowed for the certification
-	Allowlist    *[]AllowBlockListInputOutput `json:"allowlist,omitempty"`
-	Applications *ApplicationV1               `json:"applications,omitempty"`
+	Allowlist    *[]AllowBlockListInputOutput `json:"allowlist,omitempty" yaml:"allowlist,omitempty"`
+	Applications *ApplicationV1               `json:"applications,omitempty" yaml:"applications,omitempty"`
 
 	// AssociatedPreviewCampaign Representation of a campaign configuration for REST APIs
-	AssociatedPreviewCampaign *CampaignConfigurationOutput `json:"associatedPreviewCampaign,omitempty"`
+	AssociatedPreviewCampaign *CampaignConfigurationOutput `json:"associatedPreviewCampaign,omitempty" yaml:"associatedPreviewCampaign,omitempty"`
 
 	// AutomaticRefreshContinuousCampaign A flag for a campaign to refresh the existing filter for building dataset. It is valid for continuous campaigns only.
-	AutomaticRefreshContinuousCampaign *bool                        `json:"automaticRefreshContinuousCampaign,omitempty"`
-	Blacklist                          *[]AllowBlockListInputOutput `json:"blacklist,omitempty"`
+	AutomaticRefreshContinuousCampaign *bool                        `json:"automaticRefreshContinuousCampaign,omitempty" yaml:"automaticRefreshContinuousCampaign,omitempty"`
+	Blacklist                          *[]AllowBlockListInputOutput `json:"blacklist,omitempty" yaml:"blacklist,omitempty"`
 
 	// Blocklist List of users or groups denied for the certification
-	Blocklist *[]AllowBlockListInputOutput `json:"blocklist,omitempty"`
+	Blocklist *[]AllowBlockListInputOutput `json:"blocklist,omitempty" yaml:"blocklist,omitempty"`
 
 	// Continuous A flag for a continuous campaign
-	Continuous *bool `json:"continuous,omitempty"`
+	Continuous *bool `json:"continuous,omitempty" yaml:"continuous,omitempty"`
 
 	// CreationDate Creation date of the campaign configuration
-	CreationDate *string `json:"creationDate,omitempty"`
+	CreationDate *string `json:"creationDate,omitempty" yaml:"creationDate,omitempty"`
 
 	// DefaultReviewer Represents a user group
-	DefaultReviewer *UserGroupV1 `json:"defaultReviewer,omitempty"`
+	DefaultReviewer *UserGroupV1 `json:"defaultReviewer,omitempty" yaml:"defaultReviewer,omitempty"`
 
 	// Description Campaign description
-	Description *string `json:"description,omitempty"`
+	Description *string `json:"description,omitempty" yaml:"description,omitempty"`
 
 	// Draft A flag for a draft campaign
-	Draft *bool `json:"draft,omitempty"`
+	Draft *bool `json:"draft,omitempty" yaml:"draft,omitempty"`
 
 	// Duration The duration (in milliseconds) for which each campaign instance remains open
-	Duration int64 `json:"duration"`
+	Duration int64 `json:"duration" yaml:"duration"`
 
 	// EntitlementFilter Rest representation for an entitlement or entitlement condition set filter.
-	EntitlementFilter *EntitlementWithConditionSet `json:"entitlementFilter,omitempty"`
+	EntitlementFilter *EntitlementWithConditionSet `json:"entitlementFilter,omitempty" yaml:"entitlementFilter,omitempty"`
 
 	// Frequency A UNIX or Linux Cron-compatible string that defines the start of subsequent instances
-	Frequency *string `json:"frequency,omitempty"`
+	Frequency *string `json:"frequency,omitempty" yaml:"frequency,omitempty"`
 
 	// ID Campaign configuration ID
-	ID *string `json:"id,omitempty"`
+	ID *string `json:"id,omitempty" yaml:"id,omitempty"`
 
 	// IsDeleted The campaign configuration was deleted
-	IsDeleted *bool `json:"isDeleted,omitempty"`
+	IsDeleted *bool `json:"isDeleted,omitempty" yaml:"isDeleted,omitempty"`
 
 	// LaunchDate Date when the first instance of the campaign starts
-	LaunchDate CampaignConfigurationOutputLaunchDate `json:"launchDate"`
+	LaunchDate CampaignConfigurationOutputLaunchDate `json:"launchDate" yaml:"launchDate"`
 
 	// MitigationAction The action to be taken after a while to avoid open records when a campaign closes.
 	MitigationAction *struct {
-		ReminderInterval *int64                                           `json:"reminderInterval,omitempty"`
-		Type             *CampaignConfigurationOutputMitigationActionType `json:"type,omitempty"`
-	} `json:"mitigationAction,omitempty"`
+		ReminderInterval *int64                                           `json:"reminderInterval,omitempty" yaml:"reminderInterval,omitempty"`
+		Type             *CampaignConfigurationOutputMitigationActionType `json:"type,omitempty" yaml:"type,omitempty"`
+	} `json:"mitigationAction,omitempty" yaml:"mitigationAction,omitempty"`
 
 	// Name Campaign name
-	Name string `json:"name"`
+	Name string `json:"name" yaml:"name"`
 
 	// NextRunDate Estimated next run date for this configuration, if any
-	NextRunDate *string `json:"nextRunDate,omitempty"`
+	NextRunDate *string `json:"nextRunDate,omitempty" yaml:"nextRunDate,omitempty"`
 
 	// OverdueAction The action to be taken for open records when a campaign closes.
-	OverdueAction *CampaignConfigurationOutputOverdueAction `json:"overdueAction,omitempty"`
+	OverdueAction *CampaignConfigurationOutputOverdueAction `json:"overdueAction,omitempty" yaml:"overdueAction,omitempty"`
 
 	// Owner Represents a user group
-	Owner *UserGroupV1 `json:"owner,omitempty"`
+	Owner *UserGroupV1 `json:"owner,omitempty" yaml:"owner,omitempty"`
 
 	// Preview A flag for a preview campaign, not opened to reviewers
-	Preview *bool `json:"preview,omitempty"`
+	Preview *bool `json:"preview,omitempty" yaml:"preview,omitempty"`
 
 	// Priority Campaign priority
-	Priority CampaignConfigurationOutputPriority `json:"priority"`
+	Priority CampaignConfigurationOutputPriority `json:"priority" yaml:"priority"`
 
 	// Rev Campaign configuration review
-	Rev *string `json:"rev,omitempty"`
+	Rev *string `json:"rev,omitempty" yaml:"rev,omitempty"`
 
 	// Reviewer Represents a user group
-	Reviewer *UserGroupV1 `json:"reviewer,omitempty"`
+	Reviewer *UserGroupV1 `json:"reviewer,omitempty" yaml:"reviewer,omitempty"`
 
 	// RunEvery Frequency unit days or months
 	RunEvery *struct {
-		CronString *string `json:"cronString,omitempty"`
-	} `json:"runEvery,omitempty"`
+		CronString *string `json:"cronString,omitempty" yaml:"cronString,omitempty"`
+	} `json:"runEvery,omitempty" yaml:"runEvery,omitempty"`
 
 	// RunNow A flag to start the campaign immediately
-	RunNow *bool `json:"runNow,omitempty"`
+	RunNow *bool `json:"runNow,omitempty" yaml:"runNow,omitempty"`
 
 	// SignOff The campaign sign-off policy
-	SignOff *CampaignConfigurationOutputSignOff `json:"signOff,omitempty"`
+	SignOff *CampaignConfigurationOutputSignOff `json:"signOff,omitempty" yaml:"signOff,omitempty"`
 
 	// Supervisors The list of supervisors identified for the campaign.
-	Supervisors *[]UserGroupV1 `json:"supervisors,omitempty"`
+	Supervisors *[]UserGroupV1 `json:"supervisors,omitempty" yaml:"supervisors,omitempty"`
 
 	// TenantCreationLimits A JSON object that indicates the limits for this tenant
 	TenantCreationLimits *struct {
 		// CurrentActiveCampaignAssignments Number of current active campaign assignments
-		CurrentActiveCampaignAssignments *int64 `json:"current_active_campaign_assignments,omitempty"`
+		CurrentActiveCampaignAssignments *int64 `json:"current_active_campaign_assignments,omitempty" yaml:"current_active_campaign_assignments,omitempty"`
 
 		// CurrentActiveCampaignInstances Number of current active campaign instances
-		CurrentActiveCampaignInstances *int `json:"current_active_campaign_instances,omitempty"`
+		CurrentActiveCampaignInstances *int `json:"current_active_campaign_instances,omitempty" yaml:"current_active_campaign_instances,omitempty"`
 
 		// CurrentTotalCampaignAssignmentsInDB Current total campaign assignments in db
-		CurrentTotalCampaignAssignmentsInDB *int64 `json:"current_total_campaign_assignments_in_db,omitempty"`
+		CurrentTotalCampaignAssignmentsInDB *int64 `json:"current_total_campaign_assignments_in_db,omitempty" yaml:"current_total_campaign_assignments_in_db,omitempty"`
 
 		// MaxActiveCampaignAssignments Maximum number of active campaign assignments
-		MaxActiveCampaignAssignments *int64 `json:"max_active_campaign_assignments,omitempty"`
+		MaxActiveCampaignAssignments *int64 `json:"max_active_campaign_assignments,omitempty" yaml:"max_active_campaign_assignments,omitempty"`
 
 		// MaxActiveCampaignInstances Maximum number of active campaign instances
-		MaxActiveCampaignInstances *int `json:"max_active_campaign_instances,omitempty"`
+		MaxActiveCampaignInstances *int `json:"max_active_campaign_instances,omitempty" yaml:"max_active_campaign_instances,omitempty"`
 
 		// MaxTotalCampaignAssignmentsInDB Total campaign assignments in db
-		MaxTotalCampaignAssignmentsInDB *int64 `json:"max_total_campaign_assignments_in_db,omitempty"`
-	} `json:"tenantCreationLimits,omitempty"`
-	TenantID   *string `json:"tenantId,omitempty"`
-	TenantUUID *string `json:"tenantUUID,omitempty"`
+		MaxTotalCampaignAssignmentsInDB *int64 `json:"max_total_campaign_assignments_in_db,omitempty" yaml:"max_total_campaign_assignments_in_db,omitempty"`
+	} `json:"tenantCreationLimits,omitempty" yaml:"tenantCreationLimits,omitempty"`
+	TenantID   *string `json:"tenantId,omitempty" yaml:"tenantId,omitempty"`
+	TenantUUID *string `json:"tenantUUID,omitempty" yaml:"tenantUUID,omitempty"`
 
 	// Type Campaign type
-	Type      CampaignConfigurationOutputType `json:"type"`
-	Whitelist *[]AllowBlockListInputOutput    `json:"whitelist,omitempty"`
+	Type      CampaignConfigurationOutputType `json:"type" yaml:"type"`
+	Whitelist *[]AllowBlockListInputOutput    `json:"whitelist,omitempty" yaml:"whitelist,omitempty"`
 }
 
 // CampaignConfigurationOutputLaunchDate Date when the first instance of the campaign starts
@@ -1006,22 +1006,22 @@ type CampaignConfigurationOutputType string
 
 // ClassLoader defines model for ClassLoader.
 type ClassLoader struct {
-	Parent *ClassLoader `json:"parent,omitempty"`
+	Parent *ClassLoader `json:"parent,omitempty" yaml:"parent,omitempty"`
 }
 
 // ClientAuthentication defines model for ClientAuthentication.
 type ClientAuthentication struct {
 	// ClientAssertion The JWT assertion being used to authenticate the client.
-	ClientAssertion *string `json:"client_assertion,omitempty"`
+	ClientAssertion *string `json:"client_assertion,omitempty" yaml:"client_assertion,omitempty"`
 
 	// ClientAssertionType The format of client assertion.
-	ClientAssertionType *ClientAuthenticationClientAssertionType `json:"client_assertion_type,omitempty"`
+	ClientAssertionType *ClientAuthenticationClientAssertionType `json:"client_assertion_type,omitempty" yaml:"client_assertion_type,omitempty"`
 
 	// ClientID The OIDC client ID that is required when the basic authorization header is not set.
-	ClientID *string `json:"client_id,omitempty"`
+	ClientID *string `json:"client_id,omitempty" yaml:"client_id,omitempty"`
 
 	// ClientSecret The OIDC client secret that is required when the basic authorization header is not set and the client is not a public client.
-	ClientSecret *string `json:"client_secret,omitempty"`
+	ClientSecret *string `json:"client_secret,omitempty" yaml:"client_secret,omitempty"`
 }
 
 // ClientAuthenticationClientAssertionType The format of client assertion.
@@ -1029,120 +1029,120 @@ type ClientAuthenticationClientAssertionType string
 
 // ConfigDataObject defines model for ConfigDataObject.
 type ConfigDataObject struct {
-	CreatedAt *time.Time `json:"createdAt,omitempty"`
-	CreatedBy *string    `json:"createdBy,omitempty"`
-	EnvID     *string    `json:"envId,omitempty"`
-	ID        *string    `json:"id,omitempty"`
-	OrgID     *string    `json:"orgId,omitempty"`
-	UpdatedAt *time.Time `json:"updatedAt,omitempty"`
-	UpdatedBy *string    `json:"updatedBy,omitempty"`
-	URL       *string    `json:"url,omitempty"`
+	CreatedAt *time.Time `json:"createdAt,omitempty" yaml:"createdAt,omitempty"`
+	CreatedBy *string    `json:"createdBy,omitempty" yaml:"createdBy,omitempty"`
+	EnvID     *string    `json:"envId,omitempty" yaml:"envId,omitempty"`
+	ID        *string    `json:"id,omitempty" yaml:"id,omitempty"`
+	OrgID     *string    `json:"orgId,omitempty" yaml:"orgId,omitempty"`
+	UpdatedAt *time.Time `json:"updatedAt,omitempty" yaml:"updatedAt,omitempty"`
+	UpdatedBy *string    `json:"updatedBy,omitempty" yaml:"updatedBy,omitempty"`
+	URL       *string    `json:"url,omitempty" yaml:"url,omitempty"`
 }
 
 // Connection defines model for Connection.
 type Connection struct {
-	AutoCommit           *bool                   `json:"autoCommit,omitempty"`
-	Catalog              *string                 `json:"catalog,omitempty"`
-	ClientInfo           *map[string]string      `json:"clientInfo,omitempty"`
-	Closed               *bool                   `json:"closed,omitempty"`
-	Holdability          *int32                  `json:"holdability,omitempty"`
-	MetaData             *DatabaseMetaData       `json:"metaData,omitempty"`
-	NetworkTimeout       *int32                  `json:"networkTimeout,omitempty"`
-	ReadOnly             *bool                   `json:"readOnly,omitempty"`
-	Schema               *string                 `json:"schema,omitempty"`
-	TransactionIsolation *int32                  `json:"transactionIsolation,omitempty"`
-	TypeMap              *map[string]interface{} `json:"typeMap,omitempty"`
-	Warnings             *SQLWarning             `json:"warnings,omitempty"`
+	AutoCommit           *bool                   `json:"autoCommit,omitempty" yaml:"autoCommit,omitempty"`
+	Catalog              *string                 `json:"catalog,omitempty" yaml:"catalog,omitempty"`
+	ClientInfo           *map[string]string      `json:"clientInfo,omitempty" yaml:"clientInfo,omitempty"`
+	Closed               *bool                   `json:"closed,omitempty" yaml:"closed,omitempty"`
+	Holdability          *int32                  `json:"holdability,omitempty" yaml:"holdability,omitempty"`
+	MetaData             *DatabaseMetaData       `json:"metaData,omitempty" yaml:"metaData,omitempty"`
+	NetworkTimeout       *int32                  `json:"networkTimeout,omitempty" yaml:"networkTimeout,omitempty"`
+	ReadOnly             *bool                   `json:"readOnly,omitempty" yaml:"readOnly,omitempty"`
+	Schema               *string                 `json:"schema,omitempty" yaml:"schema,omitempty"`
+	TransactionIsolation *int32                  `json:"transactionIsolation,omitempty" yaml:"transactionIsolation,omitempty"`
+	TypeMap              *map[string]interface{} `json:"typeMap,omitempty" yaml:"typeMap,omitempty"`
+	Warnings             *SQLWarning             `json:"warnings,omitempty" yaml:"warnings,omitempty"`
 }
 
 // Constraints defines model for Constraints.
 type Constraints struct {
-	Mandatory             *bool            `json:"mandatory,omitempty"`
-	ReadAccessForEndUser  *bool            `json:"readAccessForEndUser,omitempty"`
-	Unique                *bool            `json:"unique,omitempty"`
-	ValueConstraint       *ValueConstraint `json:"valueConstraint,omitempty"`
-	ValueConstraintFormat *string          `json:"valueConstraintFormat,omitempty"`
-	ValueConstraintType   *string          `json:"valueConstraintType,omitempty"`
-	WriteAccessForEndUser *bool            `json:"writeAccessForEndUser,omitempty"`
+	Mandatory             *bool            `json:"mandatory,omitempty" yaml:"mandatory,omitempty"`
+	ReadAccessForEndUser  *bool            `json:"readAccessForEndUser,omitempty" yaml:"readAccessForEndUser,omitempty"`
+	Unique                *bool            `json:"unique,omitempty" yaml:"unique,omitempty"`
+	ValueConstraint       *ValueConstraint `json:"valueConstraint,omitempty" yaml:"valueConstraint,omitempty"`
+	ValueConstraintFormat *string          `json:"valueConstraintFormat,omitempty" yaml:"valueConstraintFormat,omitempty"`
+	ValueConstraintType   *string          `json:"valueConstraintType,omitempty" yaml:"valueConstraintType,omitempty"`
+	WriteAccessForEndUser *bool            `json:"writeAccessForEndUser,omitempty" yaml:"writeAccessForEndUser,omitempty"`
 }
 
 // CreateConflict defines model for CreateConflict.
 type CreateConflict struct {
 	// MessageDescription A requester locale-specific descriptive message.
-	MessageDescription string `json:"messageDescription"`
+	MessageDescription string `json:"messageDescription" yaml:"messageDescription"`
 
 	// MessageID The message key identifier.
-	MessageID string `json:"messageId"`
+	MessageID string `json:"messageId" yaml:"messageId"`
 }
 
 // CustomAttribute defines model for CustomAttribute.
 type CustomAttribute struct {
 	// Name The SCIM name of the custom attribute.  The SCIM name for a custom schema attribute is defined for the tenant by using the POST /Schema/attributes API.
-	Name string `json:"name"`
+	Name string `json:"name" yaml:"name"`
 
 	// Values The values of the custom attribute. Maximum length is 1000 characters.
-	Values []string `json:"values"`
+	Values []string `json:"values" yaml:"values"`
 }
 
 // DatabaseMetaData defines model for DatabaseMetaData.
 type DatabaseMetaData struct {
-	CatalogAtStart              *bool                          `json:"catalogAtStart,omitempty"`
-	CatalogSeparator            *string                        `json:"catalogSeparator,omitempty"`
-	CatalogTerm                 *string                        `json:"catalogTerm,omitempty"`
-	Catalogs                    *ResultSet                     `json:"catalogs,omitempty"`
-	ClientInfoProperties        *ResultSet                     `json:"clientInfoProperties,omitempty"`
-	Connection                  *Connection                    `json:"connection,omitempty"`
-	DatabaseMajorVersion        *int32                         `json:"databaseMajorVersion,omitempty"`
-	DatabaseMinorVersion        *int32                         `json:"databaseMinorVersion,omitempty"`
-	DatabaseProductName         *string                        `json:"databaseProductName,omitempty"`
-	DatabaseProductVersion      *string                        `json:"databaseProductVersion,omitempty"`
-	DefaultTransactionIsolation *int32                         `json:"defaultTransactionIsolation,omitempty"`
-	DriverMajorVersion          *int32                         `json:"driverMajorVersion,omitempty"`
-	DriverMinorVersion          *int32                         `json:"driverMinorVersion,omitempty"`
-	DriverName                  *string                        `json:"driverName,omitempty"`
-	DriverVersion               *string                        `json:"driverVersion,omitempty"`
-	ExtraNameCharacters         *string                        `json:"extraNameCharacters,omitempty"`
-	IdentifierQuoteString       *string                        `json:"identifierQuoteString,omitempty"`
-	JdbcmajorVersion            *int32                         `json:"jdbcmajorVersion,omitempty"`
-	JdbcminorVersion            *int32                         `json:"jdbcminorVersion,omitempty"`
-	MaxBinaryLiteralLength      *int32                         `json:"maxBinaryLiteralLength,omitempty"`
-	MaxCatalogNameLength        *int32                         `json:"maxCatalogNameLength,omitempty"`
-	MaxCharLiteralLength        *int32                         `json:"maxCharLiteralLength,omitempty"`
-	MaxColumnNameLength         *int32                         `json:"maxColumnNameLength,omitempty"`
-	MaxColumnsInGroupBy         *int32                         `json:"maxColumnsInGroupBy,omitempty"`
-	MaxColumnsInIndex           *int32                         `json:"maxColumnsInIndex,omitempty"`
-	MaxColumnsInOrderBy         *int32                         `json:"maxColumnsInOrderBy,omitempty"`
-	MaxColumnsInSelect          *int32                         `json:"maxColumnsInSelect,omitempty"`
-	MaxColumnsInTable           *int32                         `json:"maxColumnsInTable,omitempty"`
-	MaxConnections              *int32                         `json:"maxConnections,omitempty"`
-	MaxCursorNameLength         *int32                         `json:"maxCursorNameLength,omitempty"`
-	MaxIndexLength              *int32                         `json:"maxIndexLength,omitempty"`
-	MaxLogicalLobSize           *int64                         `json:"maxLogicalLobSize,omitempty"`
-	MaxProcedureNameLength      *int32                         `json:"maxProcedureNameLength,omitempty"`
-	MaxRowSize                  *int32                         `json:"maxRowSize,omitempty"`
-	MaxSchemaNameLength         *int32                         `json:"maxSchemaNameLength,omitempty"`
-	MaxStatementLength          *int32                         `json:"maxStatementLength,omitempty"`
-	MaxStatements               *int32                         `json:"maxStatements,omitempty"`
-	MaxTableNameLength          *int32                         `json:"maxTableNameLength,omitempty"`
-	MaxTablesInSelect           *int32                         `json:"maxTablesInSelect,omitempty"`
-	MaxUserNameLength           *int32                         `json:"maxUserNameLength,omitempty"`
-	NumericFunctions            *string                        `json:"numericFunctions,omitempty"`
-	ProcedureTerm               *string                        `json:"procedureTerm,omitempty"`
-	ReadOnly                    *bool                          `json:"readOnly,omitempty"`
-	ResultSetHoldability        *int32                         `json:"resultSetHoldability,omitempty"`
-	RowIDLifetime               *DatabaseMetaDataRowIDLifetime `json:"rowIdLifetime,omitempty"`
-	SchemaTerm                  *string                        `json:"schemaTerm,omitempty"`
-	Schemas                     *ResultSet                     `json:"schemas,omitempty"`
-	SearchStringEscape          *string                        `json:"searchStringEscape,omitempty"`
-	Sqlkeywords                 *string                        `json:"sqlkeywords,omitempty"`
-	SqlstateType                *int32                         `json:"sqlstateType,omitempty"`
-	StringFunctions             *string                        `json:"stringFunctions,omitempty"`
-	SystemFunctions             *string                        `json:"systemFunctions,omitempty"`
-	TableTypes                  *ResultSet                     `json:"tableTypes,omitempty"`
-	TimeDateFunctions           *string                        `json:"timeDateFunctions,omitempty"`
-	TypeInfo                    *ResultSet                     `json:"typeInfo,omitempty"`
-	URL                         *string                        `json:"url,omitempty"`
-	UserName                    *string                        `json:"userName,omitempty"`
+	CatalogAtStart              *bool                          `json:"catalogAtStart,omitempty" yaml:"catalogAtStart,omitempty"`
+	CatalogSeparator            *string                        `json:"catalogSeparator,omitempty" yaml:"catalogSeparator,omitempty"`
+	CatalogTerm                 *string                        `json:"catalogTerm,omitempty" yaml:"catalogTerm,omitempty"`
+	Catalogs                    *ResultSet                     `json:"catalogs,omitempty" yaml:"catalogs,omitempty"`
+	ClientInfoProperties        *ResultSet                     `json:"clientInfoProperties,omitempty" yaml:"clientInfoProperties,omitempty"`
+	Connection                  *Connection                    `json:"connection,omitempty" yaml:"connection,omitempty"`
+	DatabaseMajorVersion        *int32                         `json:"databaseMajorVersion,omitempty" yaml:"databaseMajorVersion,omitempty"`
+	DatabaseMinorVersion        *int32                         `json:"databaseMinorVersion,omitempty" yaml:"databaseMinorVersion,omitempty"`
+	DatabaseProductName         *string                        `json:"databaseProductName,omitempty" yaml:"databaseProductName,omitempty"`
+	DatabaseProductVersion      *string                        `json:"databaseProductVersion,omitempty" yaml:"databaseProductVersion,omitempty"`
+	DefaultTransactionIsolation *int32                         `json:"defaultTransactionIsolation,omitempty" yaml:"defaultTransactionIsolation,omitempty"`
+	DriverMajorVersion          *int32                         `json:"driverMajorVersion,omitempty" yaml:"driverMajorVersion,omitempty"`
+	DriverMinorVersion          *int32                         `json:"driverMinorVersion,omitempty" yaml:"driverMinorVersion,omitempty"`
+	DriverName                  *string                        `json:"driverName,omitempty" yaml:"driverName,omitempty"`
+	DriverVersion               *string                        `json:"driverVersion,omitempty" yaml:"driverVersion,omitempty"`
+	ExtraNameCharacters         *string                        `json:"extraNameCharacters,omitempty" yaml:"extraNameCharacters,omitempty"`
+	IdentifierQuoteString       *string                        `json:"identifierQuoteString,omitempty" yaml:"identifierQuoteString,omitempty"`
+	JdbcmajorVersion            *int32                         `json:"jdbcmajorVersion,omitempty" yaml:"jdbcmajorVersion,omitempty"`
+	JdbcminorVersion            *int32                         `json:"jdbcminorVersion,omitempty" yaml:"jdbcminorVersion,omitempty"`
+	MaxBinaryLiteralLength      *int32                         `json:"maxBinaryLiteralLength,omitempty" yaml:"maxBinaryLiteralLength,omitempty"`
+	MaxCatalogNameLength        *int32                         `json:"maxCatalogNameLength,omitempty" yaml:"maxCatalogNameLength,omitempty"`
+	MaxCharLiteralLength        *int32                         `json:"maxCharLiteralLength,omitempty" yaml:"maxCharLiteralLength,omitempty"`
+	MaxColumnNameLength         *int32                         `json:"maxColumnNameLength,omitempty" yaml:"maxColumnNameLength,omitempty"`
+	MaxColumnsInGroupBy         *int32                         `json:"maxColumnsInGroupBy,omitempty" yaml:"maxColumnsInGroupBy,omitempty"`
+	MaxColumnsInIndex           *int32                         `json:"maxColumnsInIndex,omitempty" yaml:"maxColumnsInIndex,omitempty"`
+	MaxColumnsInOrderBy         *int32                         `json:"maxColumnsInOrderBy,omitempty" yaml:"maxColumnsInOrderBy,omitempty"`
+	MaxColumnsInSelect          *int32                         `json:"maxColumnsInSelect,omitempty" yaml:"maxColumnsInSelect,omitempty"`
+	MaxColumnsInTable           *int32                         `json:"maxColumnsInTable,omitempty" yaml:"maxColumnsInTable,omitempty"`
+	MaxConnections              *int32                         `json:"maxConnections,omitempty" yaml:"maxConnections,omitempty"`
+	MaxCursorNameLength         *int32                         `json:"maxCursorNameLength,omitempty" yaml:"maxCursorNameLength,omitempty"`
+	MaxIndexLength              *int32                         `json:"maxIndexLength,omitempty" yaml:"maxIndexLength,omitempty"`
+	MaxLogicalLobSize           *int64                         `json:"maxLogicalLobSize,omitempty" yaml:"maxLogicalLobSize,omitempty"`
+	MaxProcedureNameLength      *int32                         `json:"maxProcedureNameLength,omitempty" yaml:"maxProcedureNameLength,omitempty"`
+	MaxRowSize                  *int32                         `json:"maxRowSize,omitempty" yaml:"maxRowSize,omitempty"`
+	MaxSchemaNameLength         *int32                         `json:"maxSchemaNameLength,omitempty" yaml:"maxSchemaNameLength,omitempty"`
+	MaxStatementLength          *int32                         `json:"maxStatementLength,omitempty" yaml:"maxStatementLength,omitempty"`
+	MaxStatements               *int32                         `json:"maxStatements,omitempty" yaml:"maxStatements,omitempty"`
+	MaxTableNameLength          *int32                         `json:"maxTableNameLength,omitempty" yaml:"maxTableNameLength,omitempty"`
+	MaxTablesInSelect           *int32                         `json:"maxTablesInSelect,omitempty" yaml:"maxTablesInSelect,omitempty"`
+	MaxUserNameLength           *int32                         `json:"maxUserNameLength,omitempty" yaml:"maxUserNameLength,omitempty"`
+	NumericFunctions            *string                        `json:"numericFunctions,omitempty" yaml:"numericFunctions,omitempty"`
+	ProcedureTerm               *string                        `json:"procedureTerm,omitempty" yaml:"procedureTerm,omitempty"`
+	ReadOnly                    *bool                          `json:"readOnly,omitempty" yaml:"readOnly,omitempty"`
+	ResultSetHoldability        *int32                         `json:"resultSetHoldability,omitempty" yaml:"resultSetHoldability,omitempty"`
+	RowIDLifetime               *DatabaseMetaDataRowIDLifetime `json:"rowIdLifetime,omitempty" yaml:"rowIdLifetime,omitempty"`
+	SchemaTerm                  *string                        `json:"schemaTerm,omitempty" yaml:"schemaTerm,omitempty"`
+	Schemas                     *ResultSet                     `json:"schemas,omitempty" yaml:"schemas,omitempty"`
+	SearchStringEscape          *string                        `json:"searchStringEscape,omitempty" yaml:"searchStringEscape,omitempty"`
+	Sqlkeywords                 *string                        `json:"sqlkeywords,omitempty" yaml:"sqlkeywords,omitempty"`
+	SqlstateType                *int32                         `json:"sqlstateType,omitempty" yaml:"sqlstateType,omitempty"`
+	StringFunctions             *string                        `json:"stringFunctions,omitempty" yaml:"stringFunctions,omitempty"`
+	SystemFunctions             *string                        `json:"systemFunctions,omitempty" yaml:"systemFunctions,omitempty"`
+	TableTypes                  *ResultSet                     `json:"tableTypes,omitempty" yaml:"tableTypes,omitempty"`
+	TimeDateFunctions           *string                        `json:"timeDateFunctions,omitempty" yaml:"timeDateFunctions,omitempty"`
+	TypeInfo                    *ResultSet                     `json:"typeInfo,omitempty" yaml:"typeInfo,omitempty"`
+	URL                         *string                        `json:"url,omitempty" yaml:"url,omitempty"`
+	UserName                    *string                        `json:"userName,omitempty" yaml:"userName,omitempty"`
 }
 
 // DatabaseMetaDataRowIDLifetime defines model for DatabaseMetaData.RowIDLifetime.
@@ -1151,34 +1151,34 @@ type DatabaseMetaDataRowIDLifetime string
 // DeleteConflict defines model for DeleteConflict.
 type DeleteConflict struct {
 	// MessageDescription A requester locale-specific descriptive message.
-	MessageDescription string `json:"messageDescription"`
+	MessageDescription string `json:"messageDescription" yaml:"messageDescription"`
 
 	// MessageID The message key identifier.
-	MessageID string `json:"messageId"`
+	MessageID string `json:"messageId" yaml:"messageId"`
 }
 
 // DeploymentVisibility defines model for DeploymentVisibility.
 type DeploymentVisibility struct {
-	Subscribe Subscribe `json:"subscribe"`
-	View      View      `json:"view"`
+	Subscribe Subscribe `json:"subscribe" yaml:"subscribe"`
+	View      View      `json:"view" yaml:"view"`
 }
 
 // Duration defines model for Duration.
 type Duration struct {
-	Nano     *int32          `json:"nano,omitempty"`
-	Negative *bool           `json:"negative,omitempty"`
-	Seconds  *int64          `json:"seconds,omitempty"`
-	Units    *[]TemporalUnit `json:"units,omitempty"`
-	Zero     *bool           `json:"zero,omitempty"`
+	Nano     *int32          `json:"nano,omitempty" yaml:"nano,omitempty"`
+	Negative *bool           `json:"negative,omitempty" yaml:"negative,omitempty"`
+	Seconds  *int64          `json:"seconds,omitempty" yaml:"seconds,omitempty"`
+	Units    *[]TemporalUnit `json:"units,omitempty" yaml:"units,omitempty"`
+	Zero     *bool           `json:"zero,omitempty" yaml:"zero,omitempty"`
 }
 
 // EmailAddress defines model for EmailAddress.
 type EmailAddress struct {
 	// Type A label that indicates the attribute function; for example, "work".  Only a single email is allowed.
-	Type EmailAddressType `json:"type"`
+	Type EmailAddressType `json:"type" yaml:"type"`
 
 	// Value The e-mail addresses for the user. The value is canonicalized by the service provider. For example, bjensen@example.com instead of bjensen@EXAMPLE.COM. Must be RFC 2822 compliant. Maximum length is 128 characters.
-	Value string `json:"value"`
+	Value string `json:"value" yaml:"value"`
 }
 
 // EmailAddressType A label that indicates the attribute function; for example, "work".  Only a single email is allowed.
@@ -1187,26 +1187,26 @@ type EmailAddressType string
 // EnterpriseUser defines model for EnterpriseUser.
 type EnterpriseUser struct {
 	// Department Identifies the name of the department. Maximum length is 128 characters.
-	Department *string `json:"department,omitempty"`
+	Department *string `json:"department,omitempty" yaml:"department,omitempty"`
 
 	// EmployeeNumber A string identifier, typically numeric or alphanumeric, that is assigned to a person. Typically the number is based on the order of hire. Maximum length is 128 characters.
-	EmployeeNumber *string  `json:"employeeNumber,omitempty"`
-	Manager        *Manager `json:"manager,omitempty"`
+	EmployeeNumber *string  `json:"employeeNumber,omitempty" yaml:"employeeNumber,omitempty"`
+	Manager        *Manager `json:"manager,omitempty" yaml:"manager,omitempty"`
 }
 
 // EntitlementWithConditionSet Rest representation for an entitlement or entitlement condition set filter.
 type EntitlementWithConditionSet struct {
 	// EntitlementExclusionList List of Entitlements to be excluded
-	EntitlementExclusionList *[]Entitlement0 `json:"entitlementExclusionList,omitempty"`
+	EntitlementExclusionList *[]Entitlement0 `json:"entitlementExclusionList,omitempty" yaml:"entitlementExclusionList,omitempty"`
 
 	// EntitlementInclusionList List of Entitlements to be included
-	EntitlementInclusionList *[]Entitlement0 `json:"entitlementInclusionList,omitempty"`
+	EntitlementInclusionList *[]Entitlement0 `json:"entitlementInclusionList,omitempty" yaml:"entitlementInclusionList,omitempty"`
 }
 
 // Entitlement0 Rest representation for an entitlement.
 type Entitlement0 struct {
 	// EntitlementID Unique id of an entitlement
-	EntitlementID string `json:"entitlementId"`
+	EntitlementID string `json:"entitlementId" yaml:"entitlementId"`
 }
 
 // EnumerationLocale defines model for EnumerationLocale.
@@ -1221,156 +1221,156 @@ type EnumerationString = map[string]interface{}
 // ErrorBean defines model for ErrorBean.
 type ErrorBean struct {
 	// MessageDescription The Locale specific descriptive message
-	MessageDescription string `json:"messageDescription"`
+	MessageDescription string `json:"messageDescription" yaml:"messageDescription"`
 
 	// MessageID The message key identifier
-	MessageID string `json:"messageId"`
+	MessageID string `json:"messageId" yaml:"messageId"`
 }
 
 // ErrorResponse defines model for ErrorResponse.
 type ErrorResponse struct {
 	// MessageDescription Requester locale specific descriptive message.
-	MessageDescription *string `json:"messageDescription,omitempty"`
+	MessageDescription *string `json:"messageDescription,omitempty" yaml:"messageDescription,omitempty"`
 
 	// MessageID The message key identifier.
-	MessageID *string `json:"messageId,omitempty"`
+	MessageID *string `json:"messageId,omitempty" yaml:"messageId,omitempty"`
 }
 
 // Error0 defines model for Error_0.
 type Error0 struct {
 	// Error The OIDC error.
-	Error string `json:"error"`
+	Error string `json:"error" yaml:"error"`
 
 	// ErrorDescription The OIDC error description.
-	ErrorDescription *string `json:"error_description,omitempty"`
+	ErrorDescription *string `json:"error_description,omitempty" yaml:"error_description,omitempty"`
 }
 
 // ExternalErrorMessage1 defines model for ExternalErrorMessage1.
 type ExternalErrorMessage1 struct {
 	// Detail A detailed human-readable message.
-	Detail *string `json:"detail,omitempty"`
+	Detail *string `json:"detail,omitempty" yaml:"detail,omitempty"`
 
 	// Schemas An array of strings that contain the URIs that indicate the namespaces of the SCIM schemas that define the attributes in the current JSON structure.  The schema "urn:ietf:params:scim:api:messages:2.0:Error" is the URI as required by the SCIM specification.
-	Schemas []string `json:"schemas"`
+	Schemas []string `json:"schemas" yaml:"schemas"`
 
 	// Status The HTTP status code expressed as a JSON string.
-	Status string `json:"status"`
+	Status string `json:"status" yaml:"status"`
 }
 
 // FederationPartnerV2 defines model for Federation_Partner_V2.
 type FederationPartnerV2 struct {
-	Configuration *FederationPartnerV2 `json:"configuration,omitempty"`
-	Enabled       *bool                `json:"enabled,omitempty"`
-	ID            *string              `json:"id,omitempty"`
-	Name          *string              `json:"name,omitempty"`
-	Role          *string              `json:"role,omitempty"`
-	TemplateName  *string              `json:"templateName,omitempty"`
+	Configuration *FederationPartnerV2 `json:"configuration,omitempty" yaml:"configuration,omitempty"`
+	Enabled       *bool                `json:"enabled,omitempty" yaml:"enabled,omitempty"`
+	ID            *string              `json:"id,omitempty" yaml:"id,omitempty"`
+	Name          *string              `json:"name,omitempty" yaml:"name,omitempty"`
+	Role          *string              `json:"role,omitempty" yaml:"role,omitempty"`
+	TemplateName  *string              `json:"templateName,omitempty" yaml:"templateName,omitempty"`
 }
 
 // FilterRegistration defines model for FilterRegistration.
 type FilterRegistration struct {
-	ClassName           *string            `json:"className,omitempty"`
-	InitParameters      *map[string]string `json:"initParameters,omitempty"`
-	Name                *string            `json:"name,omitempty"`
-	ServletNameMappings *[]string          `json:"servletNameMappings,omitempty"`
-	URLPatternMappings  *[]string          `json:"urlPatternMappings,omitempty"`
+	ClassName           *string            `json:"className,omitempty" yaml:"className,omitempty"`
+	InitParameters      *map[string]string `json:"initParameters,omitempty" yaml:"initParameters,omitempty"`
+	Name                *string            `json:"name,omitempty" yaml:"name,omitempty"`
+	ServletNameMappings *[]string          `json:"servletNameMappings,omitempty" yaml:"servletNameMappings,omitempty"`
+	URLPatternMappings  *[]string          `json:"urlPatternMappings,omitempty" yaml:"urlPatternMappings,omitempty"`
 }
 
 // Forbidden0 defines model for Forbidden_0.
 type Forbidden0 struct {
 	// MessageDescription A requester locale-specific descriptive message.
-	MessageDescription string `json:"messageDescription"`
+	MessageDescription string `json:"messageDescription" yaml:"messageDescription"`
 
 	// MessageID The message key identifier.
-	MessageID string `json:"messageId"`
+	MessageID string `json:"messageId" yaml:"messageId"`
 }
 
 // Function defines model for Function.
 type Function struct {
 	// Custom The custom function
-	Custom *string `json:"custom,omitempty"`
+	Custom *string `json:"custom,omitempty" yaml:"custom,omitempty"`
 
 	// Name The function name
-	Name *string `json:"name,omitempty"`
+	Name *string `json:"name,omitempty" yaml:"name,omitempty"`
 }
 
 // GetGroupsResponseV2 defines model for GetGroupsResponseV2.
 type GetGroupsResponseV2 struct {
 	// Resources A list of groups.
-	Resources *[]GroupResponseV2 `json:"Resources,omitempty"`
+	Resources *[]GroupResponseV2 `json:"Resources,omitempty" yaml:"Resources,omitempty"`
 
 	// Schemas An array of strings that contain the URIs that indicate the namespaces of the SCIM schemas that define the attributes in the current JSON structure. The schema "urn:ietf:params:scim:api:messages:2.0:ListResponse" is returned in the response.
-	Schemas []string `json:"schemas"`
+	Schemas []string `json:"schemas" yaml:"schemas"`
 
 	// TotalResults The total number of groups that were found that match the specified search criteria for the specified tenant.
-	TotalResults int32 `json:"totalResults"`
+	TotalResults int32 `json:"totalResults" yaml:"totalResults"`
 }
 
 // GetUsersResponseV2 defines model for GetUsersResponseV2.
 type GetUsersResponseV2 struct {
 	// Resources A list of users.
-	Resources *[]GetUsersUserResponseV2 `json:"Resources,omitempty"`
+	Resources *[]GetUsersUserResponseV2 `json:"Resources,omitempty" yaml:"Resources,omitempty"`
 
 	// ItemsPerPage The number of resources that are returned in a list response page.
-	ItemsPerPage *int32 `json:"itemsPerPage,omitempty"`
+	ItemsPerPage *int32 `json:"itemsPerPage,omitempty" yaml:"itemsPerPage,omitempty"`
 
 	// Schemas An array of strings that contain the URIs that indicate the namespaces of the SCIM schemas that define the attributes in the current JSON structure. The schema "urn:ietf:params:scim:api:messages:2.0:ListResponse" is returned in the response.
-	Schemas []string `json:"schemas"`
+	Schemas []string `json:"schemas" yaml:"schemas"`
 
 	// StartIndex The 1-based index of the first result in the current set of list results.
-	StartIndex *int32 `json:"startIndex,omitempty"`
+	StartIndex *int32 `json:"startIndex,omitempty" yaml:"startIndex,omitempty"`
 
 	// TotalResults The total number of users that were found that match the specified search criteria for the specified tenant. An upper limit is imposed on this value, in that the total number of users that match the search criteria may be larger than this value.  A limit of 2500 users matching the search criteria will be returned.
-	TotalResults int32 `json:"totalResults"`
+	TotalResults int32 `json:"totalResults" yaml:"totalResults"`
 }
 
 // GetUsersUserResponseV2 defines model for GetUsersUserResponseV2.
 type GetUsersUserResponseV2 struct {
 	// Active A Boolean value that indicates the user's administrative status. The definitive meaning of this attribute is determined by the service provider. For example, a value of true indicates that the user can, log in, while a value of false indicates that the user's account has been suspended. If not specified, the value defaults to true.
-	Active *bool `json:"active,omitempty"`
+	Active *bool `json:"active,omitempty" yaml:"active,omitempty"`
 
 	// Addresses A list of addresses that are associated with the user.
-	Addresses []Address `json:"addresses"`
+	Addresses []Address `json:"addresses" yaml:"addresses"`
 
 	// DisplayName The name of the user that is displayed to users. Each user returned may include a non-empty displayName value. Typically it is the full name of the user being described, for example, Babs Jensen or Ms. Barbara J Jensen. However, if that information is unavailable, a username or handle can be used, for example, bjensen. The value is the primary textual label by which this user is normally displayed by the service provider when presenting information to users.
-	DisplayName *string `json:"displayName,omitempty"`
+	DisplayName *string `json:"displayName,omitempty" yaml:"displayName,omitempty"`
 
 	// Emails A list of email addresses that are associated with the user. Only one is supported.
-	Emails []EmailAddress `json:"emails"`
+	Emails []EmailAddress `json:"emails" yaml:"emails"`
 
 	// ExternalID A unique identifier for the resource that is defined by the provisioning client. It identifies a resource between the provisioning client and the service provider. The client can use a filter to locate the resource with an identifier from the provisioning domain.
-	ExternalID *string `json:"externalId,omitempty"`
+	ExternalID *string `json:"externalId,omitempty" yaml:"externalId,omitempty"`
 
 	// ID The unique identifier for the resource as defined by the service. This attribute is read-only and ise sent by the service. Any value that is specified for this attribute in the JSON POST or PUT request payload is ignored.
-	ID   string  `json:"id"`
-	Meta *MetaV2 `json:"meta,omitempty"`
-	Name Name    `json:"name"`
+	ID   string  `json:"id" yaml:"id"`
+	Meta *MetaV2 `json:"meta,omitempty" yaml:"meta,omitempty"`
+	Name Name    `json:"name" yaml:"name"`
 
 	// PhoneNumbers A list of phone numbers that are associated with the user.
-	PhoneNumbers *[]PhoneNumber `json:"phoneNumbers,omitempty"`
+	PhoneNumbers *[]PhoneNumber `json:"phoneNumbers,omitempty" yaml:"phoneNumbers,omitempty"`
 
 	// PreferredLanguage The language code identifying the preferred language of this identity, for example, en-us or fr-ca.
-	PreferredLanguage *string `json:"preferredLanguage,omitempty"`
+	PreferredLanguage *string `json:"preferredLanguage,omitempty" yaml:"preferredLanguage,omitempty"`
 
 	// Schemas An array of strings that contain the URIs that indicate the namespaces of the SCIM schemas that define the attributes in the current JSON structure. The schemas "urn:ietf:params:scim:schemas:core:2.0:User", "urn:ietf:params:scim:schemas:extension:ibm:2.0:User" and "urn:ietf:params:scim:schemas:extension:enterprise:2.0:User" are returned in the response.
-	Schemas []string `json:"schemas"`
+	Schemas []string `json:"schemas" yaml:"schemas"`
 
 	// Title The user's title, such as "Vice President."
-	Title                                             *string                `json:"title,omitempty"`
-	UrnIetfParamsScimSchemasExtensionEnterprise20User *EnterpriseUser        `json:"urn:ietf:params:scim:schemas:extension:enterprise:2.0:User,omitempty"`
-	UrnIetfParamsScimSchemasExtensionIbm20User        *CICCustomUserResponse `json:"urn:ietf:params:scim:schemas:extension:ibm:2.0:User,omitempty"`
+	Title                                             *string                `json:"title,omitempty" yaml:"title,omitempty"`
+	UrnIetfParamsScimSchemasExtensionEnterprise20User *EnterpriseUser        `json:"urn:ietf:params:scim:schemas:extension:enterprise:2.0:User,omitempty" yaml:"urn:ietf:params:scim:schemas:extension:enterprise:2.0:User,omitempty"`
+	UrnIetfParamsScimSchemasExtensionIbm20User        *CICCustomUserResponse `json:"urn:ietf:params:scim:schemas:extension:ibm:2.0:User,omitempty" yaml:"urn:ietf:params:scim:schemas:extension:ibm:2.0:User,omitempty"`
 
 	// UserName The unique identifier for the user that is typically used by the user to directly authenticate to the service provider. It is often displayed to the user as their unique identifier within the system (as opposed to the id or externalId attributes, which are generally opaque and not user-friendly identifiers). Each user must include a non-empty userName value. This identifier must be unique across the service consumer's entire set of users. It must be a stable ID that does not change when the same user is returned in subsequent requests.
-	UserName string `json:"userName"`
+	UserName string `json:"userName" yaml:"userName"`
 }
 
 // GroupMembers defines model for GroupMembers.
 type GroupMembers struct {
 	// Type The type of group member that is being added.
-	Type GroupMembersType `json:"type"`
+	Type GroupMembersType `json:"type" yaml:"type"`
 
 	// Value The unique identifier of the member that is being added to the group.
-	Value string `json:"value"`
+	Value string `json:"value" yaml:"value"`
 }
 
 // GroupMembersType The type of group member that is being added.
@@ -1379,46 +1379,46 @@ type GroupMembersType string
 // GroupMembersResponse defines model for GroupMembersResponse.
 type GroupMembersResponse struct {
 	// Ref A sub-attr required by the SCIM specification the contains the URI of the SCIM resource.
-	Ref string `json:"$ref"`
+	Ref string `json:"$ref" yaml:"$ref"`
 
 	// Active Valid for user type members only. A Boolean value that indicates the user's administrative status. The definitive meaning of this attribute is determined by the service provider. For example, a value of true indicates that the user is, for example, able to log in, while a value of false indicates that the user's account has been suspended. If not specified, the value defaults to true.
-	Active *bool `json:"active,omitempty"`
+	Active *bool `json:"active,omitempty" yaml:"active,omitempty"`
 
 	// Addresses Valid for user type members only. A list of addresses that are associated with the user.
-	Addresses []Address `json:"addresses"`
+	Addresses []Address `json:"addresses" yaml:"addresses"`
 
 	// DisplayName The name of the user or group that is displayed to users. Each member returned may include a non-empty displayName value. For a user type member, typically it is the full name of the user that is being described, for example, Babs Jensen or Ms. Barbara J Jensen. However, if that information is unavailable, a username or handle can be used, for example, bjensen. The value is the primary textual label by which this user is normally displayed by the service provider when presenting information to users.
-	DisplayName *string `json:"displayName,omitempty"`
+	DisplayName *string `json:"displayName,omitempty" yaml:"displayName,omitempty"`
 
 	// Emails Valid for user type members only. A list of email addresses that are associated with the user.
-	Emails []EmailAddress `json:"emails"`
+	Emails []EmailAddress `json:"emails" yaml:"emails"`
 
 	// ExternalID Valid for user type members only. A unique identifier for the resource that is defined by the provisioning client. It identifies a resource between the provisioning client and the service provider. The client can use a filter to locate the resource with the identifier from the provisioning domain.
-	ExternalID *string `json:"externalId,omitempty"`
+	ExternalID *string `json:"externalId,omitempty" yaml:"externalId,omitempty"`
 
 	// ID The unique identifier for the resource as defined by the service. This attribute is read-only and is sent by the service. Any value that is specified for this attribute in the JSON POST or PUT request payload is ignored.
-	ID   *string `json:"id,omitempty"`
-	Name Name    `json:"name"`
+	ID   *string `json:"id,omitempty" yaml:"id,omitempty"`
+	Name Name    `json:"name" yaml:"name"`
 
 	// PhoneNumbers Valid for user type members only. A list of phone numbers that are associated with the user.
-	PhoneNumbers *[]PhoneNumber `json:"phoneNumbers,omitempty"`
+	PhoneNumbers *[]PhoneNumber `json:"phoneNumbers,omitempty" yaml:"phoneNumbers,omitempty"`
 
 	// PreferredLanguage Valid for user type members only. The language code identifying the preferred language of this identity, for example, en-us or fr-ca.
-	PreferredLanguage *string `json:"preferredLanguage,omitempty"`
+	PreferredLanguage *string `json:"preferredLanguage,omitempty" yaml:"preferredLanguage,omitempty"`
 
 	// Title Valid for user type members only. The user's title, such as "Vice President".
-	Title *string `json:"title,omitempty"`
+	Title *string `json:"title,omitempty" yaml:"title,omitempty"`
 
 	// Type The type of group member.
-	Type                                              GroupMembersResponseType `json:"type"`
-	UrnIetfParamsScimSchemasExtensionEnterprise20User *EnterpriseUser          `json:"urn:ietf:params:scim:schemas:extension:enterprise:2.0:User,omitempty"`
-	UrnIetfParamsScimSchemasExtensionIbm20User        *CICCustomUserResponse   `json:"urn:ietf:params:scim:schemas:extension:ibm:2.0:User,omitempty"`
+	Type                                              GroupMembersResponseType `json:"type" yaml:"type"`
+	UrnIetfParamsScimSchemasExtensionEnterprise20User *EnterpriseUser          `json:"urn:ietf:params:scim:schemas:extension:enterprise:2.0:User,omitempty" yaml:"urn:ietf:params:scim:schemas:extension:enterprise:2.0:User,omitempty"`
+	UrnIetfParamsScimSchemasExtensionIbm20User        *CICCustomUserResponse   `json:"urn:ietf:params:scim:schemas:extension:ibm:2.0:User,omitempty" yaml:"urn:ietf:params:scim:schemas:extension:ibm:2.0:User,omitempty"`
 
 	// UserName Valid for user type members only. The unique identifier for the user that is typically used by the user to directly authenticate to the service provider. It is often displayed to the user as their unique identifier within the system (as opposed to the id or externalId attributes, which are generally opaque and not user-friendly identifiers). Each user must include a non-empty userName value. This identifier must be unique across the service consumer's entire set of users. It must be a stable ID that does not change when the same user is returned in subsequent requests.
-	UserName string `json:"userName"`
+	UserName string `json:"userName" yaml:"userName"`
 
 	// Value A sub-attr required by the SCIM specification that contains the "id" of the SCIM resource.
-	Value string `json:"value"`
+	Value string `json:"value" yaml:"value"`
 }
 
 // GroupMembersResponseType The type of group member.
@@ -1427,77 +1427,77 @@ type GroupMembersResponseType string
 // GroupOwner defines model for GroupOwner.
 type GroupOwner struct {
 	// Ref The URI of the SCIM resource representing the user.  This value is readonly.
-	Ref *string `json:"$ref,omitempty"`
+	Ref *string `json:"$ref,omitempty" yaml:"$ref,omitempty"`
 
 	// DisplayName The display name of the user. This value is readonly.
-	DisplayName *string `json:"displayName,omitempty"`
+	DisplayName *string `json:"displayName,omitempty" yaml:"displayName,omitempty"`
 
 	// Value The id of the group owner
-	Value string `json:"value"`
+	Value string `json:"value" yaml:"value"`
 }
 
 // GroupResponseV2 defines model for GroupResponseV2.
 type GroupResponseV2 struct {
 	// Bookmark An opaque string that is used by the system to get the next 2500 members of this group.  The existence of this element in the GET /v2.0/Groups/{id} response payload indicates that more members exist that were not returned in the call.  To get the next set of members, the caller makes an additional call to the same endpoint, and passes the bookmark value as a query parameter named "nextPage". For example ?nextPage=XASDGAJDGKAWHGI=.  The caller can continue to make calls to the endpoint until no bookmark element are returned in the response payload, which indicates that all group members were returned.  A bookmark is generated from a membershipType query.  The bookmark feature is available for tenants that have large group support enabled.
-	Bookmark *string `json:"bookmark,omitempty"`
+	Bookmark *string `json:"bookmark,omitempty" yaml:"bookmark,omitempty"`
 
 	// DisplayName A human-readable name for the group.
-	DisplayName string `json:"displayName"`
+	DisplayName string `json:"displayName" yaml:"displayName"`
 
 	// ExternalID Identifier of the Group resource as defined by the provisioning client.
-	ExternalID *string `json:"externalId,omitempty"`
+	ExternalID *string `json:"externalId,omitempty" yaml:"externalId,omitempty"`
 
 	// ID The unique identifier for the resource as defined by the service. This attribute is read-only and will be sent by the service. Any value that is specified for this attribute in the JSON POST or PUT request payload is ignored.
-	ID *string `json:"id,omitempty"`
+	ID *string `json:"id,omitempty" yaml:"id,omitempty"`
 
 	// Members A list of members that belong to this group.  If the group has more than 10,000 members, then this array is empty, unless large group support is enabled for the tenant.  With large group support enabled, each call to the GET /v2.0/Groups/{id} endpoint returns at most 2,500 members of the group.  If more members of the group exist that were not returned, a bookmark is returned in the response.  The bookmark is used to get the next set of group members.  See the "bookmark" property for more details.
-	Members *[]GroupMembersResponse `json:"members,omitempty"`
-	Meta    *MetaV2                 `json:"meta,omitempty"`
+	Members *[]GroupMembersResponse `json:"members,omitempty" yaml:"members,omitempty"`
+	Meta    *MetaV2                 `json:"meta,omitempty" yaml:"meta,omitempty"`
 
 	// Schemas An array of strings that contain the URIs that indicate the namespaces of the SCIM schemas that define the attributes in the current JSON structure. The schemas "urn:ietf:params:scim:schemas:core:2.0:Group"   and "urn:ietf:params:scim:schemas:extension:ibm:2.0:Group" are returned in the response.
-	Schemas                                     []string                `json:"schemas"`
-	UrnIetfParamsScimSchemasExtensionIbm20Group *CICCustomGroupResponse `json:"urn:ietf:params:scim:schemas:extension:ibm:2.0:Group,omitempty"`
+	Schemas                                     []string                `json:"schemas" yaml:"schemas"`
+	UrnIetfParamsScimSchemasExtensionIbm20Group *CICCustomGroupResponse `json:"urn:ietf:params:scim:schemas:extension:ibm:2.0:Group,omitempty" yaml:"urn:ietf:params:scim:schemas:extension:ibm:2.0:Group,omitempty"`
 }
 
 // GroupV2 defines model for GroupV2.
 type GroupV2 struct {
 	// DisplayName The display name of the group. Maximum length is 255 characters.
-	DisplayName string `json:"displayName"`
+	DisplayName string `json:"displayName" yaml:"displayName"`
 
 	// ExternalID Identifier of the Group resource as defined by the provisioning client. Maximum length is 240 characters.
-	ExternalID *string `json:"externalId,omitempty"`
+	ExternalID *string `json:"externalId,omitempty" yaml:"externalId,omitempty"`
 
 	// Members A list of members that are being added.  When creating a group, the number of elements must be less than or equal to 10,000.
-	Members *[]GroupMembers `json:"members,omitempty"`
+	Members *[]GroupMembers `json:"members,omitempty" yaml:"members,omitempty"`
 
 	// Schemas An array of strings that contain the URIs that indicate the namespaces of the SCIM schemas that define the attributes in the current JSON structure.   The schemas "urn:ietf:params:scim:schemas:core:2.0:Group", urn:ietf:params:scim:schemas:extension:ibm:2.0:Group",  and "urn:ietf:params:scim:schemas:extension:ibm:2.0:Notification" are valid.  The core group schema is required.
-	Schemas                                            []string        `json:"schemas"`
-	UrnIetfParamsScimSchemasExtensionIbm20Group        *CICCustomGroup `json:"urn:ietf:params:scim:schemas:extension:ibm:2.0:Group,omitempty"`
-	UrnIetfParamsScimSchemasExtensionIbm20Notification *Notifications  `json:"urn:ietf:params:scim:schemas:extension:ibm:2.0:Notification,omitempty"`
-	Visible                                            *bool           `json:"visible,omitempty"`
+	Schemas                                            []string        `json:"schemas" yaml:"schemas"`
+	UrnIetfParamsScimSchemasExtensionIbm20Group        *CICCustomGroup `json:"urn:ietf:params:scim:schemas:extension:ibm:2.0:Group,omitempty" yaml:"urn:ietf:params:scim:schemas:extension:ibm:2.0:Group,omitempty"`
+	UrnIetfParamsScimSchemasExtensionIbm20Notification *Notifications  `json:"urn:ietf:params:scim:schemas:extension:ibm:2.0:Notification,omitempty" yaml:"urn:ietf:params:scim:schemas:extension:ibm:2.0:Notification,omitempty"`
+	Visible                                            *bool           `json:"visible,omitempty" yaml:"visible,omitempty"`
 }
 
 // Groups defines model for Groups.
 type Groups struct {
 	// Ref A sub-attr required by the SCIM specification the contains the URI of the SCIM resource the user belongs to.
-	Ref string `json:"$ref"`
+	Ref string `json:"$ref" yaml:"$ref"`
 
 	// DisplayName The display name of the group that the user belongs to.
-	DisplayName *string `json:"displayName,omitempty"`
+	DisplayName *string `json:"displayName,omitempty" yaml:"displayName,omitempty"`
 
 	// ID The identifier of the group that the user belongs to.
-	ID *string `json:"id,omitempty"`
+	ID *string `json:"id,omitempty" yaml:"id,omitempty"`
 
 	// Value A sub-attr required by the SCIM specification that contains the "id" of the SCIM resource the user belongs to.
-	Value string `json:"value"`
+	Value string `json:"value" yaml:"value"`
 }
 
 // Header The keys should be in canonical form, as returned by
 // CanonicalHeaderKey.
 type Header struct {
-	Key                  *string             `json:"key,omitempty"`
-	Value                *string             `json:"value,omitempty"`
-	AdditionalProperties map[string][]string `json:"-"`
+	Key                  *string             `json:"key,omitempty" yaml:"key,omitempty"`
+	Value                *string             `json:"value,omitempty" yaml:"value,omitempty"`
+	AdditionalProperties map[string][]string `json:"-" yaml:"-"`
 }
 
 // IdentitySourceInstancesData defines model for IdentitySourceInstancesData.
@@ -1505,28 +1505,28 @@ type IdentitySourceInstancesData struct {
 	// AttributeMappings A set of attribute mappings that are associated with the identity source instance.
 	//  It is an array of attribute mappings that are not required but an optional input for certain runtime login flows.
 	//  The properties and the number of properties differe with the provider type.
-	AttributeMappings *[]AttributeMapping `json:"attributeMappings,omitempty"`
+	AttributeMappings *[]AttributeMapping `json:"attributeMappings,omitempty" yaml:"attributeMappings,omitempty"`
 
 	// Enabled A Boolean flag that indicates whether this instance is enabled or disabled. Only enabled identity source instances are displayed on the login selection page.
-	Enabled bool `json:"enabled"`
+	Enabled bool `json:"enabled" yaml:"enabled"`
 
 	// InstanceName The instance name to be displayed on login selection page.
-	InstanceName string `json:"instanceName"`
+	InstanceName string `json:"instanceName" yaml:"instanceName"`
 
 	// Predefined This property is currently not in use. We do not support plugging-in any other custom types of identity providers.
 	//  However, the purpose was to indicate that this instance is special; it neither be created and nor deleted.
-	Predefined *bool `json:"predefined,omitempty"`
+	Predefined *bool `json:"predefined,omitempty" yaml:"predefined,omitempty"`
 
 	// Properties A set of properties that are associated with the identity source instance.
 	//   It is an array of properties of identity source instance that are required to perform the runtime login flow.
 	//   The properties and the number of properties differ with the provider type.
-	Properties []IdentitySourceInstancesPropertiesData `json:"properties"`
+	Properties []IdentitySourceInstancesPropertiesData `json:"properties" yaml:"properties"`
 
 	// SourceTypeID The numeric identifier of identity provider type.
-	SourceTypeID int32 `json:"sourceTypeId"`
+	SourceTypeID int32 `json:"sourceTypeId" yaml:"sourceTypeId"`
 
 	// Status A string label that indicates whether this instance is configured. If specified, this property is ignored during creation.
-	Status *IdentitySourceInstancesDataStatus `json:"status,omitempty"`
+	Status *IdentitySourceInstancesDataStatus `json:"status,omitempty" yaml:"status,omitempty"`
 }
 
 // IdentitySourceInstancesDataStatus A string label that indicates whether this instance is configured. If specified, this property is ignored during creation.
@@ -1535,227 +1535,227 @@ type IdentitySourceInstancesDataStatus string
 // IdentitySourceInstancesPropertiesData defines model for IdentitySourceInstancesPropertiesData.
 type IdentitySourceInstancesPropertiesData struct {
 	// Key Property key.
-	Key string `json:"key"`
+	Key string `json:"key" yaml:"key"`
 
 	// Sensitive Indicates whether this property holds any secrets that should not be disclosed.<br> If the property is sensitive, then the property value will be masked out with asterisk characters.
-	Sensitive bool `json:"sensitive"`
+	Sensitive bool `json:"sensitive" yaml:"sensitive"`
 
 	// Value Property value. Secret values will be masked out with asterisk characters.
-	Value string `json:"value"`
+	Value string `json:"value" yaml:"value"`
 }
 
 // IdentitySourceIntancesDataList defines model for IdentitySourceIntancesDataList.
 type IdentitySourceIntancesDataList struct {
 	// IdentitySources A list of identity source intances configured for the tenant.
-	IdentitySources []IdentitySourceInstancesData `json:"identitySources"`
+	IdentitySources []IdentitySourceInstancesData `json:"identitySources" yaml:"identitySources"`
 
 	// Total Total number of identity source intances configured for the tenant.
-	Total int32 `json:"total"`
+	Total int32 `json:"total" yaml:"total"`
 }
 
 // JSONArray defines model for JsonArray.
 type JSONArray struct {
-	AsBigDecimal    *float32       `json:"asBigDecimal,omitempty"`
-	AsBigInteger    *int           `json:"asBigInteger,omitempty"`
-	AsBoolean       *bool          `json:"asBoolean,omitempty"`
-	AsByte          *[]byte        `json:"asByte,omitempty"`
-	AsCharacter     *string        `json:"asCharacter,omitempty"`
-	AsDouble        *float64       `json:"asDouble,omitempty"`
-	AsFloat         *float32       `json:"asFloat,omitempty"`
-	AsInt           *int32         `json:"asInt,omitempty"`
-	AsJSONArray     *JSONArray     `json:"asJsonArray,omitempty"`
-	AsJSONNull      *JSONNull      `json:"asJsonNull,omitempty"`
-	AsJSONObject    *JSONObject    `json:"asJsonObject,omitempty"`
-	AsJSONPrimitive *JSONPrimitive `json:"asJsonPrimitive,omitempty"`
-	AsLong          *int64         `json:"asLong,omitempty"`
-	AsNumber        *Number        `json:"asNumber,omitempty"`
-	AsShort         *int32         `json:"asShort,omitempty"`
-	AsString        *string        `json:"asString,omitempty"`
-	Empty           *bool          `json:"empty,omitempty"`
-	JSONArray       *bool          `json:"jsonArray,omitempty"`
-	JSONNull        *bool          `json:"jsonNull,omitempty"`
-	JSONObject      *bool          `json:"jsonObject,omitempty"`
-	JSONPrimitive   *bool          `json:"jsonPrimitive,omitempty"`
+	AsBigDecimal    *float32       `json:"asBigDecimal,omitempty" yaml:"asBigDecimal,omitempty"`
+	AsBigInteger    *int           `json:"asBigInteger,omitempty" yaml:"asBigInteger,omitempty"`
+	AsBoolean       *bool          `json:"asBoolean,omitempty" yaml:"asBoolean,omitempty"`
+	AsByte          *[]byte        `json:"asByte,omitempty" yaml:"asByte,omitempty"`
+	AsCharacter     *string        `json:"asCharacter,omitempty" yaml:"asCharacter,omitempty"`
+	AsDouble        *float64       `json:"asDouble,omitempty" yaml:"asDouble,omitempty"`
+	AsFloat         *float32       `json:"asFloat,omitempty" yaml:"asFloat,omitempty"`
+	AsInt           *int32         `json:"asInt,omitempty" yaml:"asInt,omitempty"`
+	AsJSONArray     *JSONArray     `json:"asJsonArray,omitempty" yaml:"asJsonArray,omitempty"`
+	AsJSONNull      *JSONNull      `json:"asJsonNull,omitempty" yaml:"asJsonNull,omitempty"`
+	AsJSONObject    *JSONObject    `json:"asJsonObject,omitempty" yaml:"asJsonObject,omitempty"`
+	AsJSONPrimitive *JSONPrimitive `json:"asJsonPrimitive,omitempty" yaml:"asJsonPrimitive,omitempty"`
+	AsLong          *int64         `json:"asLong,omitempty" yaml:"asLong,omitempty"`
+	AsNumber        *Number        `json:"asNumber,omitempty" yaml:"asNumber,omitempty"`
+	AsShort         *int32         `json:"asShort,omitempty" yaml:"asShort,omitempty"`
+	AsString        *string        `json:"asString,omitempty" yaml:"asString,omitempty"`
+	Empty           *bool          `json:"empty,omitempty" yaml:"empty,omitempty"`
+	JSONArray       *bool          `json:"jsonArray,omitempty" yaml:"jsonArray,omitempty"`
+	JSONNull        *bool          `json:"jsonNull,omitempty" yaml:"jsonNull,omitempty"`
+	JSONObject      *bool          `json:"jsonObject,omitempty" yaml:"jsonObject,omitempty"`
+	JSONPrimitive   *bool          `json:"jsonPrimitive,omitempty" yaml:"jsonPrimitive,omitempty"`
 }
 
 // JSONNull defines model for JsonNull.
 type JSONNull struct {
-	AsBigDecimal    *float32       `json:"asBigDecimal,omitempty"`
-	AsBigInteger    *int           `json:"asBigInteger,omitempty"`
-	AsBoolean       *bool          `json:"asBoolean,omitempty"`
-	AsByte          *[]byte        `json:"asByte,omitempty"`
-	AsCharacter     *string        `json:"asCharacter,omitempty"`
-	AsDouble        *float64       `json:"asDouble,omitempty"`
-	AsFloat         *float32       `json:"asFloat,omitempty"`
-	AsInt           *int32         `json:"asInt,omitempty"`
-	AsJSONArray     *JSONArray     `json:"asJsonArray,omitempty"`
-	AsJSONNull      *JSONNull      `json:"asJsonNull,omitempty"`
-	AsJSONObject    *JSONObject    `json:"asJsonObject,omitempty"`
-	AsJSONPrimitive *JSONPrimitive `json:"asJsonPrimitive,omitempty"`
-	AsLong          *int64         `json:"asLong,omitempty"`
-	AsNumber        *Number        `json:"asNumber,omitempty"`
-	AsShort         *int32         `json:"asShort,omitempty"`
-	AsString        *string        `json:"asString,omitempty"`
-	JSONArray       *bool          `json:"jsonArray,omitempty"`
-	JSONNull        *bool          `json:"jsonNull,omitempty"`
-	JSONObject      *bool          `json:"jsonObject,omitempty"`
-	JSONPrimitive   *bool          `json:"jsonPrimitive,omitempty"`
+	AsBigDecimal    *float32       `json:"asBigDecimal,omitempty" yaml:"asBigDecimal,omitempty"`
+	AsBigInteger    *int           `json:"asBigInteger,omitempty" yaml:"asBigInteger,omitempty"`
+	AsBoolean       *bool          `json:"asBoolean,omitempty" yaml:"asBoolean,omitempty"`
+	AsByte          *[]byte        `json:"asByte,omitempty" yaml:"asByte,omitempty"`
+	AsCharacter     *string        `json:"asCharacter,omitempty" yaml:"asCharacter,omitempty"`
+	AsDouble        *float64       `json:"asDouble,omitempty" yaml:"asDouble,omitempty"`
+	AsFloat         *float32       `json:"asFloat,omitempty" yaml:"asFloat,omitempty"`
+	AsInt           *int32         `json:"asInt,omitempty" yaml:"asInt,omitempty"`
+	AsJSONArray     *JSONArray     `json:"asJsonArray,omitempty" yaml:"asJsonArray,omitempty"`
+	AsJSONNull      *JSONNull      `json:"asJsonNull,omitempty" yaml:"asJsonNull,omitempty"`
+	AsJSONObject    *JSONObject    `json:"asJsonObject,omitempty" yaml:"asJsonObject,omitempty"`
+	AsJSONPrimitive *JSONPrimitive `json:"asJsonPrimitive,omitempty" yaml:"asJsonPrimitive,omitempty"`
+	AsLong          *int64         `json:"asLong,omitempty" yaml:"asLong,omitempty"`
+	AsNumber        *Number        `json:"asNumber,omitempty" yaml:"asNumber,omitempty"`
+	AsShort         *int32         `json:"asShort,omitempty" yaml:"asShort,omitempty"`
+	AsString        *string        `json:"asString,omitempty" yaml:"asString,omitempty"`
+	JSONArray       *bool          `json:"jsonArray,omitempty" yaml:"jsonArray,omitempty"`
+	JSONNull        *bool          `json:"jsonNull,omitempty" yaml:"jsonNull,omitempty"`
+	JSONObject      *bool          `json:"jsonObject,omitempty" yaml:"jsonObject,omitempty"`
+	JSONPrimitive   *bool          `json:"jsonPrimitive,omitempty" yaml:"jsonPrimitive,omitempty"`
 }
 
 // JSONObject defines model for JsonObject.
 type JSONObject struct {
-	AsBigDecimal    *float32       `json:"asBigDecimal,omitempty"`
-	AsBigInteger    *int           `json:"asBigInteger,omitempty"`
-	AsBoolean       *bool          `json:"asBoolean,omitempty"`
-	AsByte          *[]byte        `json:"asByte,omitempty"`
-	AsCharacter     *string        `json:"asCharacter,omitempty"`
-	AsDouble        *float64       `json:"asDouble,omitempty"`
-	AsFloat         *float32       `json:"asFloat,omitempty"`
-	AsInt           *int32         `json:"asInt,omitempty"`
-	AsJSONArray     *JSONArray     `json:"asJsonArray,omitempty"`
-	AsJSONNull      *JSONNull      `json:"asJsonNull,omitempty"`
-	AsJSONObject    *JSONObject    `json:"asJsonObject,omitempty"`
-	AsJSONPrimitive *JSONPrimitive `json:"asJsonPrimitive,omitempty"`
-	AsLong          *int64         `json:"asLong,omitempty"`
-	AsNumber        *Number        `json:"asNumber,omitempty"`
-	AsShort         *int32         `json:"asShort,omitempty"`
-	AsString        *string        `json:"asString,omitempty"`
-	JSONArray       *bool          `json:"jsonArray,omitempty"`
-	JSONNull        *bool          `json:"jsonNull,omitempty"`
-	JSONObject      *bool          `json:"jsonObject,omitempty"`
-	JSONPrimitive   *bool          `json:"jsonPrimitive,omitempty"`
+	AsBigDecimal    *float32       `json:"asBigDecimal,omitempty" yaml:"asBigDecimal,omitempty"`
+	AsBigInteger    *int           `json:"asBigInteger,omitempty" yaml:"asBigInteger,omitempty"`
+	AsBoolean       *bool          `json:"asBoolean,omitempty" yaml:"asBoolean,omitempty"`
+	AsByte          *[]byte        `json:"asByte,omitempty" yaml:"asByte,omitempty"`
+	AsCharacter     *string        `json:"asCharacter,omitempty" yaml:"asCharacter,omitempty"`
+	AsDouble        *float64       `json:"asDouble,omitempty" yaml:"asDouble,omitempty"`
+	AsFloat         *float32       `json:"asFloat,omitempty" yaml:"asFloat,omitempty"`
+	AsInt           *int32         `json:"asInt,omitempty" yaml:"asInt,omitempty"`
+	AsJSONArray     *JSONArray     `json:"asJsonArray,omitempty" yaml:"asJsonArray,omitempty"`
+	AsJSONNull      *JSONNull      `json:"asJsonNull,omitempty" yaml:"asJsonNull,omitempty"`
+	AsJSONObject    *JSONObject    `json:"asJsonObject,omitempty" yaml:"asJsonObject,omitempty"`
+	AsJSONPrimitive *JSONPrimitive `json:"asJsonPrimitive,omitempty" yaml:"asJsonPrimitive,omitempty"`
+	AsLong          *int64         `json:"asLong,omitempty" yaml:"asLong,omitempty"`
+	AsNumber        *Number        `json:"asNumber,omitempty" yaml:"asNumber,omitempty"`
+	AsShort         *int32         `json:"asShort,omitempty" yaml:"asShort,omitempty"`
+	AsString        *string        `json:"asString,omitempty" yaml:"asString,omitempty"`
+	JSONArray       *bool          `json:"jsonArray,omitempty" yaml:"jsonArray,omitempty"`
+	JSONNull        *bool          `json:"jsonNull,omitempty" yaml:"jsonNull,omitempty"`
+	JSONObject      *bool          `json:"jsonObject,omitempty" yaml:"jsonObject,omitempty"`
+	JSONPrimitive   *bool          `json:"jsonPrimitive,omitempty" yaml:"jsonPrimitive,omitempty"`
 }
 
 // JSONPrimitive defines model for JsonPrimitive.
 type JSONPrimitive struct {
-	AsBigDecimal    *float32       `json:"asBigDecimal,omitempty"`
-	AsBigInteger    *int           `json:"asBigInteger,omitempty"`
-	AsBoolean       *bool          `json:"asBoolean,omitempty"`
-	AsByte          *[]byte        `json:"asByte,omitempty"`
-	AsCharacter     *string        `json:"asCharacter,omitempty"`
-	AsDouble        *float64       `json:"asDouble,omitempty"`
-	AsFloat         *float32       `json:"asFloat,omitempty"`
-	AsInt           *int32         `json:"asInt,omitempty"`
-	AsJSONArray     *JSONArray     `json:"asJsonArray,omitempty"`
-	AsJSONNull      *JSONNull      `json:"asJsonNull,omitempty"`
-	AsJSONObject    *JSONObject    `json:"asJsonObject,omitempty"`
-	AsJSONPrimitive *JSONPrimitive `json:"asJsonPrimitive,omitempty"`
-	AsLong          *int64         `json:"asLong,omitempty"`
-	AsNumber        *Number        `json:"asNumber,omitempty"`
-	AsShort         *int32         `json:"asShort,omitempty"`
-	AsString        *string        `json:"asString,omitempty"`
-	Boolean         *bool          `json:"boolean,omitempty"`
-	JSONArray       *bool          `json:"jsonArray,omitempty"`
-	JSONNull        *bool          `json:"jsonNull,omitempty"`
-	JSONObject      *bool          `json:"jsonObject,omitempty"`
-	JSONPrimitive   *bool          `json:"jsonPrimitive,omitempty"`
-	Number          *bool          `json:"number,omitempty"`
-	String          *bool          `json:"string,omitempty"`
+	AsBigDecimal    *float32       `json:"asBigDecimal,omitempty" yaml:"asBigDecimal,omitempty"`
+	AsBigInteger    *int           `json:"asBigInteger,omitempty" yaml:"asBigInteger,omitempty"`
+	AsBoolean       *bool          `json:"asBoolean,omitempty" yaml:"asBoolean,omitempty"`
+	AsByte          *[]byte        `json:"asByte,omitempty" yaml:"asByte,omitempty"`
+	AsCharacter     *string        `json:"asCharacter,omitempty" yaml:"asCharacter,omitempty"`
+	AsDouble        *float64       `json:"asDouble,omitempty" yaml:"asDouble,omitempty"`
+	AsFloat         *float32       `json:"asFloat,omitempty" yaml:"asFloat,omitempty"`
+	AsInt           *int32         `json:"asInt,omitempty" yaml:"asInt,omitempty"`
+	AsJSONArray     *JSONArray     `json:"asJsonArray,omitempty" yaml:"asJsonArray,omitempty"`
+	AsJSONNull      *JSONNull      `json:"asJsonNull,omitempty" yaml:"asJsonNull,omitempty"`
+	AsJSONObject    *JSONObject    `json:"asJsonObject,omitempty" yaml:"asJsonObject,omitempty"`
+	AsJSONPrimitive *JSONPrimitive `json:"asJsonPrimitive,omitempty" yaml:"asJsonPrimitive,omitempty"`
+	AsLong          *int64         `json:"asLong,omitempty" yaml:"asLong,omitempty"`
+	AsNumber        *Number        `json:"asNumber,omitempty" yaml:"asNumber,omitempty"`
+	AsShort         *int32         `json:"asShort,omitempty" yaml:"asShort,omitempty"`
+	AsString        *string        `json:"asString,omitempty" yaml:"asString,omitempty"`
+	Boolean         *bool          `json:"boolean,omitempty" yaml:"boolean,omitempty"`
+	JSONArray       *bool          `json:"jsonArray,omitempty" yaml:"jsonArray,omitempty"`
+	JSONNull        *bool          `json:"jsonNull,omitempty" yaml:"jsonNull,omitempty"`
+	JSONObject      *bool          `json:"jsonObject,omitempty" yaml:"jsonObject,omitempty"`
+	JSONPrimitive   *bool          `json:"jsonPrimitive,omitempty" yaml:"jsonPrimitive,omitempty"`
+	Number          *bool          `json:"number,omitempty" yaml:"number,omitempty"`
+	String          *bool          `json:"string,omitempty" yaml:"string,omitempty"`
 }
 
 // JspConfigDescriptor defines model for JspConfigDescriptor.
 type JspConfigDescriptor struct {
-	JspPropertyGroups *[]JspPropertyGroupDescriptor `json:"jspPropertyGroups,omitempty"`
-	Taglibs           *[]TaglibDescriptor           `json:"taglibs,omitempty"`
+	JspPropertyGroups *[]JspPropertyGroupDescriptor `json:"jspPropertyGroups,omitempty" yaml:"jspPropertyGroups,omitempty"`
+	Taglibs           *[]TaglibDescriptor           `json:"taglibs,omitempty" yaml:"taglibs,omitempty"`
 }
 
 // JspPropertyGroupDescriptor defines model for JspPropertyGroupDescriptor.
 type JspPropertyGroupDescriptor struct {
-	Buffer                         *string   `json:"buffer,omitempty"`
-	DefaultContentType             *string   `json:"defaultContentType,omitempty"`
-	DeferredSyntaxAllowedAsLiteral *string   `json:"deferredSyntaxAllowedAsLiteral,omitempty"`
-	ElIgnored                      *string   `json:"elIgnored,omitempty"`
-	ErrorOnUndeclaredNamespace     *string   `json:"errorOnUndeclaredNamespace,omitempty"`
-	IncludeCodas                   *[]string `json:"includeCodas,omitempty"`
-	IncludePreludes                *[]string `json:"includePreludes,omitempty"`
-	IsXML                          *string   `json:"isXml,omitempty"`
-	PageEncoding                   *string   `json:"pageEncoding,omitempty"`
-	ScriptingInvalid               *string   `json:"scriptingInvalid,omitempty"`
-	TrimDirectiveWhitespaces       *string   `json:"trimDirectiveWhitespaces,omitempty"`
-	URLPatterns                    *[]string `json:"urlPatterns,omitempty"`
+	Buffer                         *string   `json:"buffer,omitempty" yaml:"buffer,omitempty"`
+	DefaultContentType             *string   `json:"defaultContentType,omitempty" yaml:"defaultContentType,omitempty"`
+	DeferredSyntaxAllowedAsLiteral *string   `json:"deferredSyntaxAllowedAsLiteral,omitempty" yaml:"deferredSyntaxAllowedAsLiteral,omitempty"`
+	ElIgnored                      *string   `json:"elIgnored,omitempty" yaml:"elIgnored,omitempty"`
+	ErrorOnUndeclaredNamespace     *string   `json:"errorOnUndeclaredNamespace,omitempty" yaml:"errorOnUndeclaredNamespace,omitempty"`
+	IncludeCodas                   *[]string `json:"includeCodas,omitempty" yaml:"includeCodas,omitempty"`
+	IncludePreludes                *[]string `json:"includePreludes,omitempty" yaml:"includePreludes,omitempty"`
+	IsXML                          *string   `json:"isXml,omitempty" yaml:"isXml,omitempty"`
+	PageEncoding                   *string   `json:"pageEncoding,omitempty" yaml:"pageEncoding,omitempty"`
+	ScriptingInvalid               *string   `json:"scriptingInvalid,omitempty" yaml:"scriptingInvalid,omitempty"`
+	TrimDirectiveWhitespaces       *string   `json:"trimDirectiveWhitespaces,omitempty" yaml:"trimDirectiveWhitespaces,omitempty"`
+	URLPatterns                    *[]string `json:"urlPatterns,omitempty" yaml:"urlPatterns,omitempty"`
 }
 
 // LargeGroupResponse defines model for LargeGroupResponse.
 type LargeGroupResponse struct {
 	// DisplayName A human-readable name for the group.
-	DisplayName string `json:"displayName"`
+	DisplayName string `json:"displayName" yaml:"displayName"`
 
 	// ExternalID Identifier of the Group resource as defined by the provisioning client.
-	ExternalID *string `json:"externalId,omitempty"`
+	ExternalID *string `json:"externalId,omitempty" yaml:"externalId,omitempty"`
 
 	// ID The unique identifier for the resource as defined by the service. This attribute is read-only and will be sent by the service. Any value that is specified for this attribute in the JSON POST or PUT request payload is ignored.
-	ID   *string `json:"id,omitempty"`
-	Meta *MetaV2 `json:"meta,omitempty"`
+	ID   *string `json:"id,omitempty" yaml:"id,omitempty"`
+	Meta *MetaV2 `json:"meta,omitempty" yaml:"meta,omitempty"`
 
 	// Schemas An array of strings that contain the URIs that indicate the namespaces of the SCIM schemas that define the attributes in the current JSON structure. The schemas "urn:ietf:params:scim:schemas:core:2.0:Group"   and "urn:ietf:params:scim:schemas:extension:ibm:2.0:Group" are returned in the response.
-	Schemas                                     []string                     `json:"schemas"`
-	UrnIetfParamsScimSchemasExtensionIbm20Group *CICCustomLargeGroupResponse `json:"urn:ietf:params:scim:schemas:extension:ibm:2.0:Group,omitempty"`
+	Schemas                                     []string                     `json:"schemas" yaml:"schemas"`
+	UrnIetfParamsScimSchemasExtensionIbm20Group *CICCustomLargeGroupResponse `json:"urn:ietf:params:scim:schemas:extension:ibm:2.0:Group,omitempty" yaml:"urn:ietf:params:scim:schemas:extension:ibm:2.0:Group,omitempty"`
 }
 
 // LastMFA defines model for LastMFA.
 type LastMFA struct {
 	// Type The type of MFA
-	Type string `json:"type"`
+	Type string `json:"type" yaml:"type"`
 
 	// Value The value for this type of MFA
-	Value string `json:"value"`
+	Value string `json:"value" yaml:"value"`
 }
 
 // LinkedAccount defines model for LinkedAccount.
 type LinkedAccount struct {
 	// ExternalID The ID of a user's external account The maximum length, in combination with realm, is 239 characters.
-	ExternalID string `json:"externalId"`
+	ExternalID string `json:"externalId" yaml:"externalId"`
 
 	// Realm The realm name of the user's external account The maximum length, in combination with externalId, is 239 characters.
-	Realm string `json:"realm"`
+	Realm string `json:"realm" yaml:"realm"`
 }
 
 // Locale defines model for Locale.
 type Locale struct {
-	Country                 *string   `json:"country,omitempty"`
-	DisplayCountry          *string   `json:"displayCountry,omitempty"`
-	DisplayLanguage         *string   `json:"displayLanguage,omitempty"`
-	DisplayName             *string   `json:"displayName,omitempty"`
-	DisplayScript           *string   `json:"displayScript,omitempty"`
-	DisplayVariant          *string   `json:"displayVariant,omitempty"`
-	ExtensionKeys           *[]string `json:"extensionKeys,omitempty"`
-	Iso3Country             *string   `json:"iso3Country,omitempty"`
-	Iso3Language            *string   `json:"iso3Language,omitempty"`
-	Language                *string   `json:"language,omitempty"`
-	Script                  *string   `json:"script,omitempty"`
-	UnicodeLocaleAttributes *[]string `json:"unicodeLocaleAttributes,omitempty"`
-	UnicodeLocaleKeys       *[]string `json:"unicodeLocaleKeys,omitempty"`
-	Variant                 *string   `json:"variant,omitempty"`
+	Country                 *string   `json:"country,omitempty" yaml:"country,omitempty"`
+	DisplayCountry          *string   `json:"displayCountry,omitempty" yaml:"displayCountry,omitempty"`
+	DisplayLanguage         *string   `json:"displayLanguage,omitempty" yaml:"displayLanguage,omitempty"`
+	DisplayName             *string   `json:"displayName,omitempty" yaml:"displayName,omitempty"`
+	DisplayScript           *string   `json:"displayScript,omitempty" yaml:"displayScript,omitempty"`
+	DisplayVariant          *string   `json:"displayVariant,omitempty" yaml:"displayVariant,omitempty"`
+	ExtensionKeys           *[]string `json:"extensionKeys,omitempty" yaml:"extensionKeys,omitempty"`
+	Iso3Country             *string   `json:"iso3Country,omitempty" yaml:"iso3Country,omitempty"`
+	Iso3Language            *string   `json:"iso3Language,omitempty" yaml:"iso3Language,omitempty"`
+	Language                *string   `json:"language,omitempty" yaml:"language,omitempty"`
+	Script                  *string   `json:"script,omitempty" yaml:"script,omitempty"`
+	UnicodeLocaleAttributes *[]string `json:"unicodeLocaleAttributes,omitempty" yaml:"unicodeLocaleAttributes,omitempty"`
+	UnicodeLocaleKeys       *[]string `json:"unicodeLocaleKeys,omitempty" yaml:"unicodeLocaleKeys,omitempty"`
+	Variant                 *string   `json:"variant,omitempty" yaml:"variant,omitempty"`
 }
 
 // Manager defines model for Manager.
 type Manager struct {
 	// Ref The URI of the SCIM resource representing the user's manager.  This value is readonly.
-	Ref *string `json:"$ref,omitempty"`
+	Ref *string `json:"$ref,omitempty" yaml:"$ref,omitempty"`
 
 	// DisplayName The display name of the user's manager. This value is readonly.
-	DisplayName *string `json:"displayName,omitempty"`
+	DisplayName *string `json:"displayName,omitempty" yaml:"displayName,omitempty"`
 
 	// Value The "id" of the SCIM resource representing the user's manager.
-	Value *string `json:"value,omitempty"`
+	Value *string `json:"value,omitempty" yaml:"value,omitempty"`
 }
 
 // MetaV2 defines model for MetaV2.
 type MetaV2 struct {
 	// Created A DateTime string that indicates when the resource was created.
-	Created *string `json:"created,omitempty"`
+	Created *string `json:"created,omitempty" yaml:"created,omitempty"`
 
 	// Deactivated A readonly string that indicates why the account is deactivated.  Valid values are "api", "timestamp", and "cleanup".  The value "api" means that the user was deactivated by using an API.  The value "timestamp" means that the user was deactivated by the system because the account expired.  The value "cleanup" means that the user was deactivated by the system during account cleanup processing.
-	Deactivated *MetaV2Deactivated `json:"deactivated,omitempty"`
+	Deactivated *MetaV2Deactivated `json:"deactivated,omitempty" yaml:"deactivated,omitempty"`
 
 	// LastModified A DateTime string that indicates when the resource was last modified.
-	LastModified *string `json:"lastModified,omitempty"`
+	LastModified *string `json:"lastModified,omitempty" yaml:"lastModified,omitempty"`
 
 	// Location The URI of the resource that is being returned.
-	Location *string `json:"location,omitempty"`
+	Location *string `json:"location,omitempty" yaml:"location,omitempty"`
 
 	// ResourceType The field that indicates the type of resource.
-	ResourceType *string `json:"resourceType,omitempty"`
+	ResourceType *string `json:"resourceType,omitempty" yaml:"resourceType,omitempty"`
 }
 
 // MetaV2Deactivated A readonly string that indicates why the account is deactivated.  Valid values are "api", "timestamp", and "cleanup".  The value "api" means that the user was deactivated by using an API.  The value "timestamp" means that the user was deactivated by the system because the account expired.  The value "cleanup" means that the user was deactivated by the system during account cleanup processing.
@@ -1764,37 +1764,37 @@ type MetaV2Deactivated string
 // Name defines model for Name.
 type Name struct {
 	// FamilyName The family name of the user, or the last name in most Western languages. For example, Jensen is the family name from the full name Ms. Barbara J Jensen, PhD. Maximum length is 80 characters.
-	FamilyName *string `json:"familyName,omitempty"`
+	FamilyName *string `json:"familyName,omitempty" yaml:"familyName,omitempty"`
 
 	// Formatted The full name of the user that includes all  user names, middle names, and suffixes, that are formatted for display. This value is returned by the service provider if it is not part of the POST or PUT payloads. If the POST or PUT JSON payload contains the value for this attribute, the value in the payload takes precedence. Maximum length is 240 characters.
-	Formatted *string `json:"formatted,omitempty"`
+	Formatted *string `json:"formatted,omitempty" yaml:"formatted,omitempty"`
 
 	// GivenName The given name of the user, or first name in most Western languages. For example, Barbara is the given name from the full name Ms. Barbara J Jensen, PhD. Maximum length is 80 characters.
-	GivenName *string `json:"givenName,omitempty"`
+	GivenName *string `json:"givenName,omitempty" yaml:"givenName,omitempty"`
 
 	// MiddleName The middle name(s) of the user. Maximum length is 80 characters.
-	MiddleName *string `json:"middleName,omitempty"`
+	MiddleName *string `json:"middleName,omitempty" yaml:"middleName,omitempty"`
 }
 
 // NotFound0 defines model for NotFound_0.
 type NotFound0 struct {
 	// MessageDescription A requester locale-specific descriptive message.
-	MessageDescription string `json:"messageDescription"`
+	MessageDescription string `json:"messageDescription" yaml:"messageDescription"`
 
 	// MessageID The message key identifier.
-	MessageID string `json:"messageId"`
+	MessageID string `json:"messageId" yaml:"messageId"`
 }
 
 // Notifications defines model for Notifications.
 type Notifications struct {
 	// NotifyManager Indicates whether the notification should be sent to the user's manager (if one is set) when a user's password is set or modified. If the attribute is not provided, the behavior defaults to false. This attribute does not apply if the notifyType attribute is set to NONE.
-	NotifyManager *bool `json:"notifyManager,omitempty"`
+	NotifyManager *bool `json:"notifyManager,omitempty" yaml:"notifyManager,omitempty"`
 
 	// NotifyPassword Indicates whether the user's password is included in the notification that is sent  to the user. If the attribute is not provided, the behavior defaults to true. This attribute does not apply if the notifyType attribute is set to NONE.
-	NotifyPassword *bool `json:"notifyPassword,omitempty"`
+	NotifyPassword *bool `json:"notifyPassword,omitempty" yaml:"notifyPassword,omitempty"`
 
 	// NotifyType The value that indicates the type of notification that is sent to the user. If not provided, the default value is EMAIL.
-	NotifyType *NotificationsNotifyType `json:"notifyType,omitempty"`
+	NotifyType *NotificationsNotifyType `json:"notifyType,omitempty" yaml:"notifyType,omitempty"`
 }
 
 // NotificationsNotifyType The value that indicates the type of notification that is sent to the user. If not provided, the default value is EMAIL.
@@ -1805,39 +1805,39 @@ type Number = map[string]interface{}
 
 // OperationStatusSummary defines model for OperationStatusSummary.
 type OperationStatusSummary struct {
-	Errors   *[]string            `json:"errors,omitempty"`
-	Messages *map[string][]string `json:"messages,omitempty"`
+	Errors   *[]string            `json:"errors,omitempty" yaml:"errors,omitempty"`
+	Messages *map[string][]string `json:"messages,omitempty" yaml:"messages,omitempty"`
 }
 
 // PaginatedAttribute0 defines model for PaginatedAttribute_0.
 type PaginatedAttribute0 struct {
 	// Attributes list of attributes
-	Attributes []Attribute0 `json:"attributes"`
-	Count      int          `json:"count"`
-	Limit      int          `json:"limit"`
-	Page       int          `json:"page"`
-	Total      int          `json:"total"`
+	Attributes []Attribute0 `json:"attributes" yaml:"attributes"`
+	Count      int          `json:"count" yaml:"count"`
+	Limit      int          `json:"limit" yaml:"limit"`
+	Page       int          `json:"page" yaml:"page"`
+	Total      int          `json:"total" yaml:"total"`
 }
 
 // PatchBody defines model for PatchBody.
 type PatchBody struct {
 	// Operations An array of operation objects to be performed.  Operation objects must have exactly one "op" member, whose value indicates the operation to perform. Its value must be one of "add", "remove", or "replace". Values are errors.
-	Operations []PatchOperation0 `json:"Operations"`
+	Operations []PatchOperation0 `json:"Operations" yaml:"Operations"`
 
 	// Schemas The body of each SCIM PATCH request must contain the "schemas" attribute with the URI value: "urn:ietf:params:scim:api:messages:2.0:PatchOp".
-	Schemas []string `json:"schemas"`
+	Schemas []string `json:"schemas" yaml:"schemas"`
 }
 
 // PatchOperation defines model for PatchOperation.
 type PatchOperation struct {
 	// Op The patch operation to be executed
-	Op PatchOperationOp `json:"op"`
+	Op PatchOperationOp `json:"op" yaml:"op"`
 
 	// Path The attribute id for the patch operation
-	Path string `json:"path"`
+	Path string `json:"path" yaml:"path"`
 
 	// Value The values to update for the resource.<br><br>For global attributes, the following values can be updated using the PATCH API: tags, value, credNameOverrides, function. <br><br>For custom attributes, the following values can be updated using the PATCH API: name, description, sourceType, datatype, tags, value, credName, credNameOverrides, function
-	Value *map[string]interface{} `json:"value,omitempty"`
+	Value *map[string]interface{} `json:"value,omitempty" yaml:"value,omitempty"`
 }
 
 // PatchOperationOp The patch operation to be executed
@@ -1846,34 +1846,34 @@ type PatchOperationOp string
 // PatchOperationResponse defines model for PatchOperationResponse.
 type PatchOperationResponse struct {
 	// MessageDescription The error message describing the overall status of the patch operation
-	MessageDescription string `json:"messageDescription"`
+	MessageDescription string `json:"messageDescription" yaml:"messageDescription"`
 
 	// MessageID The error ID describing the overall status of the patch operation
-	MessageID string `json:"messageId"`
+	MessageID string `json:"messageId" yaml:"messageId"`
 
 	// Results The list of execution results for the patch operations requested
-	Results []PatchOperationResult `json:"results"`
+	Results []PatchOperationResult `json:"results" yaml:"results"`
 }
 
 // PatchOperationResult defines model for PatchOperationResult.
 type PatchOperationResult struct {
 	// Error The error message describing any failures or errors that occurred
-	Error *string `json:"error,omitempty"`
+	Error *string `json:"error,omitempty" yaml:"error,omitempty"`
 
 	// ErrorID The error ID describing any failures or errors that occurred
-	ErrorID *string `json:"errorID,omitempty"`
+	ErrorID *string `json:"errorID,omitempty" yaml:"errorID,omitempty"`
 
 	// Op The patch operation to be executed
-	Op PatchOperationResultOp `json:"op"`
+	Op PatchOperationResultOp `json:"op" yaml:"op"`
 
 	// Path The attribute id for the patch operation
-	Path string `json:"path"`
+	Path string `json:"path" yaml:"path"`
 
 	// Result The result of the operation
-	Result PatchOperationResultResult `json:"result"`
+	Result PatchOperationResultResult `json:"result" yaml:"result"`
 
 	// Value The values to update for the resource
-	Value *string `json:"value,omitempty"`
+	Value *string `json:"value,omitempty" yaml:"value,omitempty"`
 }
 
 // PatchOperationResultOp The patch operation to be executed
@@ -1885,13 +1885,13 @@ type PatchOperationResultResult string
 // PatchOperation0 defines model for PatchOperation_0.
 type PatchOperation0 struct {
 	// Op The operation to be performed.
-	Op PatchOperation0Op `json:"op"`
+	Op PatchOperation0Op `json:"op" yaml:"op"`
 
 	// Path The string that contains an attribute path that describes the target of the operation.The "path" attribute is required for all operations.Examples of valid "path" specification formats include: <br> <br>     "path":"title" <br>     "path":"name.formatted" <br>     "path":"phoneNumbers[type eq \"work\"]" <br>     "path":"emails[type eq \"work\"].value" <br> <br>As shown, "section filters" (ex: [type eq \"work\"]) can be used to allow selection of specific values of multi-valued attributes. The supported filter operators include: <br> <br>     eq: The attribute and operation values must be identical for a match. <br>     ne: Matches if the attribute and operation values are not identical. <br>     co: The entire operation value must be a substring of the attribute value. <br>     sw: The entire operation value must be a substring of the attribute value, matching from the beginning. <br>     ew: The entire operation value must be a substring of the attribute value, matching from the end. <br>     pr: If the attribute value is present, there is a match. <br>     gt: If the attribute value is greater than the operation value, there is a match. <br>     ge: If the attribute value is greater than or equal to the operation value, there is a match. <br>     lt: If the attribute value is less than the operator value, there is a match. <br>     le: If the attribute value is less than or equal to the operator value, there is a match. <br>Only a single, simple filter can be specified.
-	Path string `json:"path"`
+	Path string `json:"path" yaml:"path"`
 
 	// Value The attribute content used for the operation. The "value" attribute is required for the "add" and "replace" operations. The "value" attribute is allowed with "remove" operations only when the "path" identifies  a single object (specified by a selection filter), and the attribute path identifies an array attribute.  Currently, this usage is for removing values from a custom attribute's values array only. <br> <br> The following example shows a patch operation removing a single value from "customAttributeNameA"  and multiple values from "customAttributeNameB": <br>  <table> <tr><td> {  "schemas":["urn:ietf:params:scim:api:messages:2.0:PatchOp"], "Operations":  [    {      "op":"remove",      "path":"urn:ietf:params:scim:schemas:extension:ibm:2.0:User:customAttributes[name eq "customAttributeNameA"].values",      "value":"customAttributeValueToRemoveA1"    },    {      "op":"remove",      "path":"urn:ietf:params:scim:schemas:extension:ibm:2.0:User:customAttributes[name eq "customAttributeNameB"].values",      "value":          [             "customAttributeValueToRemoveB1",             "customAttributeValueToRemoveB2"          ]    }  ]}</td></tr></table>
-	Value *interface{} `json:"value,omitempty"`
+	Value *interface{} `json:"value,omitempty" yaml:"value,omitempty"`
 }
 
 // PatchOperation0Op The operation to be performed.
@@ -1900,32 +1900,32 @@ type PatchOperation0Op string
 // PatchSingleAttributeReqModel defines model for PatchSingleAttributeReqModel.
 type PatchSingleAttributeReqModel struct {
 	// CredName The name of the attribute in the login session credentials. Maximum length is 2048 characters
-	CredName *string `json:"credName,omitempty"`
+	CredName *string `json:"credName,omitempty" yaml:"credName,omitempty"`
 
 	// CredNameOverrides Realm specific name of the attribute in the login session credentials. This property is specified in the form of key-value pairs where the key is the name of the realm  and the value is the name of the attribute used to override the 'credName' property. Maximum length is 2048 characters
-	CredNameOverrides *map[string]string `json:"credNameOverrides,omitempty"`
+	CredNameOverrides *map[string]string `json:"credNameOverrides,omitempty" yaml:"credNameOverrides,omitempty"`
 
 	// CustomProperties Identifies the attribute custom properties that is attached to this attribute. These custom properties can be any user-defined key-value pairs that help identify or categorize the attribute. The maximum number of custom properties that can be defined is 25
-	CustomProperties *map[string]string `json:"customProperties,omitempty"`
+	CustomProperties *map[string]string `json:"customProperties,omitempty" yaml:"customProperties,omitempty"`
 
 	// Datatype The type of derived data that is expected for the attribute. Defaults to string
-	Datatype *PatchSingleAttributeReqModelDatatype `json:"datatype,omitempty"`
+	Datatype *PatchSingleAttributeReqModelDatatype `json:"datatype,omitempty" yaml:"datatype,omitempty"`
 
 	// Description The description of the attribute. Maximum length is 2048 characters
-	Description *string   `json:"description,omitempty"`
-	Function    *Function `json:"function,omitempty"`
+	Description *string   `json:"description,omitempty" yaml:"description,omitempty"`
+	Function    *Function `json:"function,omitempty" yaml:"function,omitempty"`
 
 	// Name The human-readable name of the attribute. Maximum length is 2048 characters
-	Name *string `json:"name,omitempty"`
+	Name *string `json:"name,omitempty" yaml:"name,omitempty"`
 
 	// SourceType The type of the attribute source from which the attribute value is derived
-	SourceType *PatchSingleAttributeReqModelSourceType `json:"sourceType,omitempty"`
+	SourceType *PatchSingleAttributeReqModelSourceType `json:"sourceType,omitempty" yaml:"sourceType,omitempty"`
 
 	// Tags The tags used to categorize attributes. Maximum number of tags is 25
-	Tags *[]string `json:"tags,omitempty"`
+	Tags *[]string `json:"tags,omitempty" yaml:"tags,omitempty"`
 
 	// Value The default value of the attribute. This value also refers to the fixed value for sourceType="static". Maximum length is 2048 characters
-	Value *string `json:"value,omitempty"`
+	Value *string `json:"value,omitempty" yaml:"value,omitempty"`
 }
 
 // PatchSingleAttributeReqModelDatatype The type of derived data that is expected for the attribute. Defaults to string
@@ -1937,10 +1937,10 @@ type PatchSingleAttributeReqModelSourceType string
 // PhoneNumber defines model for PhoneNumber.
 type PhoneNumber struct {
 	// Type A label that indicates the attribute's function; for example, "work" or "home".
-	Type PhoneNumberType `json:"type"`
+	Type PhoneNumberType `json:"type" yaml:"type"`
 
 	// Value A list of phone numbers that are associated with the user. The value is be canonicalized by the service provider according to format in RFC3966, for example, "tel:+1-201-555-0123". Canonical type values are work, home, mobile, fax, and pager. Maximum length is 32 characters.
-	Value string `json:"value"`
+	Value string `json:"value" yaml:"value"`
 }
 
 // PhoneNumberType A label that indicates the attribute's function; for example, "work" or "home".
@@ -1948,52 +1948,52 @@ type PhoneNumberType string
 
 // PlanIdentifierTuple defines model for PlanIdentifierTuple.
 type PlanIdentifierTuple struct {
-	PlanID  *string `json:"planId,omitempty"`
-	Set     *bool   `json:"set,omitempty"`
-	Version *int32  `json:"version,omitempty"`
+	PlanID  *string `json:"planId,omitempty" yaml:"planId,omitempty"`
+	Set     *bool   `json:"set,omitempty" yaml:"set,omitempty"`
+	Version *int32  `json:"version,omitempty" yaml:"version,omitempty"`
 }
 
 // PlanPackage defines model for PlanPackage.
 type PlanPackage struct {
-	AffectedPlans             *map[string][]PlanIdentifierTuple  `json:"affectedPlans,omitempty"`
-	APIDescription            *string                            `json:"apiDescription,omitempty"`
-	APIEndpoint               *string                            `json:"apiEndpoint,omitempty"`
-	APIID                     *string                            `json:"apiId,omitempty"`
-	APIName                   *string                            `json:"apiName,omitempty"`
-	APIVersion                *string                            `json:"apiVersion,omitempty"`
-	CreatedAt                 *time.Time                         `json:"createdAt,omitempty"`
-	CreatedBy                 *string                            `json:"createdBy,omitempty"`
-	Dependents                *map[string][]PlanPackage          `json:"dependents,omitempty"`
-	DeploymentPackageID       *string                            `json:"deploymentPackageId,omitempty"`
-	DeploymentState           *PlanPackageDeploymentState        `json:"deploymentState,omitempty"`
-	DeploymentVisibility      *DeploymentVisibility              `json:"deploymentVisibility,omitempty"`
-	Document                  *ConfigDataObject                  `json:"document,omitempty"`
-	DocumentID                *string                            `json:"documentId,omitempty"`
-	DocumentType              *PlanPackageDocumentType           `json:"documentType,omitempty"`
-	DocumentVersion           *int32                             `json:"documentVersion,omitempty"`
-	EnvID                     *string                            `json:"envId,omitempty"`
-	ID                        *string                            `json:"id,omitempty"`
-	OperationStatusSummary    *OperationStatusSummary            `json:"operationStatusSummary,omitempty"`
-	OrgID                     *string                            `json:"orgId,omitempty"`
-	PendingDeploymentState    *PlanPackagePendingDeploymentState `json:"pendingDeploymentState,omitempty"`
-	PlanDescription           *string                            `json:"planDescription,omitempty"`
-	PlanDisplayName           *string                            `json:"planDisplayName,omitempty"`
-	PlanID                    *string                            `json:"planId,omitempty"`
-	PlanName                  *string                            `json:"planName,omitempty"`
-	PlanRegistrations         *int64                             `json:"planRegistrations,omitempty"`
-	PlanRequiresApproval      *bool                              `json:"planRequiresApproval,omitempty"`
-	PlanVersion               *int32                             `json:"planVersion,omitempty"`
-	ProductName               *string                            `json:"productName,omitempty"`
-	ProductVersion            *string                            `json:"productVersion,omitempty"`
-	ProductVisibilityMetadata *ProductPackageUpdateJSONBody      `json:"productVisibilityMetadata,omitempty"`
-	SupersededBy              *PlanIdentifierTuple               `json:"supersededBy,omitempty"`
-	Supersedes                *PlanIdentifierTuple               `json:"supersedes,omitempty"`
-	Task                      *TaskListGetResponse               `json:"task,omitempty"`
-	TaskID                    *string                            `json:"taskId,omitempty"`
-	UpdatedAt                 *time.Time                         `json:"updatedAt,omitempty"`
-	UpdatedBy                 *string                            `json:"updatedBy,omitempty"`
-	URL                       *string                            `json:"url,omitempty"`
-	VendorExtensions          *map[string]map[string]interface{} `json:"vendorExtensions,omitempty"`
+	AffectedPlans             *map[string][]PlanIdentifierTuple  `json:"affectedPlans,omitempty" yaml:"affectedPlans,omitempty"`
+	APIDescription            *string                            `json:"apiDescription,omitempty" yaml:"apiDescription,omitempty"`
+	APIEndpoint               *string                            `json:"apiEndpoint,omitempty" yaml:"apiEndpoint,omitempty"`
+	APIID                     *string                            `json:"apiId,omitempty" yaml:"apiId,omitempty"`
+	APIName                   *string                            `json:"apiName,omitempty" yaml:"apiName,omitempty"`
+	APIVersion                *string                            `json:"apiVersion,omitempty" yaml:"apiVersion,omitempty"`
+	CreatedAt                 *time.Time                         `json:"createdAt,omitempty" yaml:"createdAt,omitempty"`
+	CreatedBy                 *string                            `json:"createdBy,omitempty" yaml:"createdBy,omitempty"`
+	Dependents                *map[string][]PlanPackage          `json:"dependents,omitempty" yaml:"dependents,omitempty"`
+	DeploymentPackageID       *string                            `json:"deploymentPackageId,omitempty" yaml:"deploymentPackageId,omitempty"`
+	DeploymentState           *PlanPackageDeploymentState        `json:"deploymentState,omitempty" yaml:"deploymentState,omitempty"`
+	DeploymentVisibility      *DeploymentVisibility              `json:"deploymentVisibility,omitempty" yaml:"deploymentVisibility,omitempty"`
+	Document                  *ConfigDataObject                  `json:"document,omitempty" yaml:"document,omitempty"`
+	DocumentID                *string                            `json:"documentId,omitempty" yaml:"documentId,omitempty"`
+	DocumentType              *PlanPackageDocumentType           `json:"documentType,omitempty" yaml:"documentType,omitempty"`
+	DocumentVersion           *int32                             `json:"documentVersion,omitempty" yaml:"documentVersion,omitempty"`
+	EnvID                     *string                            `json:"envId,omitempty" yaml:"envId,omitempty"`
+	ID                        *string                            `json:"id,omitempty" yaml:"id,omitempty"`
+	OperationStatusSummary    *OperationStatusSummary            `json:"operationStatusSummary,omitempty" yaml:"operationStatusSummary,omitempty"`
+	OrgID                     *string                            `json:"orgId,omitempty" yaml:"orgId,omitempty"`
+	PendingDeploymentState    *PlanPackagePendingDeploymentState `json:"pendingDeploymentState,omitempty" yaml:"pendingDeploymentState,omitempty"`
+	PlanDescription           *string                            `json:"planDescription,omitempty" yaml:"planDescription,omitempty"`
+	PlanDisplayName           *string                            `json:"planDisplayName,omitempty" yaml:"planDisplayName,omitempty"`
+	PlanID                    *string                            `json:"planId,omitempty" yaml:"planId,omitempty"`
+	PlanName                  *string                            `json:"planName,omitempty" yaml:"planName,omitempty"`
+	PlanRegistrations         *int64                             `json:"planRegistrations,omitempty" yaml:"planRegistrations,omitempty"`
+	PlanRequiresApproval      *bool                              `json:"planRequiresApproval,omitempty" yaml:"planRequiresApproval,omitempty"`
+	PlanVersion               *int32                             `json:"planVersion,omitempty" yaml:"planVersion,omitempty"`
+	ProductName               *string                            `json:"productName,omitempty" yaml:"productName,omitempty"`
+	ProductVersion            *string                            `json:"productVersion,omitempty" yaml:"productVersion,omitempty"`
+	ProductVisibilityMetadata *ProductPackageUpdateJSONBody      `json:"productVisibilityMetadata,omitempty" yaml:"productVisibilityMetadata,omitempty"`
+	SupersededBy              *PlanIdentifierTuple               `json:"supersededBy,omitempty" yaml:"supersededBy,omitempty"`
+	Supersedes                *PlanIdentifierTuple               `json:"supersedes,omitempty" yaml:"supersedes,omitempty"`
+	Task                      *TaskListGetResponse               `json:"task,omitempty" yaml:"task,omitempty"`
+	TaskID                    *string                            `json:"taskId,omitempty" yaml:"taskId,omitempty"`
+	UpdatedAt                 *time.Time                         `json:"updatedAt,omitempty" yaml:"updatedAt,omitempty"`
+	UpdatedBy                 *string                            `json:"updatedBy,omitempty" yaml:"updatedBy,omitempty"`
+	URL                       *string                            `json:"url,omitempty" yaml:"url,omitempty"`
+	VendorExtensions          *map[string]map[string]interface{} `json:"vendorExtensions,omitempty" yaml:"vendorExtensions,omitempty"`
 }
 
 // PlanPackageDeploymentState defines model for PlanPackage.DeploymentState.
@@ -2008,10 +2008,10 @@ type PlanPackagePendingDeploymentState string
 // PostEval defines model for PostEval.
 type PostEval struct {
 	// Custom A custom rule for transforming. This will tranform the attribute mapping. Only one of 'id' or 'custom' can be set on an attribute mapping.
-	Custom string `json:"custom"`
+	Custom string `json:"custom" yaml:"custom"`
 
 	// ID A valid attribute function. This will tranform the attribute mapping. Only one of 'id' or 'custom' can be set on an attribute mapping.
-	ID string `json:"id"`
+	ID string `json:"id" yaml:"id"`
 }
 
 // PrintWriter defines model for PrintWriter.
@@ -2019,100 +2019,100 @@ type PrintWriter = map[string]interface{}
 
 // ProductPackageUpdateJSONBody defines model for ProductPackageUpdateJsonBody.
 type ProductPackageUpdateJSONBody struct {
-	Visibility *DeploymentVisibility `json:"visibility,omitempty"`
+	Visibility *DeploymentVisibility `json:"visibility,omitempty" yaml:"visibility,omitempty"`
 }
 
 // ProfileAttribute defines model for ProfileAttribute.
 type ProfileAttribute struct {
 	// Name The name of the attribute in the application profile.
-	Name string `json:"name"`
+	Name string `json:"name" yaml:"name"`
 }
 
 // ResultSet defines model for ResultSet.
 type ResultSet struct {
-	AfterLast      *bool              `json:"afterLast,omitempty"`
-	BeforeFirst    *bool              `json:"beforeFirst,omitempty"`
-	Closed         *bool              `json:"closed,omitempty"`
-	Concurrency    *int32             `json:"concurrency,omitempty"`
-	CursorName     *string            `json:"cursorName,omitempty"`
-	FetchDirection *int32             `json:"fetchDirection,omitempty"`
-	FetchSize      *int32             `json:"fetchSize,omitempty"`
-	First          *bool              `json:"first,omitempty"`
-	Holdability    *int32             `json:"holdability,omitempty"`
-	Last           *bool              `json:"last,omitempty"`
-	MetaData       *ResultSetMetaData `json:"metaData,omitempty"`
-	Row            *int32             `json:"row,omitempty"`
-	Statement      *Statement         `json:"statement,omitempty"`
-	Type           *int32             `json:"type,omitempty"`
-	Warnings       *SQLWarning        `json:"warnings,omitempty"`
+	AfterLast      *bool              `json:"afterLast,omitempty" yaml:"afterLast,omitempty"`
+	BeforeFirst    *bool              `json:"beforeFirst,omitempty" yaml:"beforeFirst,omitempty"`
+	Closed         *bool              `json:"closed,omitempty" yaml:"closed,omitempty"`
+	Concurrency    *int32             `json:"concurrency,omitempty" yaml:"concurrency,omitempty"`
+	CursorName     *string            `json:"cursorName,omitempty" yaml:"cursorName,omitempty"`
+	FetchDirection *int32             `json:"fetchDirection,omitempty" yaml:"fetchDirection,omitempty"`
+	FetchSize      *int32             `json:"fetchSize,omitempty" yaml:"fetchSize,omitempty"`
+	First          *bool              `json:"first,omitempty" yaml:"first,omitempty"`
+	Holdability    *int32             `json:"holdability,omitempty" yaml:"holdability,omitempty"`
+	Last           *bool              `json:"last,omitempty" yaml:"last,omitempty"`
+	MetaData       *ResultSetMetaData `json:"metaData,omitempty" yaml:"metaData,omitempty"`
+	Row            *int32             `json:"row,omitempty" yaml:"row,omitempty"`
+	Statement      *Statement         `json:"statement,omitempty" yaml:"statement,omitempty"`
+	Type           *int32             `json:"type,omitempty" yaml:"type,omitempty"`
+	Warnings       *SQLWarning        `json:"warnings,omitempty" yaml:"warnings,omitempty"`
 }
 
 // ResultSetMetaData defines model for ResultSetMetaData.
 type ResultSetMetaData struct {
-	ColumnCount *int32 `json:"columnCount,omitempty"`
+	ColumnCount *int32 `json:"columnCount,omitempty" yaml:"columnCount,omitempty"`
 }
 
 // SQLException defines model for SQLException.
 type SQLException struct {
-	Cause            *Throwable           `json:"cause,omitempty"`
-	ErrorCode        *int32               `json:"errorCode,omitempty"`
-	LocalizedMessage *string              `json:"localizedMessage,omitempty"`
-	Message          *string              `json:"message,omitempty"`
-	NextException    *SQLException        `json:"nextException,omitempty"`
-	Sqlstate         *string              `json:"sqlstate,omitempty"`
-	StackTrace       *[]StackTraceElement `json:"stackTrace,omitempty"`
-	Suppressed       *[]Throwable         `json:"suppressed,omitempty"`
+	Cause            *Throwable           `json:"cause,omitempty" yaml:"cause,omitempty"`
+	ErrorCode        *int32               `json:"errorCode,omitempty" yaml:"errorCode,omitempty"`
+	LocalizedMessage *string              `json:"localizedMessage,omitempty" yaml:"localizedMessage,omitempty"`
+	Message          *string              `json:"message,omitempty" yaml:"message,omitempty"`
+	NextException    *SQLException        `json:"nextException,omitempty" yaml:"nextException,omitempty"`
+	Sqlstate         *string              `json:"sqlstate,omitempty" yaml:"sqlstate,omitempty"`
+	StackTrace       *[]StackTraceElement `json:"stackTrace,omitempty" yaml:"stackTrace,omitempty"`
+	Suppressed       *[]Throwable         `json:"suppressed,omitempty" yaml:"suppressed,omitempty"`
 }
 
 // SQLWarning defines model for SQLWarning.
 type SQLWarning struct {
-	Cause            *Throwable           `json:"cause,omitempty"`
-	ErrorCode        *int32               `json:"errorCode,omitempty"`
-	LocalizedMessage *string              `json:"localizedMessage,omitempty"`
-	Message          *string              `json:"message,omitempty"`
-	NextException    *SQLException        `json:"nextException,omitempty"`
-	NextWarning      *SQLWarning          `json:"nextWarning,omitempty"`
-	Sqlstate         *string              `json:"sqlstate,omitempty"`
-	StackTrace       *[]StackTraceElement `json:"stackTrace,omitempty"`
-	Suppressed       *[]Throwable         `json:"suppressed,omitempty"`
+	Cause            *Throwable           `json:"cause,omitempty" yaml:"cause,omitempty"`
+	ErrorCode        *int32               `json:"errorCode,omitempty" yaml:"errorCode,omitempty"`
+	LocalizedMessage *string              `json:"localizedMessage,omitempty" yaml:"localizedMessage,omitempty"`
+	Message          *string              `json:"message,omitempty" yaml:"message,omitempty"`
+	NextException    *SQLException        `json:"nextException,omitempty" yaml:"nextException,omitempty"`
+	NextWarning      *SQLWarning          `json:"nextWarning,omitempty" yaml:"nextWarning,omitempty"`
+	Sqlstate         *string              `json:"sqlstate,omitempty" yaml:"sqlstate,omitempty"`
+	StackTrace       *[]StackTraceElement `json:"stackTrace,omitempty" yaml:"stackTrace,omitempty"`
+	Suppressed       *[]Throwable         `json:"suppressed,omitempty" yaml:"suppressed,omitempty"`
 }
 
 // SchemaAttribute defines model for SchemaAttribute.
 type SchemaAttribute struct {
 	// AttributeName The attribute name in the schema that is associated with the attribute source
-	AttributeName string `json:"attributeName"`
+	AttributeName string `json:"attributeName" yaml:"attributeName"`
 
 	// CustomAttribute The flag that indicates whether this is a custom attribute
-	CustomAttribute bool `json:"customAttribute"`
+	CustomAttribute bool `json:"customAttribute" yaml:"customAttribute"`
 
 	// Name The unique name for the attribute in the Cloud Directory schema. For custom schema attributes, the names are predefined and named customAttribute1 through customAttribute150
-	Name string `json:"name"`
+	Name string `json:"name" yaml:"name"`
 
 	// ScimName The SCIM name that is associated with the schema attribute
-	ScimName string `json:"scimName"`
+	ScimName string `json:"scimName" yaml:"scimName"`
 }
 
 // ServletContext defines model for ServletContext.
 type ServletContext struct {
-	AttributeNames                *EnumerationString                             `json:"attributeNames,omitempty"`
-	ClassLoader                   *ClassLoader                                   `json:"classLoader,omitempty"`
-	ContextPath                   *string                                        `json:"contextPath,omitempty"`
-	DefaultSessionTrackingModes   *[]ServletContextDefaultSessionTrackingModes   `json:"defaultSessionTrackingModes,omitempty"`
-	EffectiveMajorVersion         *int32                                         `json:"effectiveMajorVersion,omitempty"`
-	EffectiveMinorVersion         *int32                                         `json:"effectiveMinorVersion,omitempty"`
-	EffectiveSessionTrackingModes *[]ServletContextEffectiveSessionTrackingModes `json:"effectiveSessionTrackingModes,omitempty"`
-	FilterRegistrations           *map[string]FilterRegistration                 `json:"filterRegistrations,omitempty"`
-	InitParameterNames            *EnumerationString                             `json:"initParameterNames,omitempty"`
-	JspConfigDescriptor           *JspConfigDescriptor                           `json:"jspConfigDescriptor,omitempty"`
-	MajorVersion                  *int32                                         `json:"majorVersion,omitempty"`
-	MinorVersion                  *int32                                         `json:"minorVersion,omitempty"`
-	ServerInfo                    *string                                        `json:"serverInfo,omitempty"`
-	ServletContextName            *string                                        `json:"servletContextName,omitempty"`
-	ServletNames                  *EnumerationString                             `json:"servletNames,omitempty"`
-	ServletRegistrations          *map[string]ServletRegistration                `json:"servletRegistrations,omitempty"`
-	Servlets                      *EnumerationServlet                            `json:"servlets,omitempty"`
-	SessionCookieConfig           *SessionCookieConfig                           `json:"sessionCookieConfig,omitempty"`
-	VirtualServerName             *string                                        `json:"virtualServerName,omitempty"`
+	AttributeNames                *EnumerationString                             `json:"attributeNames,omitempty" yaml:"attributeNames,omitempty"`
+	ClassLoader                   *ClassLoader                                   `json:"classLoader,omitempty" yaml:"classLoader,omitempty"`
+	ContextPath                   *string                                        `json:"contextPath,omitempty" yaml:"contextPath,omitempty"`
+	DefaultSessionTrackingModes   *[]ServletContextDefaultSessionTrackingModes   `json:"defaultSessionTrackingModes,omitempty" yaml:"defaultSessionTrackingModes,omitempty"`
+	EffectiveMajorVersion         *int32                                         `json:"effectiveMajorVersion,omitempty" yaml:"effectiveMajorVersion,omitempty"`
+	EffectiveMinorVersion         *int32                                         `json:"effectiveMinorVersion,omitempty" yaml:"effectiveMinorVersion,omitempty"`
+	EffectiveSessionTrackingModes *[]ServletContextEffectiveSessionTrackingModes `json:"effectiveSessionTrackingModes,omitempty" yaml:"effectiveSessionTrackingModes,omitempty"`
+	FilterRegistrations           *map[string]FilterRegistration                 `json:"filterRegistrations,omitempty" yaml:"filterRegistrations,omitempty"`
+	InitParameterNames            *EnumerationString                             `json:"initParameterNames,omitempty" yaml:"initParameterNames,omitempty"`
+	JspConfigDescriptor           *JspConfigDescriptor                           `json:"jspConfigDescriptor,omitempty" yaml:"jspConfigDescriptor,omitempty"`
+	MajorVersion                  *int32                                         `json:"majorVersion,omitempty" yaml:"majorVersion,omitempty"`
+	MinorVersion                  *int32                                         `json:"minorVersion,omitempty" yaml:"minorVersion,omitempty"`
+	ServerInfo                    *string                                        `json:"serverInfo,omitempty" yaml:"serverInfo,omitempty"`
+	ServletContextName            *string                                        `json:"servletContextName,omitempty" yaml:"servletContextName,omitempty"`
+	ServletNames                  *EnumerationString                             `json:"servletNames,omitempty" yaml:"servletNames,omitempty"`
+	ServletRegistrations          *map[string]ServletRegistration                `json:"servletRegistrations,omitempty" yaml:"servletRegistrations,omitempty"`
+	Servlets                      *EnumerationServlet                            `json:"servlets,omitempty" yaml:"servlets,omitempty"`
+	SessionCookieConfig           *SessionCookieConfig                           `json:"sessionCookieConfig,omitempty" yaml:"sessionCookieConfig,omitempty"`
+	VirtualServerName             *string                                        `json:"virtualServerName,omitempty" yaml:"virtualServerName,omitempty"`
 }
 
 // ServletContextDefaultSessionTrackingModes defines model for ServletContext.DefaultSessionTrackingModes.
@@ -2123,53 +2123,53 @@ type ServletContextEffectiveSessionTrackingModes string
 
 // ServletInputStream defines model for ServletInputStream.
 type ServletInputStream struct {
-	Finished *bool `json:"finished,omitempty"`
-	Ready    *bool `json:"ready,omitempty"`
+	Finished *bool `json:"finished,omitempty" yaml:"finished,omitempty"`
+	Ready    *bool `json:"ready,omitempty" yaml:"ready,omitempty"`
 }
 
 // ServletOutputStream defines model for ServletOutputStream.
 type ServletOutputStream struct {
-	Ready *bool `json:"ready,omitempty"`
+	Ready *bool `json:"ready,omitempty" yaml:"ready,omitempty"`
 }
 
 // ServletRegistration defines model for ServletRegistration.
 type ServletRegistration struct {
-	ClassName      *string            `json:"className,omitempty"`
-	InitParameters *map[string]string `json:"initParameters,omitempty"`
-	Mappings       *[]string          `json:"mappings,omitempty"`
-	Name           *string            `json:"name,omitempty"`
-	RunAsRole      *string            `json:"runAsRole,omitempty"`
+	ClassName      *string            `json:"className,omitempty" yaml:"className,omitempty"`
+	InitParameters *map[string]string `json:"initParameters,omitempty" yaml:"initParameters,omitempty"`
+	Mappings       *[]string          `json:"mappings,omitempty" yaml:"mappings,omitempty"`
+	Name           *string            `json:"name,omitempty" yaml:"name,omitempty"`
+	RunAsRole      *string            `json:"runAsRole,omitempty" yaml:"runAsRole,omitempty"`
 }
 
 // ServletRequest defines model for ServletRequest.
 type ServletRequest struct {
-	AsyncContext      *AsyncContext                 `json:"asyncContext,omitempty"`
-	AsyncStarted      *bool                         `json:"asyncStarted,omitempty"`
-	AsyncSupported    *bool                         `json:"asyncSupported,omitempty"`
-	AttributeNames    *EnumerationString            `json:"attributeNames,omitempty"`
-	CharacterEncoding *string                       `json:"characterEncoding,omitempty"`
-	ContentLength     *int32                        `json:"contentLength,omitempty"`
-	ContentLengthLong *int64                        `json:"contentLengthLong,omitempty"`
-	ContentType       *string                       `json:"contentType,omitempty"`
-	DispatcherType    *ServletRequestDispatcherType `json:"dispatcherType,omitempty"`
-	InputStream       *ServletInputStream           `json:"inputStream,omitempty"`
-	LocalAddr         *string                       `json:"localAddr,omitempty"`
-	LocalName         *string                       `json:"localName,omitempty"`
-	LocalPort         *int32                        `json:"localPort,omitempty"`
-	Locale            *Locale                       `json:"locale,omitempty"`
-	Locales           *EnumerationLocale            `json:"locales,omitempty"`
-	ParameterMap      *map[string][]string          `json:"parameterMap,omitempty"`
-	ParameterNames    *EnumerationString            `json:"parameterNames,omitempty"`
-	Protocol          *string                       `json:"protocol,omitempty"`
-	Reader            *BufferedReader               `json:"reader,omitempty"`
-	RemoteAddr        *string                       `json:"remoteAddr,omitempty"`
-	RemoteHost        *string                       `json:"remoteHost,omitempty"`
-	RemotePort        *int32                        `json:"remotePort,omitempty"`
-	Scheme            *string                       `json:"scheme,omitempty"`
-	Secure            *bool                         `json:"secure,omitempty"`
-	ServerName        *string                       `json:"serverName,omitempty"`
-	ServerPort        *int32                        `json:"serverPort,omitempty"`
-	ServletContext    *ServletContext               `json:"servletContext,omitempty"`
+	AsyncContext      *AsyncContext                 `json:"asyncContext,omitempty" yaml:"asyncContext,omitempty"`
+	AsyncStarted      *bool                         `json:"asyncStarted,omitempty" yaml:"asyncStarted,omitempty"`
+	AsyncSupported    *bool                         `json:"asyncSupported,omitempty" yaml:"asyncSupported,omitempty"`
+	AttributeNames    *EnumerationString            `json:"attributeNames,omitempty" yaml:"attributeNames,omitempty"`
+	CharacterEncoding *string                       `json:"characterEncoding,omitempty" yaml:"characterEncoding,omitempty"`
+	ContentLength     *int32                        `json:"contentLength,omitempty" yaml:"contentLength,omitempty"`
+	ContentLengthLong *int64                        `json:"contentLengthLong,omitempty" yaml:"contentLengthLong,omitempty"`
+	ContentType       *string                       `json:"contentType,omitempty" yaml:"contentType,omitempty"`
+	DispatcherType    *ServletRequestDispatcherType `json:"dispatcherType,omitempty" yaml:"dispatcherType,omitempty"`
+	InputStream       *ServletInputStream           `json:"inputStream,omitempty" yaml:"inputStream,omitempty"`
+	LocalAddr         *string                       `json:"localAddr,omitempty" yaml:"localAddr,omitempty"`
+	LocalName         *string                       `json:"localName,omitempty" yaml:"localName,omitempty"`
+	LocalPort         *int32                        `json:"localPort,omitempty" yaml:"localPort,omitempty"`
+	Locale            *Locale                       `json:"locale,omitempty" yaml:"locale,omitempty"`
+	Locales           *EnumerationLocale            `json:"locales,omitempty" yaml:"locales,omitempty"`
+	ParameterMap      *map[string][]string          `json:"parameterMap,omitempty" yaml:"parameterMap,omitempty"`
+	ParameterNames    *EnumerationString            `json:"parameterNames,omitempty" yaml:"parameterNames,omitempty"`
+	Protocol          *string                       `json:"protocol,omitempty" yaml:"protocol,omitempty"`
+	Reader            *BufferedReader               `json:"reader,omitempty" yaml:"reader,omitempty"`
+	RemoteAddr        *string                       `json:"remoteAddr,omitempty" yaml:"remoteAddr,omitempty"`
+	RemoteHost        *string                       `json:"remoteHost,omitempty" yaml:"remoteHost,omitempty"`
+	RemotePort        *int32                        `json:"remotePort,omitempty" yaml:"remotePort,omitempty"`
+	Scheme            *string                       `json:"scheme,omitempty" yaml:"scheme,omitempty"`
+	Secure            *bool                         `json:"secure,omitempty" yaml:"secure,omitempty"`
+	ServerName        *string                       `json:"serverName,omitempty" yaml:"serverName,omitempty"`
+	ServerPort        *int32                        `json:"serverPort,omitempty" yaml:"serverPort,omitempty"`
+	ServletContext    *ServletContext               `json:"servletContext,omitempty" yaml:"servletContext,omitempty"`
 }
 
 // ServletRequestDispatcherType defines model for ServletRequest.DispatcherType.
@@ -2177,69 +2177,69 @@ type ServletRequestDispatcherType string
 
 // ServletResponse defines model for ServletResponse.
 type ServletResponse struct {
-	BufferSize        *int32               `json:"bufferSize,omitempty"`
-	CharacterEncoding *string              `json:"characterEncoding,omitempty"`
-	Committed         *bool                `json:"committed,omitempty"`
-	ContentType       *string              `json:"contentType,omitempty"`
-	Locale            *Locale              `json:"locale,omitempty"`
-	OutputStream      *ServletOutputStream `json:"outputStream,omitempty"`
-	Writer            *PrintWriter         `json:"writer,omitempty"`
+	BufferSize        *int32               `json:"bufferSize,omitempty" yaml:"bufferSize,omitempty"`
+	CharacterEncoding *string              `json:"characterEncoding,omitempty" yaml:"characterEncoding,omitempty"`
+	Committed         *bool                `json:"committed,omitempty" yaml:"committed,omitempty"`
+	ContentType       *string              `json:"contentType,omitempty" yaml:"contentType,omitempty"`
+	Locale            *Locale              `json:"locale,omitempty" yaml:"locale,omitempty"`
+	OutputStream      *ServletOutputStream `json:"outputStream,omitempty" yaml:"outputStream,omitempty"`
+	Writer            *PrintWriter         `json:"writer,omitempty" yaml:"writer,omitempty"`
 }
 
 // SessionCookieConfig defines model for SessionCookieConfig.
 type SessionCookieConfig struct {
-	Comment  *string `json:"comment,omitempty"`
-	Domain   *string `json:"domain,omitempty"`
-	HTTPOnly *bool   `json:"httpOnly,omitempty"`
-	MaxAge   *int32  `json:"maxAge,omitempty"`
-	Name     *string `json:"name,omitempty"`
-	Path     *string `json:"path,omitempty"`
-	Secure   *bool   `json:"secure,omitempty"`
+	Comment  *string `json:"comment,omitempty" yaml:"comment,omitempty"`
+	Domain   *string `json:"domain,omitempty" yaml:"domain,omitempty"`
+	HTTPOnly *bool   `json:"httpOnly,omitempty" yaml:"httpOnly,omitempty"`
+	MaxAge   *int32  `json:"maxAge,omitempty" yaml:"maxAge,omitempty"`
+	Name     *string `json:"name,omitempty" yaml:"name,omitempty"`
+	Path     *string `json:"path,omitempty" yaml:"path,omitempty"`
+	Secure   *bool   `json:"secure,omitempty" yaml:"secure,omitempty"`
 }
 
 // StackTraceElement defines model for StackTraceElement.
 type StackTraceElement struct {
-	ClassName    *string `json:"className,omitempty"`
-	FileName     *string `json:"fileName,omitempty"`
-	LineNumber   *int32  `json:"lineNumber,omitempty"`
-	MethodName   *string `json:"methodName,omitempty"`
-	NativeMethod *bool   `json:"nativeMethod,omitempty"`
+	ClassName    *string `json:"className,omitempty" yaml:"className,omitempty"`
+	FileName     *string `json:"fileName,omitempty" yaml:"fileName,omitempty"`
+	LineNumber   *int32  `json:"lineNumber,omitempty" yaml:"lineNumber,omitempty"`
+	MethodName   *string `json:"methodName,omitempty" yaml:"methodName,omitempty"`
+	NativeMethod *bool   `json:"nativeMethod,omitempty" yaml:"nativeMethod,omitempty"`
 }
 
 // Statement defines model for Statement.
 type Statement struct {
-	CloseOnCompletion    *bool       `json:"closeOnCompletion,omitempty"`
-	Closed               *bool       `json:"closed,omitempty"`
-	Connection           *Connection `json:"connection,omitempty"`
-	FetchDirection       *int32      `json:"fetchDirection,omitempty"`
-	FetchSize            *int32      `json:"fetchSize,omitempty"`
-	GeneratedKeys        *ResultSet  `json:"generatedKeys,omitempty"`
-	LargeMaxRows         *int64      `json:"largeMaxRows,omitempty"`
-	LargeUpdateCount     *int64      `json:"largeUpdateCount,omitempty"`
-	MaxFieldSize         *int32      `json:"maxFieldSize,omitempty"`
-	MaxRows              *int32      `json:"maxRows,omitempty"`
-	MoreResults          *bool       `json:"moreResults,omitempty"`
-	Poolable             *bool       `json:"poolable,omitempty"`
-	QueryTimeout         *int32      `json:"queryTimeout,omitempty"`
-	ResultSet            *ResultSet  `json:"resultSet,omitempty"`
-	ResultSetConcurrency *int32      `json:"resultSetConcurrency,omitempty"`
-	ResultSetHoldability *int32      `json:"resultSetHoldability,omitempty"`
-	ResultSetType        *int32      `json:"resultSetType,omitempty"`
-	UpdateCount          *int32      `json:"updateCount,omitempty"`
-	Warnings             *SQLWarning `json:"warnings,omitempty"`
+	CloseOnCompletion    *bool       `json:"closeOnCompletion,omitempty" yaml:"closeOnCompletion,omitempty"`
+	Closed               *bool       `json:"closed,omitempty" yaml:"closed,omitempty"`
+	Connection           *Connection `json:"connection,omitempty" yaml:"connection,omitempty"`
+	FetchDirection       *int32      `json:"fetchDirection,omitempty" yaml:"fetchDirection,omitempty"`
+	FetchSize            *int32      `json:"fetchSize,omitempty" yaml:"fetchSize,omitempty"`
+	GeneratedKeys        *ResultSet  `json:"generatedKeys,omitempty" yaml:"generatedKeys,omitempty"`
+	LargeMaxRows         *int64      `json:"largeMaxRows,omitempty" yaml:"largeMaxRows,omitempty"`
+	LargeUpdateCount     *int64      `json:"largeUpdateCount,omitempty" yaml:"largeUpdateCount,omitempty"`
+	MaxFieldSize         *int32      `json:"maxFieldSize,omitempty" yaml:"maxFieldSize,omitempty"`
+	MaxRows              *int32      `json:"maxRows,omitempty" yaml:"maxRows,omitempty"`
+	MoreResults          *bool       `json:"moreResults,omitempty" yaml:"moreResults,omitempty"`
+	Poolable             *bool       `json:"poolable,omitempty" yaml:"poolable,omitempty"`
+	QueryTimeout         *int32      `json:"queryTimeout,omitempty" yaml:"queryTimeout,omitempty"`
+	ResultSet            *ResultSet  `json:"resultSet,omitempty" yaml:"resultSet,omitempty"`
+	ResultSetConcurrency *int32      `json:"resultSetConcurrency,omitempty" yaml:"resultSetConcurrency,omitempty"`
+	ResultSetHoldability *int32      `json:"resultSetHoldability,omitempty" yaml:"resultSetHoldability,omitempty"`
+	ResultSetType        *int32      `json:"resultSetType,omitempty" yaml:"resultSetType,omitempty"`
+	UpdateCount          *int32      `json:"updateCount,omitempty" yaml:"updateCount,omitempty"`
+	Warnings             *SQLWarning `json:"warnings,omitempty" yaml:"warnings,omitempty"`
 }
 
 // Subscribe defines model for Subscribe.
 type Subscribe struct {
 	// Enabled Is the plan visible.
-	Enabled bool `json:"enabled"`
+	Enabled bool `json:"enabled" yaml:"enabled"`
 
 	// Orgs When subscribe is custom: The Organizations allowed to subscribe.
-	Orgs *[]string `json:"orgs,omitempty"`
+	Orgs *[]string `json:"orgs,omitempty" yaml:"orgs,omitempty"`
 
 	// Tags When subscribe is custom: The Communities allowed to subscribe.
-	Tags *[]string     `json:"tags,omitempty"`
-	Type SubscribeType `json:"type"`
+	Tags *[]string     `json:"tags,omitempty" yaml:"tags,omitempty"`
+	Type SubscribeType `json:"type" yaml:"type"`
 }
 
 // SubscribeType defines model for Subscribe.Type.
@@ -2247,42 +2247,42 @@ type SubscribeType string
 
 // TaglibDescriptor defines model for TaglibDescriptor.
 type TaglibDescriptor struct {
-	TaglibLocation *string `json:"taglibLocation,omitempty"`
-	TaglibURI      *string `json:"taglibURI,omitempty"`
+	TaglibLocation *string `json:"taglibLocation,omitempty" yaml:"taglibLocation,omitempty"`
+	TaglibURI      *string `json:"taglibURI,omitempty" yaml:"taglibURI,omitempty"`
 }
 
 // TaskActivityResponse defines model for TaskActivityResponse.
 type TaskActivityResponse struct {
 	// Action The action executed by this activity
-	Action *map[string]interface{} `json:"action,omitempty"`
+	Action *map[string]interface{} `json:"action,omitempty" yaml:"action,omitempty"`
 
 	// Comment The user's comment for this action
-	Comment *string `json:"comment,omitempty"`
+	Comment *string `json:"comment,omitempty" yaml:"comment,omitempty"`
 
 	// Date The date this action was executed
-	Date *time.Time `json:"date,omitempty"`
+	Date *time.Time `json:"date,omitempty" yaml:"date,omitempty"`
 
 	// DisplayName The display name of the user who initiated this action
-	DisplayName *string `json:"displayName,omitempty"`
+	DisplayName *string `json:"displayName,omitempty" yaml:"displayName,omitempty"`
 
 	// UserID The id of the user who initiated this action
-	UserID *string `json:"userId,omitempty"`
+	UserID *string `json:"userId,omitempty" yaml:"userId,omitempty"`
 
 	// Username The username of the user who initiated this action
-	Username *string `json:"username,omitempty"`
+	Username *string `json:"username,omitempty" yaml:"username,omitempty"`
 }
 
 // TaskListGetResponse defines model for TaskListGetResponse.
 type TaskListGetResponse struct {
-	Activities       []TaskActivityResponse      `json:"activities"`
-	AvailableActions []string                    `json:"availableActions"`
-	EnvID            string                      `json:"envId"`
-	ID               string                      `json:"id"`
-	OrgID            string                      `json:"orgId"`
-	Status           TaskListGetResponseStatus   `json:"status"`
-	TaskProperties   *string                     `json:"taskProperties,omitempty"`
-	TaskType         TaskListGetResponseTaskType `json:"taskType"`
-	URL              string                      `json:"url"`
+	Activities       []TaskActivityResponse      `json:"activities" yaml:"activities"`
+	AvailableActions []string                    `json:"availableActions" yaml:"availableActions"`
+	EnvID            string                      `json:"envId" yaml:"envId"`
+	ID               string                      `json:"id" yaml:"id"`
+	OrgID            string                      `json:"orgId" yaml:"orgId"`
+	Status           TaskListGetResponseStatus   `json:"status" yaml:"status"`
+	TaskProperties   *string                     `json:"taskProperties,omitempty" yaml:"taskProperties,omitempty"`
+	TaskType         TaskListGetResponseTaskType `json:"taskType" yaml:"taskType"`
+	URL              string                      `json:"url" yaml:"url"`
 }
 
 // TaskListGetResponseStatus defines model for TaskListGetResponse.Status.
@@ -2293,88 +2293,88 @@ type TaskListGetResponseTaskType string
 
 // TemplateError defines model for TemplateError.
 type TemplateError struct {
-	MessageDescription *string `json:"messageDescription,omitempty"`
-	MessageID          *string `json:"messageId,omitempty"`
+	MessageDescription *string `json:"messageDescription,omitempty" yaml:"messageDescription,omitempty"`
+	MessageID          *string `json:"messageId,omitempty" yaml:"messageId,omitempty"`
 }
 
 // TemporalUnit defines model for TemporalUnit.
 type TemporalUnit struct {
-	DateBased         *bool     `json:"dateBased,omitempty"`
-	Duration          *Duration `json:"duration,omitempty"`
-	DurationEstimated *bool     `json:"durationEstimated,omitempty"`
-	TimeBased         *bool     `json:"timeBased,omitempty"`
+	DateBased         *bool     `json:"dateBased,omitempty" yaml:"dateBased,omitempty"`
+	Duration          *Duration `json:"duration,omitempty" yaml:"duration,omitempty"`
+	DurationEstimated *bool     `json:"durationEstimated,omitempty" yaml:"durationEstimated,omitempty"`
+	TimeBased         *bool     `json:"timeBased,omitempty" yaml:"timeBased,omitempty"`
 }
 
 // ThemeRegistrationPaginatedResponseContainer defines model for ThemeRegistrationPaginatedResponseContainer.
 type ThemeRegistrationPaginatedResponseContainer struct {
-	Count              *int32                    `json:"count,omitempty"`
-	Limit              *int32                    `json:"limit,omitempty"`
-	Page               *int32                    `json:"page,omitempty"`
-	ThemeRegistrations *[]map[string]interface{} `json:"themeRegistrations,omitempty"`
-	Total              *int32                    `json:"total,omitempty"`
+	Count              *int32                    `json:"count,omitempty" yaml:"count,omitempty"`
+	Limit              *int32                    `json:"limit,omitempty" yaml:"limit,omitempty"`
+	Page               *int32                    `json:"page,omitempty" yaml:"page,omitempty"`
+	ThemeRegistrations *[]map[string]interface{} `json:"themeRegistrations,omitempty" yaml:"themeRegistrations,omitempty"`
+	Total              *int32                    `json:"total,omitempty" yaml:"total,omitempty"`
 }
 
 // Throwable defines model for Throwable.
 type Throwable struct {
-	Cause            *Throwable           `json:"cause,omitempty"`
-	LocalizedMessage *string              `json:"localizedMessage,omitempty"`
-	Message          *string              `json:"message,omitempty"`
-	StackTrace       *[]StackTraceElement `json:"stackTrace,omitempty"`
-	Suppressed       *[]Throwable         `json:"suppressed,omitempty"`
+	Cause            *Throwable           `json:"cause,omitempty" yaml:"cause,omitempty"`
+	LocalizedMessage *string              `json:"localizedMessage,omitempty" yaml:"localizedMessage,omitempty"`
+	Message          *string              `json:"message,omitempty" yaml:"message,omitempty"`
+	StackTrace       *[]StackTraceElement `json:"stackTrace,omitempty" yaml:"stackTrace,omitempty"`
+	Suppressed       *[]Throwable         `json:"suppressed,omitempty" yaml:"suppressed,omitempty"`
 }
 
 // TokenRequest defines model for TokenRequest.
 type TokenRequest struct {
 	// ActorToken The token identifying the acting party in a token exchange flow.
-	ActorToken *string `json:"actor_token,omitempty"`
+	ActorToken *string `json:"actor_token,omitempty" yaml:"actor_token,omitempty"`
 
 	// ActorTokenType The token type of the actor_token.
-	ActorTokenType *interface{} `json:"actor_token_type,omitempty"`
+	ActorTokenType *interface{} `json:"actor_token_type,omitempty" yaml:"actor_token_type,omitempty"`
 
 	// ClientAssertion The JWT assertion being used to authenticate the client.
-	ClientAssertion *string `json:"client_assertion,omitempty"`
+	ClientAssertion *string `json:"client_assertion,omitempty" yaml:"client_assertion,omitempty"`
 
 	// ClientAssertionType The format of client assertion.
-	ClientAssertionType *TokenRequestClientAssertionType `json:"client_assertion_type,omitempty"`
+	ClientAssertionType *TokenRequestClientAssertionType `json:"client_assertion_type,omitempty" yaml:"client_assertion_type,omitempty"`
 
 	// ClientID The OIDC client ID that is required when the basic authorization header is not set.
-	ClientID *string `json:"client_id,omitempty"`
+	ClientID *string `json:"client_id,omitempty" yaml:"client_id,omitempty"`
 
 	// ClientSecret The OIDC client secret that is required when the basic authorization header is not set and the client is not a public client.
-	ClientSecret *string `json:"client_secret,omitempty"`
+	ClientSecret *string `json:"client_secret,omitempty" yaml:"client_secret,omitempty"`
 
 	// Code The authorization code. It is only required for "authorization_code" grant types.
-	Code *string `json:"code,omitempty"`
+	Code *string `json:"code,omitempty" yaml:"code,omitempty"`
 
 	// CodeVerifier The code verifier. This is used to verify the code challenge that was sent at the authorize endpoint. Required if the OIDC client is configured to require proof key for code exchange (PKCE)
-	CodeVerifier *string `json:"code_verifier,omitempty"`
+	CodeVerifier *string `json:"code_verifier,omitempty" yaml:"code_verifier,omitempty"`
 
 	// GrantType The grant type.
-	GrantType TokenRequestGrantType `json:"grant_type"`
+	GrantType TokenRequestGrantType `json:"grant_type" yaml:"grant_type"`
 
 	// Password The password credential of resource owner. It is only required for "password" grant types.
-	Password *string `json:"password,omitempty"`
+	Password *string `json:"password,omitempty" yaml:"password,omitempty"`
 
 	// RedirectURI The redirect URI. It is only required for "authorization_code" grant types.
-	RedirectURI *string `json:"redirect_uri,omitempty"`
+	RedirectURI *string `json:"redirect_uri,omitempty" yaml:"redirect_uri,omitempty"`
 
 	// RefreshToken The refresh token. It is only required for "refresh_token" grant types.
-	RefreshToken *string `json:"refresh_token,omitempty"`
+	RefreshToken *string `json:"refresh_token,omitempty" yaml:"refresh_token,omitempty"`
 
 	// RequestedTokenType The type of token that should be returned as part of the token exchange flow.
-	RequestedTokenType *string `json:"requested_token_type,omitempty"`
+	RequestedTokenType *string `json:"requested_token_type,omitempty" yaml:"requested_token_type,omitempty"`
 
 	// Scope A space-delimited list of scopes that are associated with generated access token.
-	Scope *string `json:"scope,omitempty"`
+	Scope *string `json:"scope,omitempty" yaml:"scope,omitempty"`
 
 	// SubjectToken The token identifying the subject for a token exchange flow.
-	SubjectToken *string `json:"subject_token,omitempty"`
+	SubjectToken *string `json:"subject_token,omitempty" yaml:"subject_token,omitempty"`
 
 	// SubjectTokenType The token type of the subject_token.
-	SubjectTokenType *string `json:"subject_token_type,omitempty"`
+	SubjectTokenType *string `json:"subject_token_type,omitempty" yaml:"subject_token_type,omitempty"`
 
 	// Username The user credential of resource owner. It is only required for "password" grant types.
-	Username *string `json:"username,omitempty"`
+	Username *string `json:"username,omitempty" yaml:"username,omitempty"`
 }
 
 // TokenRequestClientAssertionType The format of client assertion.
@@ -2386,174 +2386,174 @@ type TokenRequestGrantType string
 // TokenResponse defines model for TokenResponse.
 type TokenResponse struct {
 	// AccessToken The access token that is issued by the authorization server.
-	AccessToken string `json:"access_token"`
+	AccessToken string `json:"access_token" yaml:"access_token"`
 
 	// ExpiresIn The lifetime, in seconds, of the access token.
-	ExpiresIn int32 `json:"expires_in"`
+	ExpiresIn int32 `json:"expires_in" yaml:"expires_in"`
 
 	// GrantID The grant identifier of this authorization grant.
-	GrantID string `json:"grant_id"`
+	GrantID string `json:"grant_id" yaml:"grant_id"`
 
 	// IDToken The ID token that is issued by the authorization server, when the requested scope contains 'openid'.
-	IDToken *string `json:"id_token,omitempty"`
+	IDToken *string `json:"id_token,omitempty" yaml:"id_token,omitempty"`
 
 	// RefreshToken The refresh token that is used to obtain new access tokens. It is only available for authorization_code grant if the refresh_token grant is enabled.
-	RefreshToken *string `json:"refresh_token,omitempty"`
+	RefreshToken *string `json:"refresh_token,omitempty" yaml:"refresh_token,omitempty"`
 
 	// Scope A space-delimited list of scopes that are associated with this access token.
-	Scope *string `json:"scope,omitempty"`
+	Scope *string `json:"scope,omitempty" yaml:"scope,omitempty"`
 
 	// TokenType The type of the access token.
-	TokenType string `json:"token_type"`
+	TokenType string `json:"token_type" yaml:"token_type"`
 }
 
 // TransformBody TransformBody is either a valid UTF-8 string, or a valid JSON object
 type TransformBody struct {
-	JSON *map[string]map[string]interface{} `json:"JSON,omitempty"`
-	Raw  *[]uint8                           `json:"Raw,omitempty"`
+	JSON *map[string]map[string]interface{} `json:"JSON,omitempty" yaml:"JSON,omitempty"`
+	Raw  *[]uint8                           `json:"Raw,omitempty" yaml:"Raw,omitempty"`
 }
 
 // TransformObject defines model for TransformObject.
 type TransformObject struct {
 	// AuthenticationHeader AuthenticationHeader is an outgoing transform parameter.
-	AuthenticationHeader *map[string]string `json:"authentication_header,omitempty"`
+	AuthenticationHeader *map[string]string `json:"authentication_header,omitempty" yaml:"authentication_header,omitempty"`
 
 	// Body TransformBody is either a valid UTF-8 string, or a valid JSON object
-	Body *TransformBody `json:"body,omitempty"`
+	Body *TransformBody `json:"body,omitempty" yaml:"body,omitempty"`
 
 	// Header The keys should be in canonical form, as returned by
 	// CanonicalHeaderKey.
-	Header *Header `json:"header,omitempty"`
+	Header *Header `json:"header,omitempty" yaml:"header,omitempty"`
 
 	// Host Host is an outgoing transform parameter, and will only be populated in webhook usage when all the URLs configured have a consistent host
-	Host *string `json:"host,omitempty"`
+	Host *string `json:"host,omitempty" yaml:"host,omitempty"`
 
 	// Method Method is an outgoing transform parameter.
-	Method *string `json:"method,omitempty"`
+	Method *string `json:"method,omitempty" yaml:"method,omitempty"`
 
 	// Path Path is an outgoing transform parameter.
-	Path    *string          `json:"path,omitempty"`
-	Request *TransformObject `json:"request,omitempty"`
+	Path    *string          `json:"path,omitempty" yaml:"path,omitempty"`
+	Request *TransformObject `json:"request,omitempty" yaml:"request,omitempty"`
 
 	// StatusCode StatusCode is an incoming transform parameter.
-	StatusCode *int64 `json:"statusCode,omitempty"`
+	StatusCode *int64 `json:"statusCode,omitempty" yaml:"statusCode,omitempty"`
 }
 
 // UserGroupV1 Represents a user group
 type UserGroupV1 struct {
-	Description *string `json:"description,omitempty"`
-	Email       *string `json:"email,omitempty"`
-	FamilyName  *string `json:"familyName,omitempty"`
-	Formatted   *string `json:"formatted,omitempty"`
-	GivenName   *string `json:"givenName,omitempty"`
-	ID          *string `json:"id,omitempty"`
-	Name        *string `json:"name,omitempty"`
-	Realm       *string `json:"realm,omitempty"`
-	UserType    *string `json:"userType,omitempty"`
+	Description *string `json:"description,omitempty" yaml:"description,omitempty"`
+	Email       *string `json:"email,omitempty" yaml:"email,omitempty"`
+	FamilyName  *string `json:"familyName,omitempty" yaml:"familyName,omitempty"`
+	Formatted   *string `json:"formatted,omitempty" yaml:"formatted,omitempty"`
+	GivenName   *string `json:"givenName,omitempty" yaml:"givenName,omitempty"`
+	ID          *string `json:"id,omitempty" yaml:"id,omitempty"`
+	Name        *string `json:"name,omitempty" yaml:"name,omitempty"`
+	Realm       *string `json:"realm,omitempty" yaml:"realm,omitempty"`
+	UserType    *string `json:"userType,omitempty" yaml:"userType,omitempty"`
 }
 
 // UserResponseV2 defines model for UserResponseV2.
 type UserResponseV2 struct {
 	// Active A Boolean value that indicates the user's administrative status. The definitive meaning of this attribute is determined by the service provider. For example, a value of true indicates that the user can, log in, while a value of false indicates that the user's account has been suspended. If not specified, the value defaults to true.
-	Active *bool `json:"active,omitempty"`
+	Active *bool `json:"active,omitempty" yaml:"active,omitempty"`
 
 	// Addresses A list of addresses that are associated with the user.
-	Addresses []Address `json:"addresses"`
+	Addresses []Address `json:"addresses" yaml:"addresses"`
 
 	// DisplayName The name of the user that is displayed to users. Each user returned may include a non-empty displayName value. Typically it is the full name of the user being described, for example, Babs Jensen or Ms. Barbara J Jensen. However, if that information is unavailable, a username or handle can be used, for example, bjensen. The value is the primary textual label by which this user is normally displayed by the service provider when presenting information to users.
-	DisplayName *string `json:"displayName,omitempty"`
+	DisplayName *string `json:"displayName,omitempty" yaml:"displayName,omitempty"`
 
 	// Emails A list of email addresses that are associated with the user. Only one is supported.
-	Emails []EmailAddress `json:"emails"`
+	Emails []EmailAddress `json:"emails" yaml:"emails"`
 
 	// ExternalID A unique identifier for the resource that is defined by the provisioning client. It identifies a resource between the provisioning client and the service provider. The client can use a filter to locate the resource with an identifier from the provisioning domain.
-	ExternalID *string `json:"externalId,omitempty"`
+	ExternalID *string `json:"externalId,omitempty" yaml:"externalId,omitempty"`
 
 	// Groups The list of groups that the user belongs to. Any value that is specified for this attribute in the JSON POST or PUT request payload is ignored. Group membership is managed by using the /Groups API.
-	Groups *[]Groups `json:"groups,omitempty"`
+	Groups *[]Groups `json:"groups,omitempty" yaml:"groups,omitempty"`
 
 	// ID The unique identifier for the resource as defined by the service. This attribute is read-only and ise sent by the service. Any value that is specified for this attribute in the JSON POST or PUT request payload is ignored.
-	ID   string  `json:"id"`
-	Meta *MetaV2 `json:"meta,omitempty"`
-	Name Name    `json:"name"`
+	ID   string  `json:"id" yaml:"id"`
+	Meta *MetaV2 `json:"meta,omitempty" yaml:"meta,omitempty"`
+	Name Name    `json:"name" yaml:"name"`
 
 	// PhoneNumbers A list of phone numbers that are associated with the user.
-	PhoneNumbers *[]PhoneNumber `json:"phoneNumbers,omitempty"`
+	PhoneNumbers *[]PhoneNumber `json:"phoneNumbers,omitempty" yaml:"phoneNumbers,omitempty"`
 
 	// PreferredLanguage The language code identifying the preferred language of this identity, for example, en-us or fr-ca.
-	PreferredLanguage *string `json:"preferredLanguage,omitempty"`
+	PreferredLanguage *string `json:"preferredLanguage,omitempty" yaml:"preferredLanguage,omitempty"`
 
 	// Schemas An array of strings that contain the URIs that indicate the namespaces of the SCIM schemas that define the attributes in the current JSON structure. The schemas "urn:ietf:params:scim:schemas:core:2.0:User", "urn:ietf:params:scim:schemas:extension:ibm:2.0:User" and "urn:ietf:params:scim:schemas:extension:enterprise:2.0:User" are returned in the response.
-	Schemas []string `json:"schemas"`
+	Schemas []string `json:"schemas" yaml:"schemas"`
 
 	// Title The user's title, such as "Vice President."
-	Title                                             *string                `json:"title,omitempty"`
-	UrnIetfParamsScimSchemasExtensionEnterprise20User *EnterpriseUser        `json:"urn:ietf:params:scim:schemas:extension:enterprise:2.0:User,omitempty"`
-	UrnIetfParamsScimSchemasExtensionIbm20User        *CICCustomUserResponse `json:"urn:ietf:params:scim:schemas:extension:ibm:2.0:User,omitempty"`
+	Title                                             *string                `json:"title,omitempty" yaml:"title,omitempty"`
+	UrnIetfParamsScimSchemasExtensionEnterprise20User *EnterpriseUser        `json:"urn:ietf:params:scim:schemas:extension:enterprise:2.0:User,omitempty" yaml:"urn:ietf:params:scim:schemas:extension:enterprise:2.0:User,omitempty"`
+	UrnIetfParamsScimSchemasExtensionIbm20User        *CICCustomUserResponse `json:"urn:ietf:params:scim:schemas:extension:ibm:2.0:User,omitempty" yaml:"urn:ietf:params:scim:schemas:extension:ibm:2.0:User,omitempty"`
 
 	// UserName The unique identifier for the user that is typically used by the user to directly authenticate to the service provider. It is often displayed to the user as their unique identifier within the system (as opposed to the id or externalId attributes, which are generally opaque and not user-friendly identifiers). Each user must include a non-empty userName value. This identifier must be unique across the service consumer's entire set of users. It must be a stable ID that does not change when the same user is returned in subsequent requests.
-	UserName string `json:"userName"`
+	UserName string `json:"userName" yaml:"userName"`
 }
 
 // UserV2 defines model for UserV2.
 type UserV2 struct {
 	// Active A Boolean value that indicates the user's administrative status. The definitive meaning of this attribute is determined by the service provider. For example, a value of true indicates that the user can log in, while a value of false indicates that the user's account has been suspended. If not specified, the value defaults to true.
-	Active *bool `json:"active,omitempty"`
+	Active *bool `json:"active,omitempty" yaml:"active,omitempty"`
 
 	// Addresses A list of addresses that can be used to create a user.
-	Addresses *[]Address `json:"addresses,omitempty"`
+	Addresses *[]Address `json:"addresses,omitempty" yaml:"addresses,omitempty"`
 
 	// DisplayName The name of the user that is displayed to users. Each user returned may include a non-empty displayName value. Typically it is the full name of the user that is being described, for example, Babs Jensen or Ms. Barbara J Jensen. However, if that information is unavailable, a username or handle can be used, for example, bjensen. The value is the primary textual label by which this User is normally displayed by the service provider when presenting information to users. Maximum length is 128 characters.
-	DisplayName *string `json:"displayName,omitempty"`
+	DisplayName *string `json:"displayName,omitempty" yaml:"displayName,omitempty"`
 
 	// Emails A list of email addresses that can be used to create a user.
-	Emails *[]EmailAddress `json:"emails,omitempty"`
+	Emails *[]EmailAddress `json:"emails,omitempty" yaml:"emails,omitempty"`
 
 	// ExternalID The unique identifier for the resource that is defined by the provisioning client. It identifies a resource between the provisioning client and the service provider. The client can use a filter to locate the resource with that identifier from the provisioning domain. Maximum length is 240 characters.
-	ExternalID *string `json:"externalId,omitempty"`
-	Name       *Name   `json:"name,omitempty"`
+	ExternalID *string `json:"externalId,omitempty" yaml:"externalId,omitempty"`
+	Name       *Name   `json:"name,omitempty" yaml:"name,omitempty"`
 
 	// Password The user's clear text password. This attribute is used to specify an initial password when a new user is created or to reset an existing user's password. Maximum length is 4096 characters. If the password contains extended ASCII characters then you must add charset=utf-8 in the Content-Type header when making a REST API call. Cannot begin with the > character and end with the < character.
-	Password *string `json:"password,omitempty"`
+	Password *string `json:"password,omitempty" yaml:"password,omitempty"`
 
 	// PhoneNumbers A list of phone numbers that can be used to create a user.
-	PhoneNumbers *[]PhoneNumber `json:"phoneNumbers,omitempty"`
+	PhoneNumbers *[]PhoneNumber `json:"phoneNumbers,omitempty" yaml:"phoneNumbers,omitempty"`
 
 	// PreferredLanguage The language code identifying the preferred language of this identity, for example, en-us or fr-ca. Maximum length is 5 characters.
-	PreferredLanguage *string `json:"preferredLanguage,omitempty"`
+	PreferredLanguage *string `json:"preferredLanguage,omitempty" yaml:"preferredLanguage,omitempty"`
 
 	// Schemas An array of strings that contain the URIs that indicate the namespaces of the SCIM schemas that define the attributes in the current JSON structure.
 	//   The schemas ""urn:ietf:params:scim:schemas:core:2.0:User", "urn:ietf:params:scim:schemas:extension:ibm:2.0:User", "urn:ietf:params:scim:schemas:extension:enterprise:2.0:User" and "urn:ietf:params:scim:schemas:extension:ibm:2.0:Notification" are valid.  The core user schema is required.
-	Schemas []string `json:"schemas"`
+	Schemas []string `json:"schemas" yaml:"schemas"`
 
 	// Title The user's title, such as "Vice President." Maximum length is 128 characters.
-	Title                                              *string         `json:"title,omitempty"`
-	UrnIetfParamsScimSchemasExtensionEnterprise20User  *EnterpriseUser `json:"urn:ietf:params:scim:schemas:extension:enterprise:2.0:User,omitempty"`
-	UrnIetfParamsScimSchemasExtensionIbm20Notification *Notifications  `json:"urn:ietf:params:scim:schemas:extension:ibm:2.0:Notification,omitempty"`
-	UrnIetfParamsScimSchemasExtensionIbm20User         *CICCustomUser  `json:"urn:ietf:params:scim:schemas:extension:ibm:2.0:User,omitempty"`
+	Title                                              *string         `json:"title,omitempty" yaml:"title,omitempty"`
+	UrnIetfParamsScimSchemasExtensionEnterprise20User  *EnterpriseUser `json:"urn:ietf:params:scim:schemas:extension:enterprise:2.0:User,omitempty" yaml:"urn:ietf:params:scim:schemas:extension:enterprise:2.0:User,omitempty"`
+	UrnIetfParamsScimSchemasExtensionIbm20Notification *Notifications  `json:"urn:ietf:params:scim:schemas:extension:ibm:2.0:Notification,omitempty" yaml:"urn:ietf:params:scim:schemas:extension:ibm:2.0:Notification,omitempty"`
+	UrnIetfParamsScimSchemasExtensionIbm20User         *CICCustomUser  `json:"urn:ietf:params:scim:schemas:extension:ibm:2.0:User,omitempty" yaml:"urn:ietf:params:scim:schemas:extension:ibm:2.0:User,omitempty"`
 
 	// UserName The unique identifier for the user that is typically used by the user to directly authenticate to the service provider. It is often displayed to the user as their unique identifier within the system (as opposed to the id or externalId attributes, which are generally opaque and not user-friendly identifiers). Each user must include a non-empty userName value. This identifier must be unique across the service consumer's entire set of Users. It must be a stable ID that does not change when the same user is returned in subsequent requests.  Maximum length is 256 characters.
-	UserName string `json:"userName"`
+	UserName string `json:"userName" yaml:"userName"`
 }
 
 // ValueConstraint defines model for ValueConstraint.
 type ValueConstraint struct {
-	Format *string                 `json:"format,omitempty"`
-	Type   *string                 `json:"type,omitempty"`
-	Value  *map[string]interface{} `json:"value,omitempty"`
+	Format *string                 `json:"format,omitempty" yaml:"format,omitempty"`
+	Type   *string                 `json:"type,omitempty" yaml:"type,omitempty"`
+	Value  *map[string]interface{} `json:"value,omitempty" yaml:"value,omitempty"`
 }
 
 // View defines model for View.
 type View struct {
 	// Enabled Is the plan visible.
-	Enabled bool `json:"enabled"`
+	Enabled bool `json:"enabled" yaml:"enabled"`
 
 	// Orgs When view is custom: The Organizations allowed to view this plan.
-	Orgs *[]string `json:"orgs,omitempty"`
+	Orgs *[]string `json:"orgs,omitempty" yaml:"orgs,omitempty"`
 
 	// Tags When view is custom: The Communities allowed to view this plan.
-	Tags *[]string `json:"tags,omitempty"`
-	Type ViewType  `json:"type"`
+	Tags *[]string `json:"tags,omitempty" yaml:"tags,omitempty"`
+	Type ViewType  `json:"type" yaml:"type"`
 }
 
 // ViewType defines model for View.Type.
@@ -2562,7 +2562,7 @@ type ViewType string
 // PostOauth2TokenParams defines parameters for PostOauth2Token.
 type PostOauth2TokenParams struct {
 	// Authorization The basic authorization header that contains a base64-encoded client ID and the client secret. Use this header as an alternative to sending the client ID and secret in the form parameters.
-	Authorization *string `json:"Authorization,omitempty"`
+	Authorization *string `json:"Authorization,omitempty" yaml:"Authorization,omitempty"`
 }
 
 // GetAPIClientsParams defines parameters for GetAPIClients.
@@ -2595,43 +2595,43 @@ type GetAllAttributesParams struct {
 	Pagination *string `form:"pagination,omitempty" json:"pagination,omitempty"`
 
 	// Authorization Authorization Header
-	Authorization string `json:"Authorization"`
+	Authorization string `json:"Authorization" yaml:"Authorization"`
 }
 
 // PatchAttributesParams defines parameters for PatchAttributes.
 type PatchAttributesParams struct {
 	// Authorization Authorization Header
-	Authorization string `json:"Authorization"`
+	Authorization string `json:"Authorization" yaml:"Authorization"`
 }
 
 // CreateAttributeParams defines parameters for CreateAttribute.
 type CreateAttributeParams struct {
 	// Authorization Authorization Header
-	Authorization string `json:"Authorization"`
+	Authorization string `json:"Authorization" yaml:"Authorization"`
 }
 
 // DeleteAttributeParams defines parameters for DeleteAttribute.
 type DeleteAttributeParams struct {
 	// Authorization Authorization Header
-	Authorization string `json:"Authorization"`
+	Authorization string `json:"Authorization" yaml:"Authorization"`
 }
 
 // GetAttribute0Params defines parameters for GetAttribute0.
 type GetAttribute0Params struct {
 	// Authorization Authorization Header
-	Authorization string `json:"Authorization"`
+	Authorization string `json:"Authorization" yaml:"Authorization"`
 }
 
 // PatchSingleAttributeParams defines parameters for PatchSingleAttribute.
 type PatchSingleAttributeParams struct {
 	// Authorization Authorization Header
-	Authorization string `json:"Authorization"`
+	Authorization string `json:"Authorization" yaml:"Authorization"`
 }
 
 // UpdateAttributeParams defines parameters for UpdateAttribute.
 type UpdateAttributeParams struct {
 	// Authorization Authorization Header
-	Authorization string `json:"Authorization"`
+	Authorization string `json:"Authorization" yaml:"Authorization"`
 }
 
 // GetThemeRegistrationsParams defines parameters for GetThemeRegistrations.
@@ -2643,10 +2643,10 @@ type GetThemeRegistrationsParams struct {
 // RegisterThemeTemplatesMultipartBody defines parameters for RegisterThemeTemplates.
 type RegisterThemeTemplatesMultipartBody struct {
 	// Configuration Theme Registration configuration payload. String-encoded JSON Object.<br><br>Example:<br>{<br>"name": "string",<br>"description": "string (optional)"<br>}<br><br>
-	Configuration string `json:"configuration"`
+	Configuration string `json:"configuration" yaml:"configuration"`
 
 	// Files Customized Template .zip File
-	Files openapi_types.File `json:"files"`
+	Files openapi_types.File `json:"files" yaml:"files"`
 }
 
 // DownloadThemeTemplatesParams defines parameters for DownloadThemeTemplates.
@@ -2658,16 +2658,16 @@ type DownloadThemeTemplatesParams struct {
 // UpdateThemeTemplatesMultipartBody defines parameters for UpdateThemeTemplates.
 type UpdateThemeTemplatesMultipartBody struct {
 	// Configuration Theme Registration configuration payload. String-encoded JSON Object.<br><br>Example:<br>{<br>"name": "string",<br>"description": "string (optional)"<br>}<br><br>
-	Configuration string `json:"configuration"`
+	Configuration string `json:"configuration" yaml:"configuration"`
 
 	// Files Customized Theme .zip File
-	Files *openapi_types.File `json:"files,omitempty"`
+	Files *openapi_types.File `json:"files,omitempty" yaml:"files,omitempty"`
 }
 
 // UpdateThemeTemplateMultipartBody defines parameters for UpdateThemeTemplate.
 type UpdateThemeTemplateMultipartBody struct {
 	// File Translation Archive File
-	File openapi_types.File `json:"file"`
+	File openapi_types.File `json:"file" yaml:"file"`
 }
 
 // GetGroupsParams defines parameters for GetGroups.
@@ -2794,7 +2794,7 @@ type CreateUserParams struct {
 	ThemeID *string `form:"themeId,omitempty" json:"themeId,omitempty"`
 
 	// Usershouldnotneedtoresetpassword If set to true, the user is not required to change the password after login.<br>Only honored when the password element of UserV2 is set.
-	Usershouldnotneedtoresetpassword *CreateUserParamsUsershouldnotneedtoresetpassword `json:"usershouldnotneedtoresetpassword,omitempty"`
+	Usershouldnotneedtoresetpassword *CreateUserParamsUsershouldnotneedtoresetpassword `json:"usershouldnotneedtoresetpassword,omitempty" yaml:"usershouldnotneedtoresetpassword,omitempty"`
 }
 
 // CreateUserParamsUsershouldnotneedtoresetpassword defines parameters for CreateUser.
@@ -2833,7 +2833,7 @@ type PatchUserParams struct {
 	ThemeID *string `form:"themeId,omitempty" json:"themeId,omitempty"`
 
 	// Usershouldnotneedtoresetpassword If set to true for a password change, the user is not required to change the password after login.
-	Usershouldnotneedtoresetpassword *PatchUserParamsUsershouldnotneedtoresetpassword `json:"usershouldnotneedtoresetpassword,omitempty"`
+	Usershouldnotneedtoresetpassword *PatchUserParamsUsershouldnotneedtoresetpassword `json:"usershouldnotneedtoresetpassword,omitempty" yaml:"usershouldnotneedtoresetpassword,omitempty"`
 }
 
 // PatchUserParamsUsershouldnotneedtoresetpassword defines parameters for PatchUser.
@@ -2848,7 +2848,7 @@ type PutUser0Params struct {
 	ThemeID *string `form:"themeId,omitempty" json:"themeId,omitempty"`
 
 	// Usershouldnotneedtoresetpassword If set to true for a password change, the user is not required to change the password after login.<br>Only honored when the password element of UserV2 is set.
-	Usershouldnotneedtoresetpassword *PutUser0ParamsUsershouldnotneedtoresetpassword `json:"usershouldnotneedtoresetpassword,omitempty"`
+	Usershouldnotneedtoresetpassword *PutUser0ParamsUsershouldnotneedtoresetpassword `json:"usershouldnotneedtoresetpassword,omitempty" yaml:"usershouldnotneedtoresetpassword,omitempty"`
 }
 
 // PutUser0ParamsUsershouldnotneedtoresetpassword defines parameters for PutUser0.
@@ -9438,3 +9438,4 @@ func ParseUpdateIdentitySourceV2Object(rsp *http.Response) (*UpdateIdentitySourc
 
 	return response, nil
 }
+
