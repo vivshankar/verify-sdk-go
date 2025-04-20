@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+
+	"github.com/ibm-verify/verify-sdk-go/pkg/i18n"
 )
 
 type VerifyError struct {
@@ -17,13 +19,17 @@ func (e *VerifyError) Error() string {
 	return fmt.Sprintf("%s %s", e.MessageID, e.MessageDescription)
 }
 
+func G11NError(message string, args ...any) error {
+	return fmt.Errorf("%s", i18n.TranslateWithArgs(message, args...))
+}
+
 func HandleCommonErrors(ctx context.Context, response *http.Response, defaultError string) error {
 	if response.StatusCode == http.StatusUnauthorized {
-		return fmt.Errorf("login again")
+		return G11NError("login again")
 	}
 
 	if response.StatusCode == http.StatusForbidden {
-		return fmt.Errorf("you are not allowed to make this request. Check the client or application entitlements")
+		return G11NError("you are not allowed to make this request. Check the client or application entitlements")
 	}
 
 	if response.StatusCode == http.StatusBadRequest {
@@ -31,18 +37,17 @@ func HandleCommonErrors(ctx context.Context, response *http.Response, defaultErr
 		body, _ := io.ReadAll(response.Body)
 
 		if err := json.Unmarshal(body, &errorMessage); err != nil {
-			return fmt.Errorf("bad request: %s", defaultError)
+			return G11NError("bad request: %s", defaultError)
 		}
 		// If the expected fields are not populated, return the raw response body.
 		if errorMessage.MessageID == "" && errorMessage.MessageDescription == "" {
-			body, _ := io.ReadAll(response.Body)
-			return fmt.Errorf("bad request: %s", string(body))
+			return G11NError("bad request: %s", string(body))
 		}
-		return fmt.Errorf("%s %s", errorMessage.MessageID, errorMessage.MessageDescription)
+		return &errorMessage
 	}
 
 	if response.StatusCode == http.StatusNotFound {
-		return fmt.Errorf("resource not found")
+		return G11NError("resource not found")
 	}
 
 	return nil

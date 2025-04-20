@@ -8,6 +8,7 @@ import (
 
 	"github.com/go-jose/go-jose/v4"
 	"github.com/google/uuid"
+	errorsx "github.com/ibm-verify/verify-sdk-go/pkg/core/errors"
 )
 
 type ClientAuth interface {
@@ -90,7 +91,7 @@ func (c *PrivateKeyJWT) GetParameters() (url.Values, error) {
 		}); err != nil {
 		return nil, err
 	} else if pbytes, err := json.Marshal(claims); err != nil {
-		return nil, fmt.Errorf("marshaling claims failed; err= %v", err)
+		return nil, errorsx.G11NError("marshaling claims failed; err= %v", err)
 	} else if o, err := signer.Sign(pbytes); err != nil {
 		return nil, err
 	} else if token, err = o.CompactSerialize(); err != nil {
