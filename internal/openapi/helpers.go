@@ -41,7 +41,7 @@ func DefaultRequestEditors(ctx context.Context, headers Headers) []RequestEditor
 				req.Header.Set("Accept", headers.Accept)
 			}
 			if len(headers.ContentType) > 0 {
-				req.Header.Set("Accept", headers.ContentType)
+				req.Header.Set("Content-Type", headers.ContentType)
 			}
 
 			return nil

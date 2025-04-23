@@ -164,8 +164,8 @@ func (c *UserClient) DeleteUser(ctx context.Context, name string) error {
 	}
 
 	headers := openapi.Headers{
-		Token:  vc.Token,
-		Accept: "application/json",
+		Token:       vc.Token,
+		ContentType: "application/json",
 	}
 	resp, err := client.DeleteUser0WithResponse(ctx, id, &openapi.DeleteUser0Params{}, openapi.DefaultRequestEditors(ctx, headers)...)
 	if err != nil {
