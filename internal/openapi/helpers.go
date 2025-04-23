@@ -8,6 +8,12 @@ import (
 	errorsx "github.com/ibm-verify/verify-sdk-go/pkg/core/errors"
 )
 
+type Headers struct {
+	Token       string
+	Accept      string
+	ContentType string
+}
+
 func NewClientWithOptions(ctx context.Context, tenant string, c *http.Client) *ClientWithResponses {
 	cwr, err := NewClientWithResponses(fmt.Sprintf("https://%s", tenant), func(oc *Client) error {
 		if c != nil {
@@ -25,11 +31,17 @@ func NewClientWithOptions(ctx context.Context, tenant string, c *http.Client) *C
 	return cwr
 }
 
-func DefaultRequestEditors(ctx context.Context, token string) []RequestEditorFn {
+func DefaultRequestEditors(ctx context.Context, headers Headers) []RequestEditorFn {
 	return []RequestEditorFn{
 		func(ctx context.Context, req *http.Request) error {
-			if len(token) > 0 {
-				req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", token))
+			if len(headers.Token) > 0 {
+				req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", headers.Token))
+			}
+			if len(headers.Accept) > 0 {
+				req.Header.Set("Accept", headers.Accept)
+			}
+			if len(headers.ContentType) > 0 {
+				req.Header.Set("Accept", headers.ContentType)
 			}
 
 			return nil
