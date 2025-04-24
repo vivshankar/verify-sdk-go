@@ -9,7 +9,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/ibm-verify/verify-sdk-go/pkg/auth"
 	"github.com/ibm-verify/verify-sdk-go/pkg/config/directory"
-	"gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v3"
 
 	contextx "github.com/ibm-verify/verify-sdk-go/pkg/core/context"
 	"github.com/ibm-verify/verify-sdk-go/x/logx"
@@ -99,22 +99,22 @@ userName: johndoe1
 
 	userPatchRawData := `
 scimPatch:
-	Operations:
-	- op: add
-	  path: title
-	  value: Senior Engineer
-	- op: replace
-	  path: phoneNumbers
-	  value:
-	  - type: mobile
-	    value: "33333"
-	- op: replace
-	  path: emails
-	  value:
-	  - type: work
-	    value: john.doe.updated@work.com
+  Operations:
+  - op: add
+    path: title
+    value: Senior Engineer
+  - op: replace
+    path: phoneNumbers
+    value:
+    - type: mobile
+      value: "33333"
+  - op: replace
+    path: emails
+    value:
+    - type: work
+      value: john.doe.updated@work.com
 userName: johndoe1
-	`
+`
 	err = yaml.Unmarshal([]byte(userPatchRawData), &s.userPatch)
 
 	s.client = directory.NewUserClient()
@@ -134,9 +134,9 @@ func (s *UserTestSuite) TestGetUser() {
 	_, _, err = s.client.GetUsers(s.ctx, "", "")
 	require.NoError(s.T(), err, "unable to list users; err=%v", err)
 
-	// // Update user
-	// err = s.client.UpdateUser(s.ctx, s.userName, s.userPatch.SCIMPatchRequest.Operations)
-	// require.NoError(s.T(), err, "unable to update user %s; err=%v", s.userName, err)
+	// Update user
+	err = s.client.UpdateUser(s.ctx, s.userName, s.userPatch.SCIMPatchRequest.Operations)
+	require.NoError(s.T(), err, "unable to update user %s; err=%v", s.userName, err)
 
 	// Delete user
 	err = s.client.DeleteUser(s.ctx, s.userName)
