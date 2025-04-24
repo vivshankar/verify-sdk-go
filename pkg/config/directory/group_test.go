@@ -9,7 +9,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/ibm-verify/verify-sdk-go/pkg/auth"
 	"github.com/ibm-verify/verify-sdk-go/pkg/config/directory"
-	"gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v3"
 
 	contextx "github.com/ibm-verify/verify-sdk-go/pkg/core/context"
 	"github.com/ibm-verify/verify-sdk-go/x/logx"
@@ -80,7 +80,6 @@ urn:ietf:params:scim:schemas:extension:ibm:2.0:Group:
   description: Administrators Group
 visible: true
 `
-
 	err = yaml.Unmarshal([]byte(groupCreateRawData), &s.groupCreate)
 
 	groupPatchRawData := `
@@ -114,9 +113,9 @@ func (s *GroupTestSuite) TestGetGroup() {
 	_, _, err = s.client.GetGroups(s.ctx, "", "")
 	require.NoError(s.T(), err, "unable to list groups; err=%v", err)
 
-	// // Update group
-	// err = s.client.UpdateGroup(s.ctx, s.groupName, s.groupPatch.SCIMPatchRequest.Operations)
-	// require.NoError(s.T(), err, "unable to update group %s; err=%v", s.groupName, err)
+	// Update group
+	err = s.client.UpdateGroup(s.ctx, s.groupName, s.groupPatch.SCIMPatchRequest.Operations)
+	require.NoError(s.T(), err, "unable to update group %s; err=%v", s.groupName, err)
 
 	// Delete group
 	err = s.client.DeleteGroup(s.ctx, s.groupName)
