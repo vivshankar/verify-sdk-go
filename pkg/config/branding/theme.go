@@ -167,11 +167,12 @@ func (c *ThemeClient) GetTheme(ctx context.Context, themeID string, customizedOn
 
 	params := &openapi.DownloadThemeTemplatesParams{}
 	params.CustomizedOnly = &customizedOnly
-	resp, err := client.DownloadThemeTemplatesWithResponse(ctx, themeID, params, func(ctx context.Context, req *http.Request) error {
-		req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", vc.Token))
-		req.Header.Set("Accept", "application/octet-stream")
-		return nil
-	})
+
+	headers := openapi.Headers{
+		Token:  vc.Token,
+		Accept: "application/octet-stream",
+	}
+	resp, err := client.DownloadThemeTemplatesWithResponse(ctx, themeID, params, openapi.DefaultRequestEditors(ctx, headers)...)
 	if err != nil {
 		vc.Logger.Errorf("unable to get the theme; err=%s", err.Error())
 		return nil, "", err
