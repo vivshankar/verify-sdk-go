@@ -80,7 +80,7 @@ urn:ietf:params:scim:schemas:extension:ibm:2.0:Group:
   description: Administrators Group
 visible: true
 `
-	err = yaml.Unmarshal([]byte(groupCreateRawData), &s.groupCreate)
+	_ = yaml.Unmarshal([]byte(groupCreateRawData), &s.groupCreate)
 
 	groupPatchRawData := `
 displayName: Admins
@@ -94,7 +94,7 @@ scimPatch:
   - op: remove
     path: members[value eq "testUser"]
 `
-	err = yaml.Unmarshal([]byte(groupPatchRawData), &s.groupPatch)
+	_ = yaml.Unmarshal([]byte(groupPatchRawData), &s.groupPatch)
 
 	s.client = directory.NewGroupClient()
 }

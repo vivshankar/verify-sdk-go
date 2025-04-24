@@ -95,7 +95,7 @@ urn:ietf:params:scim:schemas:extension:ibm:2.0:User:
 userName: johndoe1
 `
 
-	err = yaml.Unmarshal([]byte(userCreateRawData), &s.userCreate)
+	_ = yaml.Unmarshal([]byte(userCreateRawData), &s.userCreate)
 
 	userPatchRawData := `
 scimPatch:
@@ -115,7 +115,7 @@ scimPatch:
       value: john.doe.updated@work.com
 userName: johndoe1
 `
-	err = yaml.Unmarshal([]byte(userPatchRawData), &s.userPatch)
+	_ = yaml.Unmarshal([]byte(userPatchRawData), &s.userPatch)
 
 	s.client = directory.NewUserClient()
 }
