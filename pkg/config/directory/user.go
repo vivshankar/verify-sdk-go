@@ -21,8 +21,8 @@ type UserListResponse = openapi.GetUsersResponseV2
 type UserPatchOperation = openapi.PatchOperation0
 
 type UserPatchRequest struct {
-	UserName         string            `json:"userName" yaml:"userName"`
-	SCIMPatchRequest openapi.PatchBody `json:"scimPatch" yaml:"scimPatch"`
+	UserName         string             `json:"userName" yaml:"userName"`
+	SCIMPatchRequest *openapi.PatchBody `json:"scimPatch" yaml:"scimPatch"`
 }
 
 func NewUserClient() *UserClient {
@@ -31,7 +31,7 @@ func NewUserClient() *UserClient {
 
 func (c *UserClient) CreateUser(ctx context.Context, user *User) (string, error) {
 	vc := contextx.GetVerifyContext(ctx)
-	client, _ := openapi.NewClientWithResponses(fmt.Sprintf("https://%s", vc.Tenant))
+	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
 	defaultErr := errorsx.G11NError("unable to create user")
 	body, err := json.Marshal(user)
 	if err != nil {
@@ -47,7 +47,7 @@ func (c *UserClient) CreateUser(ctx context.Context, user *User) (string, error)
 		Token:  vc.Token,
 		Accept: "application/scim+json",
 	}
-	resp, err := client.CreateUserWithBodyWithResponse(ctx, params, "application/scim+json", bytes.NewBuffer(body), openapi.DefaultRequestEditors(ctx, headers)...)
+	resp, err := client.CreateUserWithBodyWithResponse(ctx, params, "application/scim+json", bytes.NewBuffer(body), openapi.DefaultRequestEditors(ctx, &headers)...)
 
 	if err != nil {
 		vc.Logger.Errorf("Unable to create user; err=%v", err)
@@ -75,8 +75,8 @@ func (c *UserClient) CreateUser(ctx context.Context, user *User) (string, error)
 
 func (c *UserClient) GetUser(ctx context.Context, userName string) (*User, string, error) {
 	vc := contextx.GetVerifyContext(ctx)
-	client, _ := openapi.NewClientWithResponses(fmt.Sprintf("https://%s", vc.Tenant))
-	id, err := c.getUserId(ctx, userName)
+	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
+	id, err := c.GetUserId(ctx, userName)
 	if err != nil {
 		vc.Logger.Errorf("unable to get the group ID; err=%s", err.Error())
 		return nil, "", err
@@ -87,7 +87,7 @@ func (c *UserClient) GetUser(ctx context.Context, userName string) (*User, strin
 		Token:  vc.Token,
 		Accept: "application/scim+json",
 	}
-	resp, err := client.GetUser0WithResponse(ctx, id, params, openapi.DefaultRequestEditors(ctx, headers)...)
+	resp, err := client.GetUser0WithResponse(ctx, id, params, openapi.DefaultRequestEditors(ctx, &headers)...)
 	if err != nil {
 		vc.Logger.Errorf("unable to get the User; err=%s", err.Error())
 		return nil, "", err
@@ -114,7 +114,7 @@ func (c *UserClient) GetUser(ctx context.Context, userName string) (*User, strin
 func (c *UserClient) GetUsers(ctx context.Context, sort string, count string) (*UserListResponse, string, error) {
 
 	vc := contextx.GetVerifyContext(ctx)
-	client, _ := openapi.NewClientWithResponses(fmt.Sprintf("https://%s", vc.Tenant))
+	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
 
 	params := &openapi.GetUsersParams{}
 	if len(sort) > 0 {
@@ -128,7 +128,7 @@ func (c *UserClient) GetUsers(ctx context.Context, sort string, count string) (*
 		Token:  vc.Token,
 		Accept: "application/scim+json",
 	}
-	resp, err := client.GetUsersWithResponse(ctx, params, openapi.DefaultRequestEditors(ctx, headers)...)
+	resp, err := client.GetUsersWithResponse(ctx, params, openapi.DefaultRequestEditors(ctx, &headers)...)
 
 	if err != nil {
 		vc.Logger.Errorf("unable to get the Users; err=%s", err.Error())
@@ -156,8 +156,8 @@ func (c *UserClient) GetUsers(ctx context.Context, sort string, count string) (*
 
 func (c *UserClient) DeleteUser(ctx context.Context, name string) error {
 	vc := contextx.GetVerifyContext(ctx)
-	id, err := c.getUserId(ctx, name)
-	client, _ := openapi.NewClientWithResponses(fmt.Sprintf("https://%s", vc.Tenant))
+	id, err := c.GetUserId(ctx, name)
+	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
 	if err != nil {
 		vc.Logger.Errorf("unable to get the user ID; err=%s", err.Error())
 		return errorsx.G11NError("unable to get the user ID; err=%s", err.Error())
@@ -167,7 +167,7 @@ func (c *UserClient) DeleteUser(ctx context.Context, name string) error {
 		Token:       vc.Token,
 		ContentType: "application/json",
 	}
-	resp, err := client.DeleteUser0WithResponse(ctx, id, &openapi.DeleteUser0Params{}, openapi.DefaultRequestEditors(ctx, headers)...)
+	resp, err := client.DeleteUser0WithResponse(ctx, id, &openapi.DeleteUser0Params{}, openapi.DefaultRequestEditors(ctx, &headers)...)
 	if err != nil {
 		vc.Logger.Errorf("unable to delete the User; err=%s", err.Error())
 		return errorsx.G11NError("unable to delete the User; err=%s", err.Error())
@@ -186,10 +186,10 @@ func (c *UserClient) DeleteUser(ctx context.Context, name string) error {
 	return nil
 }
 
-func (c *UserClient) UpdateUser(ctx context.Context, userName string, operations []UserPatchOperation) error {
+func (c *UserClient) UpdateUser(ctx context.Context, userName string, operations *[]UserPatchOperation) error {
 	vc := contextx.GetVerifyContext(ctx)
-	client, _ := openapi.NewClientWithResponses(fmt.Sprintf("https://%s", vc.Tenant))
-	id, err := c.getUserId(ctx, userName)
+	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
+	id, err := c.GetUserId(ctx, userName)
 	if err != nil {
 		vc.Logger.Errorf("unable to get the user ID; err=%s", err.Error())
 		return errorsx.G11NError("unable to get the user ID; err=%s", err.Error())
@@ -197,7 +197,7 @@ func (c *UserClient) UpdateUser(ctx context.Context, userName string, operations
 
 	patchRequest := openapi.PatchBody{
 		Schemas:    []string{"urn:ietf:params:scim:api:messages:2.0:PatchOp"},
-		Operations: operations,
+		Operations: *operations,
 	}
 
 	body, err := json.Marshal(patchRequest)
@@ -215,13 +215,17 @@ func (c *UserClient) UpdateUser(ctx context.Context, userName string, operations
 		Token:  vc.Token,
 		Accept: "application/scim+json",
 	}
-	resp, err := client.PatchUserWithBodyWithResponse(ctx, id, params, "application/scim+json", bytes.NewBuffer(body), openapi.DefaultRequestEditors(ctx, headers)...)
+	resp, err := client.PatchUserWithBodyWithResponse(ctx, id, params, "application/scim+json", bytes.NewBuffer(body), openapi.DefaultRequestEditors(ctx, &headers)...)
 
 	if err != nil {
 		vc.Logger.Errorf("unable to update user; err=%v", err)
 		return errorsx.G11NError("unable to update user; err=%v", err)
 	}
 	if resp.StatusCode() != http.StatusNoContent {
+		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, "unable to update user"); err != nil {
+			vc.Logger.Errorf("unable to update the user; err=%s", err.Error())
+			return err
+		}
 		vc.Logger.Errorf("failed to update user; code=%d, body=%s", resp.StatusCode(), string(resp.Body))
 		return errorsx.G11NError("failed to update user ; code=%d, body=%s", resp.StatusCode(), string(resp.Body))
 	}
@@ -229,9 +233,9 @@ func (c *UserClient) UpdateUser(ctx context.Context, userName string, operations
 	return nil
 }
 
-func (c *UserClient) getUserId(ctx context.Context, name string) (string, error) {
+func (c *UserClient) GetUserId(ctx context.Context, name string) (string, error) {
 	vc := contextx.GetVerifyContext(ctx)
-	client, _ := openapi.NewClientWithResponses(fmt.Sprintf("https://%s", vc.Tenant))
+	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
 	filter := fmt.Sprintf(`userName eq "%s"`, name)
 	params := &openapi.GetUsersParams{
 		Filter: &filter,
@@ -241,8 +245,11 @@ func (c *UserClient) getUserId(ctx context.Context, name string) (string, error)
 		Token:  vc.Token,
 		Accept: "application/scim+json",
 	}
-	response, _ := client.GetUsersWithResponse(ctx, params, openapi.DefaultRequestEditors(ctx, headers)...)
-
+	response, err := client.GetUsersWithResponse(ctx, params, openapi.DefaultRequestEditors(ctx, &headers)...)
+	if err != nil {
+		vc.Logger.Errorf("unable to get the User with userName; err=%v", err)
+		return "", errorsx.G11NError("unable to get the User with userName %s; err=%s", name, err.Error())
+	}
 	if response.StatusCode() != http.StatusOK {
 		if err := errorsx.HandleCommonErrors(ctx, response.HTTPResponse, "unable to get User"); err != nil {
 			vc.Logger.Errorf("unable to get the User with userName %s; err=%s", name, err.Error())

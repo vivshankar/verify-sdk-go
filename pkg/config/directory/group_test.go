@@ -8,6 +8,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/ibm-verify/verify-sdk-go/pkg/auth"
+	"github.com/ibm-verify/verify-sdk-go/pkg/config"
 	"github.com/ibm-verify/verify-sdk-go/pkg/config/directory"
 	"gopkg.in/yaml.v3"
 
@@ -35,13 +36,7 @@ func (s *GroupTestSuite) SetupTest() {
 	logger.AddNewline = true
 
 	// load common config
-	clientID := os.Getenv("CLIENT_ID")
-	clientSecret := os.Getenv("CLIENT_SECRET")
-	tenant := os.Getenv("TENANT")
-
-	require.NotEmpty(s.T(), clientID, "invalid config; CLIENT_ID is missing")
-	require.NotEmpty(s.T(), clientSecret, "invalid config; CLIENT_SECRET is missing")
-	require.NotEmpty(s.T(), tenant, "invalid config; TENANT is missing")
+	tenant, clientID, clientSecret := config.LoadCommonConfig(s.T())
 
 	// get token
 	client := &auth.Client{
@@ -106,7 +101,7 @@ func (s *GroupTestSuite) TestGetGroup() {
 	require.NoError(s.T(), err, "unable to create a group %s; err=%v", s.groupName, err)
 
 	// Get group details
-	_, _, err = s.client.GetGroup(s.ctx, s.groupName)
+	_, _, err = s.client.GetGroupByName(s.ctx, s.groupName)
 	require.NoError(s.T(), err, "unable to get group %s; err=%v", s.groupName, err)
 
 	// Get group list
@@ -114,7 +109,7 @@ func (s *GroupTestSuite) TestGetGroup() {
 	require.NoError(s.T(), err, "unable to list groups; err=%v", err)
 
 	// Update group
-	err = s.client.UpdateGroup(s.ctx, s.groupName, s.groupPatch.SCIMPatchRequest.Operations)
+	err = s.client.UpdateGroup(s.ctx, s.groupName, &s.groupPatch.SCIMPatchRequest.Operations)
 	require.NoError(s.T(), err, "unable to update group %s; err=%v", s.groupName, err)
 
 	// Delete group

@@ -31,7 +31,7 @@ func NewClientWithOptions(ctx context.Context, tenant string, c *http.Client) *C
 	return cwr
 }
 
-func DefaultRequestEditors(ctx context.Context, headers Headers) []RequestEditorFn {
+func DefaultRequestEditors(ctx context.Context, headers *Headers) []RequestEditorFn {
 	return []RequestEditorFn{
 		func(ctx context.Context, req *http.Request) error {
 			if len(headers.Token) > 0 {

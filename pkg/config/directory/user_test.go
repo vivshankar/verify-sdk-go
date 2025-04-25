@@ -8,6 +8,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/ibm-verify/verify-sdk-go/pkg/auth"
+	"github.com/ibm-verify/verify-sdk-go/pkg/config"
 	"github.com/ibm-verify/verify-sdk-go/pkg/config/directory"
 	"gopkg.in/yaml.v3"
 
@@ -35,13 +36,7 @@ func (s *UserTestSuite) SetupTest() {
 	logger.AddNewline = true
 
 	// load common config
-	clientID := os.Getenv("CLIENT_ID")
-	clientSecret := os.Getenv("CLIENT_SECRET")
-	tenant := os.Getenv("TENANT")
-
-	require.NotEmpty(s.T(), clientID, "invalid config; CLIENT_ID is missing")
-	require.NotEmpty(s.T(), clientSecret, "invalid config; CLIENT_SECRET is missing")
-	require.NotEmpty(s.T(), tenant, "invalid config; TENANT is missing")
+	tenant, clientID, clientSecret := config.LoadCommonConfig(s.T())
 
 	// get token
 	client := &auth.Client{
@@ -135,7 +130,7 @@ func (s *UserTestSuite) TestGetUser() {
 	require.NoError(s.T(), err, "unable to list users; err=%v", err)
 
 	// Update user
-	err = s.client.UpdateUser(s.ctx, s.userName, s.userPatch.SCIMPatchRequest.Operations)
+	err = s.client.UpdateUser(s.ctx, s.userName, &s.userPatch.SCIMPatchRequest.Operations)
 	require.NoError(s.T(), err, "unable to update user %s; err=%v", s.userName, err)
 
 	// Delete user

@@ -163,7 +163,7 @@ func (c *AttributeClient) CreateAttribute(ctx context.Context, attribute *Attrib
 	}
 
 	if resp.StatusCode() != http.StatusCreated {
-		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, "unable to get attributes"); err != nil {
+		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, "unable to create the attribute"); err != nil {
 			vc.Logger.Errorf("unable to create the attribute; err=%s", err.Error())
 			return "", err
 		}
@@ -227,7 +227,7 @@ func (c *AttributeClient) UpdateAttribute(ctx context.Context, attribute *Attrib
 	}
 
 	if resp.StatusCode() != http.StatusNoContent {
-		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, "unable to get attributes"); err != nil {
+		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, "unable to update attribute"); err != nil {
 			vc.Logger.Errorf("unable to update the attribute; err=%s", err.Error())
 			return err
 		}

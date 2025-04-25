@@ -9,6 +9,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/ibm-verify/verify-sdk-go/pkg/auth"
+	"github.com/ibm-verify/verify-sdk-go/pkg/config"
 	"github.com/ibm-verify/verify-sdk-go/pkg/config/branding"
 	contextx "github.com/ibm-verify/verify-sdk-go/pkg/core/context"
 	"github.com/ibm-verify/verify-sdk-go/x/logx"
@@ -33,13 +34,7 @@ func (s *ThemeTestSuite) SetupTest() {
 	logger.AddNewline = true
 
 	// load common config
-	clientID := os.Getenv("CLIENT_ID")
-	clientSecret := os.Getenv("CLIENT_SECRET")
-	tenant := os.Getenv("TENANT")
-
-	require.NotEmpty(s.T(), clientID, "invalid config; CLIENT_ID is missing")
-	require.NotEmpty(s.T(), clientSecret, "invalid config; CLIENT_SECRET is missing")
-	require.NotEmpty(s.T(), tenant, "invalid config; TENANT is missing")
+	tenant, clientID, clientSecret := config.LoadCommonConfig(s.T())
 
 	// get token
 	client := &auth.Client{
