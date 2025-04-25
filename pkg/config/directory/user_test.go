@@ -8,7 +8,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/ibm-verify/verify-sdk-go/pkg/auth"
-	"github.com/ibm-verify/verify-sdk-go/pkg/config"
+	"github.com/ibm-verify/verify-sdk-go/pkg/config/config_test"
 	"github.com/ibm-verify/verify-sdk-go/pkg/config/directory"
 	"gopkg.in/yaml.v3"
 
@@ -36,7 +36,7 @@ func (s *UserTestSuite) SetupTest() {
 	logger.AddNewline = true
 
 	// load common config
-	tenant, clientID, clientSecret := config.LoadCommonConfig(s.T())
+	tenant, clientID, clientSecret := config_test.LoadCommonConfig(s.T())
 
 	// get token
 	client := &auth.Client{

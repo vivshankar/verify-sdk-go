@@ -97,8 +97,8 @@ func (c *ThemeClient) ListThemes(ctx context.Context, count int, page int, limit
 		params.Pagination = &paginationString
 	}
 
-	headers := openapi.Headers{Token: vc.Token}
-	resp, err := client.GetThemeRegistrationsWithResponse(ctx, params, openapi.DefaultRequestEditors(ctx, &headers)...)
+	headers := &openapi.Headers{Token: vc.Token}
+	resp, err := client.GetThemeRegistrationsWithResponse(ctx, params, openapi.DefaultRequestEditors(ctx, headers)...)
 	if err != nil {
 		vc.Logger.Errorf("unable to get the themes; err=%s", err.Error())
 		return nil, "", err
@@ -168,11 +168,11 @@ func (c *ThemeClient) GetTheme(ctx context.Context, themeID string, customizedOn
 	params := &openapi.DownloadThemeTemplatesParams{}
 	params.CustomizedOnly = &customizedOnly
 
-	headers := openapi.Headers{
+	headers := &openapi.Headers{
 		Token:  vc.Token,
 		Accept: "application/octet-stream",
 	}
-	resp, err := client.DownloadThemeTemplatesWithResponse(ctx, themeID, params, openapi.DefaultRequestEditors(ctx, &headers)...)
+	resp, err := client.DownloadThemeTemplatesWithResponse(ctx, themeID, params, openapi.DefaultRequestEditors(ctx, headers)...)
 	if err != nil {
 		vc.Logger.Errorf("unable to get the theme; err=%s", err.Error())
 		return nil, "", err
@@ -195,8 +195,8 @@ func (c *ThemeClient) GetFile(ctx context.Context, themeID string, path string) 
 	fmt.Println("Tenant:", vc.Tenant)
 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
 
-	headers := openapi.Headers{Token: vc.Token}
-	resp, err := client.GetTemplate0WithResponse(ctx, themeID, path, openapi.DefaultRequestEditors(ctx, &headers)...)
+	headers := &openapi.Headers{Token: vc.Token}
+	resp, err := client.GetTemplate0WithResponse(ctx, themeID, path, openapi.DefaultRequestEditors(ctx, headers)...)
 	if err != nil {
 		vc.Logger.Errorf("unable to get the themes; err=%s", err.Error())
 		return nil, "", err
@@ -227,8 +227,8 @@ func (c *ThemeClient) UpdateFile(ctx context.Context, themeID string, path strin
 		return err
 	}
 
-	headers := openapi.Headers{Token: vc.Token}
-	response, err := client.UpdateThemeTemplateWithBodyWithResponse(ctx, themeID, path, "multipart/form-data", buffer, openapi.DefaultRequestEditors(ctx, &headers)...)
+	headers := &openapi.Headers{Token: vc.Token}
+	response, err := client.UpdateThemeTemplateWithBodyWithResponse(ctx, themeID, path, "multipart/form-data", buffer, openapi.DefaultRequestEditors(ctx, headers)...)
 	if err != nil {
 		vc.Logger.Errorf("unable to update the file; err=%s", err.Error())
 		return err
@@ -266,8 +266,8 @@ func (c *ThemeClient) UpdateTheme(ctx context.Context, themeID string, data []by
 		return err
 	}
 
-	headers := openapi.Headers{Token: vc.Token}
-	response, err := client.UpdateThemeTemplatesWithBodyWithResponse(ctx, themeID, "multipart/form-data", buffer, openapi.DefaultRequestEditors(ctx, &headers)...)
+	headers := &openapi.Headers{Token: vc.Token}
+	response, err := client.UpdateThemeTemplatesWithBodyWithResponse(ctx, themeID, "multipart/form-data", buffer, openapi.DefaultRequestEditors(ctx, headers)...)
 	if err != nil {
 		vc.Logger.Errorf("unable to update the theme; err=%s", err.Error())
 		return err

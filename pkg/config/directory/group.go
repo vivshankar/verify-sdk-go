@@ -41,11 +41,11 @@ func (c *GroupClient) GetGroupByName(ctx context.Context, groupName string) (*Gr
 		return nil, "", err
 	}
 
-	headers := openapi.Headers{
+	headers := &openapi.Headers{
 		Token:  vc.Token,
 		Accept: "application/scim+json",
 	}
-	resp, err := client.GetGroupWithResponse(ctx, id, &openapi.GetGroupParams{}, openapi.DefaultRequestEditors(ctx, &headers)...)
+	resp, err := client.GetGroupWithResponse(ctx, id, &openapi.GetGroupParams{}, openapi.DefaultRequestEditors(ctx, headers)...)
 	if err != nil {
 		vc.Logger.Errorf("unable to get the Group; err=%s", err.Error())
 		return nil, "", err
@@ -73,11 +73,11 @@ func (c *GroupClient) GetGroupByID(ctx context.Context, id string) (*Group, stri
 	vc := contextx.GetVerifyContext(ctx)
 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
 
-	headers := openapi.Headers{
+	headers := &openapi.Headers{
 		Token:  vc.Token,
 		Accept: "application/scim+json",
 	}
-	resp, err := client.GetGroupWithResponse(ctx, id, &openapi.GetGroupParams{}, openapi.DefaultRequestEditors(ctx, &headers)...)
+	resp, err := client.GetGroupWithResponse(ctx, id, &openapi.GetGroupParams{}, openapi.DefaultRequestEditors(ctx, headers)...)
 	if err != nil {
 		vc.Logger.Errorf("unable to get the Group; err=%s", err.Error())
 		return nil, "", err
@@ -114,11 +114,11 @@ func (c *GroupClient) GetGroups(ctx context.Context, sort string, count string) 
 		params.Count = &count
 	}
 
-	headers := openapi.Headers{
+	headers := &openapi.Headers{
 		Token:  vc.Token,
 		Accept: "application/scim+json",
 	}
-	resp, err := client.GetGroupsWithResponse(ctx, params, openapi.DefaultRequestEditors(ctx, &headers)...)
+	resp, err := client.GetGroupsWithResponse(ctx, params, openapi.DefaultRequestEditors(ctx, headers)...)
 
 	if err != nil {
 		vc.Logger.Errorf("unable to get the Groups; err=%s", err.Error())
@@ -170,11 +170,11 @@ func (c *GroupClient) CreateGroup(ctx context.Context, group *Group) (string, er
 	}
 
 	params := &openapi.CreateGroupParams{}
-	headers := openapi.Headers{
+	headers := &openapi.Headers{
 		Token:  vc.Token,
 		Accept: "application/scim+json",
 	}
-	resp, err := client.CreateGroupWithBodyWithResponse(ctx, params, "application/scim+json", bytes.NewBuffer(body), append(openapi.DefaultRequestEditors(ctx, &headers), func(ctx context.Context, req *http.Request) error {
+	resp, err := client.CreateGroupWithBodyWithResponse(ctx, params, "application/scim+json", bytes.NewBuffer(body), append(openapi.DefaultRequestEditors(ctx, headers), func(ctx context.Context, req *http.Request) error {
 		req.Header.Set("groupshouldnotneedtoresetpassword", "false")
 		return nil
 	})...)
@@ -211,11 +211,11 @@ func (c *GroupClient) DeleteGroup(ctx context.Context, groupName string) error {
 		return errorsx.G11NError("unable to get the group ID; err=%s", err.Error())
 	}
 
-	headers := openapi.Headers{
+	headers := &openapi.Headers{
 		Token:       vc.Token,
 		ContentType: "application/json",
 	}
-	resp, err := client.DeleteGroupWithResponse(ctx, id, &openapi.DeleteGroupParams{}, openapi.DefaultRequestEditors(ctx, &headers)...)
+	resp, err := client.DeleteGroupWithResponse(ctx, id, &openapi.DeleteGroupParams{}, openapi.DefaultRequestEditors(ctx, headers)...)
 	if err != nil {
 		vc.Logger.Errorf("unable to delete the Group; err=%s", err.Error())
 		return errorsx.G11NError("unable to delete the Group; err=%s", err.Error())
@@ -282,11 +282,11 @@ func (c *GroupClient) UpdateGroup(ctx context.Context, groupName string, operati
 		return errorsx.G11NError("unable to marshal the patch request; err=%v", err)
 	}
 
-	headers := openapi.Headers{
+	headers := &openapi.Headers{
 		Token:  vc.Token,
 		Accept: "application/scim+json",
 	}
-	resp, err := client.PatchGroupWithBodyWithResponse(ctx, groupID, &openapi.PatchGroupParams{}, "application/scim+json", bytes.NewBuffer(body), openapi.DefaultRequestEditors(ctx, &headers)...)
+	resp, err := client.PatchGroupWithBodyWithResponse(ctx, groupID, &openapi.PatchGroupParams{}, "application/scim+json", bytes.NewBuffer(body), openapi.DefaultRequestEditors(ctx, headers)...)
 	if err != nil {
 		vc.Logger.Errorf("unable to update group; err=%v", err)
 		return errorsx.G11NError("unable to update group; err=%v", err)
@@ -310,11 +310,11 @@ func (c *GroupClient) GetGroupId(ctx context.Context, name string) (string, erro
 	params := &openapi.GetGroupsParams{
 		Filter: &filter,
 	}
-	headers := openapi.Headers{
+	headers := &openapi.Headers{
 		Token:  vc.Token,
 		Accept: "application/scim+json",
 	}
-	resp, err := client.GetGroupsWithResponse(ctx, params, openapi.DefaultRequestEditors(ctx, &headers)...)
+	resp, err := client.GetGroupsWithResponse(ctx, params, openapi.DefaultRequestEditors(ctx, headers)...)
 	if err != nil {
 		vc.Logger.Errorf("unable to get the Group with groupName; err=%v", err)
 		return "", errorsx.G11NError("unable to get the Group with groupName %s; err=%s", name, err.Error())

@@ -43,11 +43,11 @@ func (c *UserClient) CreateUser(ctx context.Context, user *User) (string, error)
 		Usershouldnotneedtoresetpassword: &usershouldnotneedtoresetpassword,
 	}
 
-	headers := openapi.Headers{
+	headers := &openapi.Headers{
 		Token:  vc.Token,
 		Accept: "application/scim+json",
 	}
-	resp, err := client.CreateUserWithBodyWithResponse(ctx, params, "application/scim+json", bytes.NewBuffer(body), openapi.DefaultRequestEditors(ctx, &headers)...)
+	resp, err := client.CreateUserWithBodyWithResponse(ctx, params, "application/scim+json", bytes.NewBuffer(body), openapi.DefaultRequestEditors(ctx, headers)...)
 
 	if err != nil {
 		vc.Logger.Errorf("Unable to create user; err=%v", err)
@@ -83,11 +83,11 @@ func (c *UserClient) GetUser(ctx context.Context, userName string) (*User, strin
 	}
 
 	params := &openapi.GetUser0Params{}
-	headers := openapi.Headers{
+	headers := &openapi.Headers{
 		Token:  vc.Token,
 		Accept: "application/scim+json",
 	}
-	resp, err := client.GetUser0WithResponse(ctx, id, params, openapi.DefaultRequestEditors(ctx, &headers)...)
+	resp, err := client.GetUser0WithResponse(ctx, id, params, openapi.DefaultRequestEditors(ctx, headers)...)
 	if err != nil {
 		vc.Logger.Errorf("unable to get the User; err=%s", err.Error())
 		return nil, "", err
@@ -124,11 +124,11 @@ func (c *UserClient) GetUsers(ctx context.Context, sort string, count string) (*
 		params.Count = &count
 	}
 
-	headers := openapi.Headers{
+	headers := &openapi.Headers{
 		Token:  vc.Token,
 		Accept: "application/scim+json",
 	}
-	resp, err := client.GetUsersWithResponse(ctx, params, openapi.DefaultRequestEditors(ctx, &headers)...)
+	resp, err := client.GetUsersWithResponse(ctx, params, openapi.DefaultRequestEditors(ctx, headers)...)
 
 	if err != nil {
 		vc.Logger.Errorf("unable to get the Users; err=%s", err.Error())
@@ -163,11 +163,11 @@ func (c *UserClient) DeleteUser(ctx context.Context, name string) error {
 		return errorsx.G11NError("unable to get the user ID; err=%s", err.Error())
 	}
 
-	headers := openapi.Headers{
+	headers := &openapi.Headers{
 		Token:       vc.Token,
 		ContentType: "application/json",
 	}
-	resp, err := client.DeleteUser0WithResponse(ctx, id, &openapi.DeleteUser0Params{}, openapi.DefaultRequestEditors(ctx, &headers)...)
+	resp, err := client.DeleteUser0WithResponse(ctx, id, &openapi.DeleteUser0Params{}, openapi.DefaultRequestEditors(ctx, headers)...)
 	if err != nil {
 		vc.Logger.Errorf("unable to delete the User; err=%s", err.Error())
 		return errorsx.G11NError("unable to delete the User; err=%s", err.Error())
@@ -211,11 +211,11 @@ func (c *UserClient) UpdateUser(ctx context.Context, userName string, operations
 		Usershouldnotneedtoresetpassword: &usershouldnotneedtoresetpassword,
 	}
 
-	headers := openapi.Headers{
+	headers := &openapi.Headers{
 		Token:  vc.Token,
 		Accept: "application/scim+json",
 	}
-	resp, err := client.PatchUserWithBodyWithResponse(ctx, id, params, "application/scim+json", bytes.NewBuffer(body), openapi.DefaultRequestEditors(ctx, &headers)...)
+	resp, err := client.PatchUserWithBodyWithResponse(ctx, id, params, "application/scim+json", bytes.NewBuffer(body), openapi.DefaultRequestEditors(ctx, headers)...)
 
 	if err != nil {
 		vc.Logger.Errorf("unable to update user; err=%v", err)
@@ -241,11 +241,11 @@ func (c *UserClient) GetUserId(ctx context.Context, name string) (string, error)
 		Filter: &filter,
 	}
 
-	headers := openapi.Headers{
+	headers := &openapi.Headers{
 		Token:  vc.Token,
 		Accept: "application/scim+json",
 	}
-	response, err := client.GetUsersWithResponse(ctx, params, openapi.DefaultRequestEditors(ctx, &headers)...)
+	response, err := client.GetUsersWithResponse(ctx, params, openapi.DefaultRequestEditors(ctx, headers)...)
 	if err != nil {
 		vc.Logger.Errorf("unable to get the User with userName; err=%v", err)
 		return "", errorsx.G11NError("unable to get the User with userName %s; err=%s", name, err.Error())
