@@ -279,16 +279,12 @@ type APIAccessClients struct {
 }
 
 type ApplicationClient struct {
-	client *http.Client
-	Tenant string
-	Token  string
+	Client *http.Client
 }
 
-func NewApplicationClient(tenant, token string) *ApplicationClient {
+func NewApplicationClient() *ApplicationClient {
 	return &ApplicationClient{
-		client: &http.Client{},
-		Tenant: tenant,
-		Token:  token,
+		Client: &http.Client{},
 	}
 }
 
@@ -304,11 +300,11 @@ func (c *ApplicationClient) GetApplication(ctx context.Context, name string) (*A
 		return nil, "", err
 	}
 
-	u, _ := url.Parse(fmt.Sprintf("https://%s/%s/%s", c.Tenant, apiApplications, templateId))
+	u, _ := url.Parse(fmt.Sprintf("https://%s/%s/%s", vc.Tenant, apiApplications, templateId))
 
 	headers := http.Header{
 		"Accept":        []string{"application/json"},
-		"Authorization": []string{"Bearer " + c.Token},
+		"Authorization": []string{"Bearer " + vc.Token},
 	}
 
 	req, err := http.NewRequestWithContext(ctx, "GET", u.String(), nil)
@@ -318,7 +314,7 @@ func (c *ApplicationClient) GetApplication(ctx context.Context, name string) (*A
 	}
 	req.Header = headers
 
-	response, err := c.client.Do(req)
+	response, err := c.Client.Do(req)
 	if err != nil {
 		vc.Logger.Errorf("unable to get an Application; err=%s", err.Error())
 		return nil, "", err
@@ -351,21 +347,14 @@ func (c *ApplicationClient) GetApplicationId(ctx context.Context, name string) (
 		return "", errorsx.G11NError("VerifyContext is nil")
 	}
 
-	if c.Tenant == "" {
-		return "", errorsx.G11NError("tenant is not set in ApplicationClient")
-	}
-	if c.Token == "" {
-		return "", errorsx.G11NError("token is not set in ApplicationClient")
-	}
-
-	u, _ := url.Parse(fmt.Sprintf("https://%s/%s", c.Tenant, apiApplications))
+	u, _ := url.Parse(fmt.Sprintf("https://%s/%s", vc.Tenant, apiApplications))
 	q := u.Query()
 	q.Set("search", fmt.Sprintf(`"q=%s"`, name))
 	u.RawQuery = q.Encode()
 
 	headers := http.Header{
 		"Accept":        []string{"application/json"},
-		"Authorization": []string{"Bearer " + c.Token},
+		"Authorization": []string{"Bearer " + vc.Token},
 	}
 
 	req, err := http.NewRequestWithContext(ctx, "GET", u.String(), nil)
@@ -375,7 +364,7 @@ func (c *ApplicationClient) GetApplicationId(ctx context.Context, name string) (
 	}
 	req.Header = headers
 
-	respo, err := c.client.Do(req)
+	respo, err := c.Client.Do(req)
 	if err != nil {
 		vc.Logger.Errorf("unable to query applications; err=%s", err.Error())
 		return "", err
@@ -424,14 +413,7 @@ func (c *ApplicationClient) GetApplications(ctx context.Context, search string, 
 		return nil, "", errorsx.G11NError("VerifyContext is nil")
 	}
 
-	if c.Tenant == "" {
-		return nil, "", errorsx.G11NError("tenant is not set in ApplicationClient")
-	}
-	if c.Token == "" {
-		return nil, "", errorsx.G11NError("token is not set in ApplicationClient")
-	}
-
-	u, _ := url.Parse(fmt.Sprintf("https://%s/%s", c.Tenant, apiApplications))
+	u, _ := url.Parse(fmt.Sprintf("https://%s/%s", vc.Tenant, apiApplications))
 	q := u.Query()
 	if len(search) > 0 {
 		q.Set("search", fmt.Sprintf(`"q=%s"`, search))
@@ -449,7 +431,7 @@ func (c *ApplicationClient) GetApplications(ctx context.Context, search string, 
 
 	headers := http.Header{
 		"Accept":        []string{"application/json"},
-		"Authorization": []string{"Bearer " + c.Token},
+		"Authorization": []string{"Bearer " + vc.Token},
 	}
 
 	req, err := http.NewRequestWithContext(ctx, "GET", u.String(), nil)
@@ -459,7 +441,7 @@ func (c *ApplicationClient) GetApplications(ctx context.Context, search string, 
 	}
 	req.Header = headers
 
-	respo, err := c.client.Do(req)
+	respo, err := c.Client.Do(req)
 	if err != nil {
 		vc.Logger.Errorf("unable to get Applications; err=%s", err.Error())
 		return nil, "", err
