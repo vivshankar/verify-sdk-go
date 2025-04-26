@@ -1,6 +1,7 @@
 package applications
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -57,12 +58,12 @@ type AdaptiveAuthentication struct {
 	StorageLink string `json:"storageLink" yaml:"storageLink,omitempty"`
 }
 type DevportalSettings struct {
-	GrantTypes                   GrantTypes         `json:"grantTypes" yaml:"grantTypes,omitempty"`
-	AuthPolicy                   AuthPolicy         `json:"authPolicy" yaml:"authPolicy,omitempty"`
-	ExtendedProperties           map[string]string  `json:"extendedProperties" yaml:"extendedProperties,omitempty"`
-	IdentitySources              []string           `json:"identitySources" yaml:"identitySources,omitempty"`
-	SendAllKnownUserapplications string             `json:"sendAllKnownUserapplications" yaml:"sendAllKnownUserapplications,omitempty"`
-	AttributeMappings            []AttributeMapping `json:"attributeMappings" yaml:"attributeMappings,omitempty"`
+	GrantTypes                 GrantTypes         `json:"grantTypes" yaml:"grantTypes,omitempty"`
+	AuthPolicy                 AuthPolicy         `json:"authPolicy" yaml:"authPolicy,omitempty"`
+	ExtendedProperties         map[string]string  `json:"extendedProperties" yaml:"extendedProperties,omitempty"`
+	IdentitySources            []string           `json:"identitySources" yaml:"identitySources,omitempty"`
+	SendAllKnownUserAttributes string             `json:"sendAllKnownUserAttributes" yaml:"sendAllKnownUserAttributes,omitempty"`
+	AttributeMappings          []AttributeMapping `json:"attributeMappings" yaml:"attributeMappings,omitempty"`
 }
 type AuthPolicy struct {
 	ID               string           `json:"id" yaml:"id,omitempty"`
@@ -117,7 +118,7 @@ type SAMLProperties struct {
 	ValidateAuthnRequest             string `json:"validateAuthnRequest" yaml:"validateAuthnRequest,omitempty"`
 	EncryptAssertion                 string `json:"encryptAssertion" yaml:"encryptAssertion,omitempty"`
 	ICIReservedSubjectNameID         string `json:"ici_reserved_subjectNameID" yaml:"ici_reserved_subjectNameID,omitempty"`
-	IncludeAllapplications           string `json:"includeAllapplications" yaml:"includeAllapplications,omitempty"`
+	IncludeAllAttributes             string `json:"includeAllAttributes" yaml:"includeAllAttributes,omitempty"`
 	DefaultNameIdFormat              string `json:"defaultNameIdFormat" yaml:"defaultNameIdFormat,omitempty"`
 	ProviderID                       string `json:"providerId" yaml:"providerId"`
 	AssertionConsumerServiceURL      string `json:"assertionConsumerServiceUrl" yaml:"assertionConsumerServiceUrl"`
@@ -152,25 +153,25 @@ type OIDC struct {
 }
 
 type OIDCProperties struct {
-	GrantTypes                   GrantTypes    `json:"grantTypes" yaml:"grantTypes,omitempty"`
-	RedirectURIs                 []interface{} `json:"redirectUris" yaml:"redirectUris,omitempty"`
-	IDTokenSigningAlg            string        `json:"idTokenSigningAlg" yaml:"idTokenSigningAlg,omitempty"`
-	AccessTokenExpiry            int           `json:"accessTokenExpiry" yaml:"accessTokenExpiry,omitempty"`
-	RefreshTokenExpiry           int           `json:"refreshTokenExpiry" yaml:"refreshTokenExpiry,omitempty"`
-	DoNotGenerateClientSecret    string        `json:"doNotGenerateClientSecret" yaml:"doNotGenerateClientSecret,omitempty"`
-	GenerateRefreshToken         string        `json:"generateRefreshToken" yaml:"generateRefreshToken,omitempty"`
-	RenewRefreshTokenExpiry      int           `json:"renewRefreshTokenExpiry" yaml:"renewRefreshTokenExpiry,omitempty"`
-	SignIDToken                  string        `json:"signIdToken" yaml:"signIdToken,omitempty"`
-	SigningCertificate           string        `json:"signingCertificate" yaml:"signingCertificate,omitempty"`
-	ClientID                     string        `json:"clientId" yaml:"clientId,omitempty"`
-	ClientSecret                 string        `json:"clientSecret" yaml:"clientSecret,omitempty"`
-	SendAllKnownUserapplications string        `json:"sendAllKnownUserapplications" yaml:"sendAllKnownUserapplications,omitempty"`
-	JWKSURI                      string        `json:"jwksUri" yaml:"jwksUri,omitempty"`
-	ConsentType                  string        `json:"consentType" yaml:"consentType,omitempty"`
-	RenewRefreshToken            string        `json:"renewRefreshToken" yaml:"renewRefreshToken,omitempty"`
-	IDTokenEncryptAlg            string        `json:"idTokenEncryptAlg" yaml:"idTokenEncryptAlg,omitempty"`
-	IDTokenEncryptEnc            string        `json:"idTokenEncryptEnc" yaml:"idTokenEncryptEnc,omitempty"`
-	IDTokenEncryptKey            string        `json:"idTokenEncryptKey" yaml:"idTokenEncryptKey,omitempty"`
+	GrantTypes                 GrantTypes    `json:"grantTypes" yaml:"grantTypes,omitempty"`
+	RedirectURIs               []interface{} `json:"redirectUris" yaml:"redirectUris,omitempty"`
+	IDTokenSigningAlg          string        `json:"idTokenSigningAlg" yaml:"idTokenSigningAlg,omitempty"`
+	AccessTokenExpiry          int           `json:"accessTokenExpiry" yaml:"accessTokenExpiry,omitempty"`
+	RefreshTokenExpiry         int           `json:"refreshTokenExpiry" yaml:"refreshTokenExpiry,omitempty"`
+	DoNotGenerateClientSecret  string        `json:"doNotGenerateClientSecret" yaml:"doNotGenerateClientSecret,omitempty"`
+	GenerateRefreshToken       string        `json:"generateRefreshToken" yaml:"generateRefreshToken,omitempty"`
+	RenewRefreshTokenExpiry    int           `json:"renewRefreshTokenExpiry" yaml:"renewRefreshTokenExpiry,omitempty"`
+	SignIDToken                string        `json:"signIdToken" yaml:"signIdToken,omitempty"`
+	SigningCertificate         string        `json:"signingCertificate" yaml:"signingCertificate,omitempty"`
+	ClientID                   string        `json:"clientId" yaml:"clientId,omitempty"`
+	ClientSecret               string        `json:"clientSecret" yaml:"clientSecret,omitempty"`
+	SendAllKnownUserAttributes string        `json:"sendAllKnownUserAttributes" yaml:"sendAllKnownUserAttributes,omitempty"`
+	JWKSURI                    string        `json:"jwksUri" yaml:"jwksUri,omitempty"`
+	ConsentType                string        `json:"consentType" yaml:"consentType,omitempty"`
+	RenewRefreshToken          string        `json:"renewRefreshToken" yaml:"renewRefreshToken,omitempty"`
+	IDTokenEncryptAlg          string        `json:"idTokenEncryptAlg" yaml:"idTokenEncryptAlg,omitempty"`
+	IDTokenEncryptEnc          string        `json:"idTokenEncryptEnc" yaml:"idTokenEncryptEnc,omitempty"`
+	IDTokenEncryptKey          string        `json:"idTokenEncryptKey" yaml:"idTokenEncryptKey,omitempty"`
 }
 
 type GrantTypes struct {
@@ -255,7 +256,7 @@ type ProvisioningPolicies struct {
 }
 
 type AdoptionPolicy struct {
-	Matchingapplications []AttributeMapping `json:"matchingapplications" yaml:"matchingapplications,omitempty"`
+	MatchingAttributes []AttributeMapping `json:"matchingAttributes" yaml:"matchingAttributes,omitempty"`
 }
 
 type Authentication struct {
@@ -287,6 +288,134 @@ func NewApplicationClient() *ApplicationClient {
 		Client: &http.Client{},
 	}
 }
+func (c *ApplicationClient) CreateApplication(ctx context.Context, application *Application) (string, error) {
+	vc := contextx.GetVerifyContext(ctx)
+	if vc == nil {
+		return "", errorsx.G11NError("VerifyContext is nil")
+	}
+	u, _ := url.Parse(fmt.Sprintf("https://%s/%s", vc.Tenant, apiApplications))
+
+	headers := http.Header{
+		"Accept":        []string{"application/json"},
+		"Content-Type":  []string{"application/json"},
+		"Authorization": []string{"Bearer " + vc.Token},
+	}
+	b, err := json.Marshal(application)
+	if err != nil {
+		vc.Logger.Errorf("Unable to marshal API application data; err=%s", err.Error())
+		return "", errorsx.G11NError("unable to marshal application data")
+	}
+	vc.Logger.Infof("Payload: %s", string(b))
+	req, err := http.NewRequestWithContext(ctx, "POST", u.String(), bytes.NewBuffer(b))
+	if err != nil {
+		vc.Logger.Errorf("Unable to create API application; err=%s", err.Error())
+		return "", errorsx.G11NError("unable to create request")
+	}
+	req.Header = headers
+
+	response, err := c.Client.Do(req)
+	if err != nil {
+		vc.Logger.Errorf("unable to create an Application; err=%s", err.Error())
+		return "", errorsx.G11NError("unable to create application")
+	}
+	defer response.Body.Close()
+	body, err := io.ReadAll(response.Body)
+	if err != nil {
+		vc.Logger.Errorf("unable to read response body; err=%s", err.Error())
+		return "", errorsx.G11NError("unable to read response body")
+	}
+
+	if response.StatusCode != http.StatusCreated {
+		vc.Logger.Errorf("unable to get Application; code=%d, body=%s", response.StatusCode, string(body))
+		return "", errorsx.G11NError("unable to create application: status=%d, body=%s", response.StatusCode, string(body))
+	}
+
+	m := map[string]interface{}{}
+	if err := json.Unmarshal(body, &m); err != nil {
+		vc.Logger.Errorf("Failed to unmarshal API response; err=%s", err.Error())
+		return "", errorsx.G11NError("unable to parse response")
+	}
+
+	links, ok := m["_links"].(map[string]interface{})
+	if !ok {
+		vc.Logger.Errorf("Response missing _links field; body=%s", string(body))
+		return "", errorsx.G11NError("missing _links field")
+	}
+	self, ok := links["self"].(map[string]interface{})
+	if !ok {
+		vc.Logger.Errorf("Response missing _links.self field; body=%s", string(body))
+		return "", errorsx.G11NError("missing _links.self field")
+	}
+	href, ok := self["href"].(string)
+	if !ok {
+		vc.Logger.Errorf("Response missing _links.self.href field; body=%s", string(body))
+		return "", errorsx.G11NError("missing _links.self.href")
+	}
+
+	id := strings.Split(href, "/")[len(strings.Split(href, "/"))-1]
+	resourceURI := fmt.Sprintf("https://%s/%s/%s", vc.Tenant, apiApplications, id)
+	return resourceURI, nil
+}
+
+func (c *ApplicationClient) UpdateApplication(ctx context.Context, application *Application) error {
+	vc := contextx.GetVerifyContext(ctx)
+	if vc == nil {
+		return errorsx.G11NError("VerifyContext is nil")
+	}
+	if application == nil {
+		vc.Logger.Errorf("application object is nil")
+		return errorsx.G11NError("application object is nil")
+	}
+
+	applicationId, err := c.GetApplicationId(ctx, application.Name)
+	if err != nil {
+		vc.Logger.Errorf("unable to get the application ID for Application '%s'; err=%s", application.Name, err.Error())
+		return errorsx.G11NError("unable to get the application ID for Application '%s'; err=%s", application.Name, err.Error())
+	}
+
+	u, _ := url.Parse(fmt.Sprintf("https://%s/%s/%s", vc.Tenant, apiApplications, applicationId))
+	headers := http.Header{
+		"Accept":        []string{"application/json"},
+		"Content-Type":  []string{"*/*"},
+		"Authorization": []string{"Bearer " + vc.Token},
+	}
+
+	b, err := json.Marshal(application)
+	if err != nil {
+		vc.Logger.Errorf("unable to marshal the Application; err=%s", err.Error())
+		return errorsx.G11NError("unable to marshal the Application data")
+	}
+	vc.Logger.Infof("payload: %s", string(b))
+
+	req, err := http.NewRequestWithContext(ctx, "PUT", u.String(), bytes.NewBuffer(b))
+
+	if err != nil {
+		vc.Logger.Errorf("unable to update Application; err=%s", err.Error())
+		return errorsx.G11NError("unable to update Application")
+	}
+	req.Header = headers
+
+	response, err := c.Client.Do(req)
+	if err != nil {
+		vc.Logger.Errorf("unable to update an Application; err=%s", err.Error())
+		return errorsx.G11NError("unable to update Application")
+	}
+
+	defer response.Body.Close()
+
+	body, err := io.ReadAll(response.Body)
+	if err != nil {
+		vc.Logger.Errorf("unable to read response body; err=%s", err.Error())
+		return errorsx.G11NError("unable to read response body")
+	}
+
+	if response.StatusCode != http.StatusNoContent && response.StatusCode != http.StatusOK {
+		vc.Logger.Errorf("unable to update the Application; code=%d body=%s", response.StatusCode, string(body))
+		return errorsx.G11NError("unable to update the Application;code=%d body=%s", response.StatusCode, string(body))
+	}
+
+	return nil
+}
 
 func (c *ApplicationClient) GetApplication(ctx context.Context, name string) (*Application, string, error) {
 	vc := contextx.GetVerifyContext(ctx)
@@ -296,7 +425,7 @@ func (c *ApplicationClient) GetApplication(ctx context.Context, name string) (*A
 
 	templateId, err := c.GetApplicationId(ctx, name)
 	if err != nil {
-		vc.Logger.Errorf("unable to get the group ID; err=%s", err.Error())
+		vc.Logger.Errorf("unable to get the Application ID; err=%s", err.Error())
 		return nil, "", err
 	}
 
@@ -467,4 +596,42 @@ func (c *ApplicationClient) GetApplications(ctx context.Context, search string, 
 	}
 
 	return applicationsResponse, u.String(), nil
+}
+
+func (c *ApplicationClient) DeleteApplication(ctx context.Context, name string) error {
+	vc := contextx.GetVerifyContext(ctx)
+
+	applicationId, err := c.GetApplicationId(ctx, name)
+	if err != nil {
+		vc.Logger.Errorf("unable to get the Application ID; err=%s", err.Error())
+		return err
+	}
+
+	u, _ := url.Parse(fmt.Sprintf("https://%s/%s/%s", vc.Tenant, apiApplications, applicationId))
+	headers := http.Header{
+		"Accept":        []string{"application/json"},
+		"Authorization": []string{"Bearer " + vc.Token},
+	}
+
+	req, err := http.NewRequestWithContext(ctx, "DELETE", u.String(), nil)
+	if err != nil {
+		vc.Logger.Errorf("unable to create delete request; err=%s", err.Error())
+		return errorsx.G11NError("unable to create delete request %w", err)
+	}
+	req.Header = headers
+
+	respo, err := c.Client.Do(req)
+	if err != nil {
+		vc.Logger.Errorf("unable to delete an Application; err=%s", err.Error())
+		return errorsx.G11NError("unable to create delete request %w", err)
+	}
+	defer respo.Body.Close()
+
+	if respo.StatusCode != http.StatusNoContent && respo.StatusCode != http.StatusOK {
+		body, _ := io.ReadAll(respo.Body)
+		vc.Logger.Errorf("unable to delete the Application; code=%d, body=%s", respo.StatusCode, string(body))
+		return errorsx.G11NError("unable to delete the Application; code=%d, body=%s", respo.StatusCode, string(body))
+	}
+
+	return nil
 }
