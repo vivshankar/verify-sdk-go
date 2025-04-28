@@ -6735,7 +6735,7 @@
                         "description": "Unique identifier representing the type of SaaS application"
                     },
                     "applicationState": {
-                        "type": "string",
+                        "type": "boolean",
                         "description": "Boolean flag to indicate whether end user can use SSO with the application"
                     },
                     "description": {
@@ -6751,11 +6751,11 @@
                         "description": "Name of the SaaS application"
                     },
                     "visibleOnLaunchpad": {
-                        "type": "string",
+                        "type": "boolean",
                         "description": "Boolean flag representing  whether application is visible for end user to request access"
                     },
                     "approvalRequired": {
-                        "type": "string",
+                        "type": "boolean",
                         "description": "Boolean flag representing  whether approval request will be sent when end user request access "
                     },
                     "applicationRefId": {

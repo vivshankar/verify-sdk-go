@@ -716,10 +716,10 @@ type AdminApplicationWithoutProv struct {
 	ApplicationRefID *string `json:"applicationRefId,omitempty" yaml:"applicationRefId,omitempty"`
 
 	// ApplicationState Boolean flag to indicate whether end user can use SSO with the application
-	ApplicationState string `json:"applicationState" yaml:"applicationState"`
+	ApplicationState bool `json:"applicationState" yaml:"applicationState"`
 
 	// ApprovalRequired Boolean flag representing  whether approval request will be sent when end user request access
-	ApprovalRequired string `json:"approvalRequired" yaml:"approvalRequired"`
+	ApprovalRequired bool `json:"approvalRequired" yaml:"approvalRequired"`
 
 	// CustomIcon URI of the icon associated by Administrator with the application
 	CustomIcon string `json:"customIcon" yaml:"customIcon"`
@@ -753,7 +753,7 @@ type AdminApplicationWithoutProv struct {
 	Type string `json:"type" yaml:"type"`
 
 	// VisibleOnLaunchpad Boolean flag representing  whether application is visible for end user to request access
-	VisibleOnLaunchpad string `json:"visibleOnLaunchpad" yaml:"visibleOnLaunchpad"`
+	VisibleOnLaunchpad bool `json:"visibleOnLaunchpad" yaml:"visibleOnLaunchpad"`
 }
 
 // AdoptionPolicyAttrMappingsBean defines model for AdoptionPolicyAttrMappingsBean.
