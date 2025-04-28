@@ -8,8 +8,10 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"strconv"
 	"strings"
 
+	"github.com/ibm-verify/verify-sdk-go/internal/openapi"
 	contextx "github.com/ibm-verify/verify-sdk-go/pkg/core/context"
 	errorsx "github.com/ibm-verify/verify-sdk-go/pkg/core/errors"
 )
@@ -34,7 +36,7 @@ type Application struct {
 	Providers              Providers              `json:"providers" yaml:"providers"`
 	Provisioning           Provisioning           `json:"provisioning" yaml:"provisioning"`
 	AttributeMappings      []AttributeMapping     `json:"attributeMappings" yaml:"attributeMappings,omitempty"`
-	ApplicationState       bool                   `json:"applicationState" yaml:"applicationState,omitempty"`
+	ApplicationState       string                 `json:"applicationState" yaml:"applicationState,omitempty"`
 	ApprovalRequired       bool                   `json:"approvalRequired" yaml:"approvalRequired,omitempty"`
 	SignonState            bool                   `json:"signonState" yaml:"signonState,omitempty"`
 	Description            string                 `json:"description" yaml:"description,omitempty"`
@@ -73,7 +75,7 @@ type AuthPolicy struct {
 	ErrorDescription string           `json:"errorDescription" yaml:"errorDescription,omitempty"`
 }
 type GrantTypeEntry struct {
-	Name  string `json:"name" yaml:"name",omitempty`
+	Name  string `json:"name" yaml:"name,omitempty"`
 	Value bool   `json:"value" yaml:"value,omitempty"`
 }
 
@@ -536,61 +538,47 @@ func (c *ApplicationClient) GetApplicationId(ctx context.Context, name string) (
 	return "", errorsx.G11NError("no application found with exact name %s", name)
 }
 
-func (c *ApplicationClient) GetApplications(ctx context.Context, search string, sort string, page int, limit int) (*ApplicationListResponse, string, error) {
+func (c *ApplicationClient) GetApplications(ctx context.Context, search string, sort string, page int, limit int) (*openapi.SearchAdminApplicationWithoutProvResponseBean, string, error) {
 	vc := contextx.GetVerifyContext(ctx)
-	if vc == nil {
-		return nil, "", errorsx.G11NError("VerifyContext is nil")
-	}
+	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
 
+	params := &openapi.SearchApplicationsParams{}
 	u, _ := url.Parse(fmt.Sprintf("https://%s/%s", vc.Tenant, apiApplications))
 	q := u.Query()
 	if len(search) > 0 {
-		q.Set("search", fmt.Sprintf(`"q=%s"`, search))
+		params.Search = &search
 	}
 	if len(sort) > 0 {
-		q.Set("sort", sort)
+		params.Sort = &sort
 	}
 	if page > 0 {
-		q.Set("page", fmt.Sprintf("%d", page))
+		pageStr := strconv.Itoa(page)
+		params.Page = &pageStr
 	}
 	if limit > 0 {
-		q.Set("limit", fmt.Sprintf("%d", limit))
+		limitStr := strconv.Itoa(limit)
+		params.Limit = &limitStr
 	}
 	u.RawQuery = q.Encode()
 
-	headers := http.Header{
-		"Accept":        []string{"application/json"},
-		"Authorization": []string{"Bearer " + vc.Token},
+	headers := &openapi.Headers{
+		Token:  vc.Token,
+		Accept: "application/json",
 	}
-
-	req, err := http.NewRequestWithContext(ctx, "GET", u.String(), nil)
-	if err != nil {
-		vc.Logger.Errorf("unable to create request; err=%s", err.Error())
-		return nil, "", err
-	}
-	req.Header = headers
-
-	respo, err := c.Client.Do(req)
+	resp, err := client.SearchApplicationsWithResponse(ctx, params, openapi.DefaultRequestEditors(ctx, headers)...)
 	if err != nil {
 		vc.Logger.Errorf("unable to get Applications; err=%s", err.Error())
 		return nil, "", err
 	}
-	defer respo.Body.Close()
 
-	body, err := io.ReadAll(respo.Body)
-	if err != nil {
-		vc.Logger.Errorf("unable to read response body; err=%s", err.Error())
-		return nil, "", err
-	}
-
-	if respo.StatusCode != http.StatusOK {
-		vc.Logger.Errorf("unable to get the Applications; code=%d, body=%s", respo.StatusCode, string(body))
+	if resp.StatusCode() != http.StatusOK {
+		vc.Logger.Errorf("unable to get the Applications; code=%d, body=%s", resp.StatusCode(), string(resp.Body))
 		return nil, "", errorsx.G11NError("unable to get the Applications")
 
 	}
 
-	applicationsResponse := &ApplicationListResponse{}
-	if err = json.Unmarshal(body, applicationsResponse); err != nil {
+	applicationsResponse := &openapi.SearchAdminApplicationWithoutProvResponseBean{}
+	if err = json.Unmarshal(resp.Body, applicationsResponse); err != nil {
 		vc.Logger.Errorf("unable to unmarshal response; err=%s", err.Error())
 		return nil, "", errorsx.G11NError("unable to get the Applications")
 	}
