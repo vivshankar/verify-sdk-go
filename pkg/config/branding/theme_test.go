@@ -8,9 +8,9 @@ import (
 	"testing"
 
 	"github.com/google/uuid"
+	"github.com/ibm-verify/verify-sdk-go/internal/test_helper"
 	"github.com/ibm-verify/verify-sdk-go/pkg/auth"
 	"github.com/ibm-verify/verify-sdk-go/pkg/config/branding"
-	"github.com/ibm-verify/verify-sdk-go/pkg/config/config_test"
 	contextx "github.com/ibm-verify/verify-sdk-go/pkg/core/context"
 	"github.com/ibm-verify/verify-sdk-go/x/logx"
 	"github.com/stretchr/testify/assert"
@@ -34,7 +34,7 @@ func (s *ThemeTestSuite) SetupTest() {
 	logger.AddNewline = true
 
 	// load common config
-	tenant, clientID, clientSecret := config_test.LoadCommonConfig(s.T())
+	tenant, clientID, clientSecret := test_helper.LoadCommonConfig(s.T())
 
 	// get token
 	client := &auth.Client{
