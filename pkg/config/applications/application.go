@@ -5,9 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
-	"net/url"
 	"strconv"
 	"strings"
 
@@ -36,7 +34,7 @@ type Application struct {
 	Providers              Providers              `json:"providers" yaml:"providers"`
 	Provisioning           Provisioning           `json:"provisioning" yaml:"provisioning"`
 	AttributeMappings      []AttributeMapping     `json:"attributeMappings" yaml:"attributeMappings,omitempty"`
-	ApplicationState       string                 `json:"applicationState" yaml:"applicationState,omitempty"`
+	ApplicationState       bool                   `json:"applicationState" yaml:"applicationState,omitempty"`
 	ApprovalRequired       bool                   `json:"approvalRequired" yaml:"approvalRequired,omitempty"`
 	SignonState            bool                   `json:"signonState" yaml:"signonState,omitempty"`
 	Description            string                 `json:"description" yaml:"description,omitempty"`
@@ -292,44 +290,31 @@ func NewApplicationClient() *ApplicationClient {
 }
 func (c *ApplicationClient) CreateApplication(ctx context.Context, application *Application) (string, error) {
 	vc := contextx.GetVerifyContext(ctx)
-	if vc == nil {
-		return "", errorsx.G11NError("VerifyContext is nil")
+	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
+	headers := &openapi.Headers{
+		Accept:      "application/json",
+		ContentType: "application/json",
+		Token:       vc.Token,
 	}
-	u, _ := url.Parse(fmt.Sprintf("https://%s/%s", vc.Tenant, apiApplications))
-
-	headers := http.Header{
-		"Accept":        []string{"application/json"},
-		"Content-Type":  []string{"application/json"},
-		"Authorization": []string{"Bearer " + vc.Token},
-	}
-	b, err := json.Marshal(application)
+	body, err := json.Marshal(application)
 	if err != nil {
 		vc.Logger.Errorf("Unable to marshal API application data; err=%s", err.Error())
 		return "", errorsx.G11NError("unable to marshal application data")
 	}
-	vc.Logger.Infof("Payload: %s", string(b))
-	req, err := http.NewRequestWithContext(ctx, "POST", u.String(), bytes.NewBuffer(b))
-	if err != nil {
-		vc.Logger.Errorf("Unable to create API application; err=%s", err.Error())
-		return "", errorsx.G11NError("unable to create request")
-	}
-	req.Header = headers
 
-	response, err := c.Client.Do(req)
+	resp, err := client.CreateApplicationWithBodyWithResponse(ctx, "application/json", bytes.NewBuffer(body), openapi.DefaultRequestEditors(ctx, headers)...)
 	if err != nil {
 		vc.Logger.Errorf("unable to create an Application; err=%s", err.Error())
 		return "", errorsx.G11NError("unable to create application")
 	}
-	defer response.Body.Close()
-	body, err := io.ReadAll(response.Body)
-	if err != nil {
-		vc.Logger.Errorf("unable to read response body; err=%s", err.Error())
-		return "", errorsx.G11NError("unable to read response body")
-	}
 
-	if response.StatusCode != http.StatusCreated {
-		vc.Logger.Errorf("unable to get Application; code=%d, body=%s", response.StatusCode, string(body))
-		return "", errorsx.G11NError("unable to create application: status=%d, body=%s", response.StatusCode, string(body))
+	if resp.StatusCode() != http.StatusCreated {
+		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, "unable to create application"); err != nil {
+			vc.Logger.Errorf("unable to create the application; err=%s", err.Error())
+			return "", err
+		}
+		vc.Logger.Errorf("Failed to create application; code=%d, body=%s", resp.StatusCode(), string(resp.Body))
+		return "", errorsx.G11NError("failed to create application; code=%d, body=%s", resp.StatusCode(), string(resp.Body))
 	}
 
 	m := map[string]interface{}{}
@@ -355,15 +340,14 @@ func (c *ApplicationClient) CreateApplication(ctx context.Context, application *
 	}
 
 	id := strings.Split(href, "/")[len(strings.Split(href, "/"))-1]
-	resourceURI := fmt.Sprintf("https://%s/%s/%s", vc.Tenant, apiApplications, id)
+	resourceURI := fmt.Sprintf("%s/%s", resp.HTTPResponse.Request.URL.String(), id)
 	return resourceURI, nil
 }
 
 func (c *ApplicationClient) UpdateApplication(ctx context.Context, application *Application) error {
 	vc := contextx.GetVerifyContext(ctx)
-	if vc == nil {
-		return errorsx.G11NError("VerifyContext is nil")
-	}
+	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
+
 	if application == nil {
 		vc.Logger.Errorf("application object is nil")
 		return errorsx.G11NError("application object is nil")
@@ -375,45 +359,31 @@ func (c *ApplicationClient) UpdateApplication(ctx context.Context, application *
 		return errorsx.G11NError("unable to get the application ID for Application '%s'; err=%s", application.Name, err.Error())
 	}
 
-	u, _ := url.Parse(fmt.Sprintf("https://%s/%s/%s", vc.Tenant, apiApplications, applicationId))
-	headers := http.Header{
-		"Accept":        []string{"application/json"},
-		"Content-Type":  []string{"*/*"},
-		"Authorization": []string{"Bearer " + vc.Token},
+	headers := &openapi.Headers{
+		Accept:      "application/json",
+		ContentType: "*/*",
+		Token:       vc.Token,
 	}
 
-	b, err := json.Marshal(application)
+	body, err := json.Marshal(application)
 	if err != nil {
 		vc.Logger.Errorf("unable to marshal the Application; err=%s", err.Error())
 		return errorsx.G11NError("unable to marshal the Application data")
 	}
-	vc.Logger.Infof("payload: %s", string(b))
 
-	req, err := http.NewRequestWithContext(ctx, "PUT", u.String(), bytes.NewBuffer(b))
-
-	if err != nil {
-		vc.Logger.Errorf("unable to update Application; err=%s", err.Error())
-		return errorsx.G11NError("unable to update Application")
-	}
-	req.Header = headers
-
-	response, err := c.Client.Do(req)
+	resp, err := client.UpdateApplicationWithBodyWithResponse(ctx, applicationId, "*/*", bytes.NewBuffer(body), openapi.DefaultRequestEditors(ctx, headers)...)
 	if err != nil {
 		vc.Logger.Errorf("unable to update an Application; err=%s", err.Error())
-		return errorsx.G11NError("unable to update Application")
+		return errorsx.G11NError("unable to update application")
 	}
 
-	defer response.Body.Close()
-
-	body, err := io.ReadAll(response.Body)
-	if err != nil {
-		vc.Logger.Errorf("unable to read response body; err=%s", err.Error())
-		return errorsx.G11NError("unable to read response body")
-	}
-
-	if response.StatusCode != http.StatusNoContent && response.StatusCode != http.StatusOK {
-		vc.Logger.Errorf("unable to update the Application; code=%d body=%s", response.StatusCode, string(body))
-		return errorsx.G11NError("unable to update the Application;code=%d body=%s", response.StatusCode, string(body))
+	if resp.StatusCode() != http.StatusNoContent && resp.StatusCode() != http.StatusOK {
+		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, "unable to update application"); err != nil {
+			vc.Logger.Errorf("unable to update the application; err=%s", err.Error())
+			return err
+		}
+		vc.Logger.Errorf("Failed to update application; code=%d, body=%s", resp.StatusCode(), string(resp.Body))
+		return errorsx.G11NError("failed to update application; code=%d, body=%s", resp.StatusCode(), string(resp.Body))
 	}
 
 	return nil
@@ -421,108 +391,79 @@ func (c *ApplicationClient) UpdateApplication(ctx context.Context, application *
 
 func (c *ApplicationClient) GetApplication(ctx context.Context, name string) (*Application, string, error) {
 	vc := contextx.GetVerifyContext(ctx)
-	if vc == nil {
-		return nil, "", errorsx.G11NError("VerifyContext is nil")
-	}
 
-	templateId, err := c.GetApplicationId(ctx, name)
+	id, err := c.GetApplicationId(ctx, name)
+	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
 	if err != nil {
 		vc.Logger.Errorf("unable to get the Application ID; err=%s", err.Error())
 		return nil, "", err
 	}
 
-	u, _ := url.Parse(fmt.Sprintf("https://%s/%s/%s", vc.Tenant, apiApplications, templateId))
-
-	headers := http.Header{
-		"Accept":        []string{"application/json"},
-		"Authorization": []string{"Bearer " + vc.Token},
+	headers := &openapi.Headers{
+		Token:  vc.Token,
+		Accept: "application/json",
 	}
-
-	req, err := http.NewRequestWithContext(ctx, "GET", u.String(), nil)
+	resp, err := client.GetApplicationWithResponse(ctx, id, openapi.DefaultRequestEditors(ctx, headers)...)
 	if err != nil {
-		vc.Logger.Errorf("unable to get an Application; err=%s", err.Error())
-		return nil, "", err
-	}
-	req.Header = headers
-
-	response, err := c.Client.Do(req)
-	if err != nil {
-		vc.Logger.Errorf("unable to get an Application; err=%s", err.Error())
-		return nil, "", err
-	}
-	defer response.Body.Close()
-
-	body, err := io.ReadAll(response.Body)
-	if err != nil {
-		vc.Logger.Errorf("unable to read response body; err=%s", err.Error())
+		vc.Logger.Errorf("unable to get the Application; err=%s", err.Error())
 		return nil, "", err
 	}
 
-	if response.StatusCode != http.StatusOK {
-		vc.Logger.Errorf("unable to get Application; code=%d, body=%s", response.StatusCode, string(body))
-		return nil, "", errorsx.G11NError("unable to get Application")
+	if resp.StatusCode() != http.StatusOK {
+		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, "unable to get application"); err != nil {
+			vc.Logger.Errorf("unable to get the User; err=%s", err.Error())
+			return nil, "", err
+		}
+
+		vc.Logger.Errorf("unable to get the User; code=%d, body=%s", resp.StatusCode(), string(resp.Body))
+		return nil, "", errorsx.G11NError("unable to get the User")
 	}
 
 	app := &Application{}
-	if err = json.Unmarshal(body, app); err != nil {
+	if err = json.Unmarshal(resp.Body, app); err != nil {
 		vc.Logger.Errorf("unable to unmarshal response; err=%s", err.Error())
 		return nil, "", errorsx.G11NError("unable to get Application")
 	}
 
-	return app, u.String(), nil
+	return app, resp.HTTPResponse.Request.URL.String(), nil
 }
 
 func (c *ApplicationClient) GetApplicationId(ctx context.Context, name string) (string, error) {
 	vc := contextx.GetVerifyContext(ctx)
-	if vc == nil {
-		return "", errorsx.G11NError("VerifyContext is nil")
+	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
+	filter := fmt.Sprintf(`"q=%s"`, name)
+	params := &openapi.SearchApplicationsParams{
+		Search: &filter,
 	}
 
-	u, _ := url.Parse(fmt.Sprintf("https://%s/%s", vc.Tenant, apiApplications))
-	q := u.Query()
-	q.Set("search", fmt.Sprintf(`"q=%s"`, name))
-	u.RawQuery = q.Encode()
-
-	headers := http.Header{
-		"Accept":        []string{"application/json"},
-		"Authorization": []string{"Bearer " + vc.Token},
+	headers := &openapi.Headers{
+		Token:  vc.Token,
+		Accept: "application/json",
 	}
 
-	req, err := http.NewRequestWithContext(ctx, "GET", u.String(), nil)
+	resp, err := client.SearchApplicationsWithResponse(ctx, params, openapi.DefaultRequestEditors(ctx, headers)...)
 	if err != nil {
-		vc.Logger.Errorf("unable to create request; err=%s", err.Error())
-		return "", err
-	}
-	req.Header = headers
-
-	respo, err := c.Client.Do(req)
-	if err != nil {
-		vc.Logger.Errorf("unable to query applications; err=%s", err.Error())
-		return "", err
-	}
-	defer respo.Body.Close()
-
-	body, err := io.ReadAll(respo.Body)
-	if err != nil {
-		vc.Logger.Errorf("unable to read response body; err=%s", err.Error())
-		return "", err
+		vc.Logger.Errorf("unable to get the Application with Name; err=%v", err)
+		return "", errorsx.G11NError("unable to get the Application with Name %s; err=%s", name, err.Error())
 	}
 
-	if respo.StatusCode != http.StatusOK {
-		vc.Logger.Errorf("unable to query applications; code=%d, body=%s", respo.StatusCode, string(body))
-		return "", errorsx.G11NError("unable to query applications: status=%d, body=%s", respo.StatusCode, string(body))
+	if resp.StatusCode() != http.StatusOK {
+		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, "unable to get Application111"); err != nil {
+			vc.Logger.Errorf("unable to get the Application with Name222 %s; err=%s", name, err.Error())
+			return "", errorsx.G11NError("unable to get the Application with Name333 %s; err=%s", name, err.Error())
+		}
 	}
 
-	var resp ApplicationListResponse
-	if err := json.Unmarshal(body, &resp); err != nil {
+	var data ApplicationListResponse
+	if err := json.Unmarshal(resp.Body, &data); err != nil {
 		return "", errorsx.G11NError("failed to parse API response: %w", err)
 	}
 
-	if len(resp.Embedded.Applications) == 0 {
+	if len(data.Embedded.Applications) == 0 {
 		return "", errorsx.G11NError("no application found with name %s", name)
 	}
 
-	for _, app := range resp.Embedded.Applications {
+	for _, app := range data.Embedded.Applications {
 		if app.Name == name {
 			if app.Links.Self.Href == "" {
 				return "", errorsx.G11NError("no self link found for application %s", name)
@@ -543,8 +484,6 @@ func (c *ApplicationClient) GetApplications(ctx context.Context, search string, 
 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
 
 	params := &openapi.SearchApplicationsParams{}
-	u, _ := url.Parse(fmt.Sprintf("https://%s/%s", vc.Tenant, apiApplications))
-	q := u.Query()
 	if len(search) > 0 {
 		params.Search = &search
 	}
@@ -559,7 +498,7 @@ func (c *ApplicationClient) GetApplications(ctx context.Context, search string, 
 		limitStr := strconv.Itoa(limit)
 		params.Limit = &limitStr
 	}
-	u.RawQuery = q.Encode()
+	// u.RawQuery = q.Encode()
 
 	headers := &openapi.Headers{
 		Token:  vc.Token,
@@ -572,6 +511,11 @@ func (c *ApplicationClient) GetApplications(ctx context.Context, search string, 
 	}
 
 	if resp.StatusCode() != http.StatusOK {
+		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, "unable to get Applications"); err != nil {
+			vc.Logger.Errorf("unable to get the Applications; code=%d, body=%s", resp.StatusCode(), string(resp.Body))
+			return nil, "", errorsx.G11NError("unable to get the Applications")
+		}
+
 		vc.Logger.Errorf("unable to get the Applications; code=%d, body=%s", resp.StatusCode(), string(resp.Body))
 		return nil, "", errorsx.G11NError("unable to get the Applications")
 
@@ -583,42 +527,40 @@ func (c *ApplicationClient) GetApplications(ctx context.Context, search string, 
 		return nil, "", errorsx.G11NError("unable to get the Applications")
 	}
 
-	return applicationsResponse, u.String(), nil
+	return applicationsResponse, resp.HTTPResponse.Request.URL.String(), nil
 }
 
 func (c *ApplicationClient) DeleteApplication(ctx context.Context, name string) error {
 	vc := contextx.GetVerifyContext(ctx)
-
-	applicationId, err := c.GetApplicationId(ctx, name)
+	id, err := c.GetApplicationId(ctx, name)
 	if err != nil {
 		vc.Logger.Errorf("unable to get the Application ID; err=%s", err.Error())
 		return err
 	}
-
-	u, _ := url.Parse(fmt.Sprintf("https://%s/%s/%s", vc.Tenant, apiApplications, applicationId))
-	headers := http.Header{
-		"Accept":        []string{"application/json"},
-		"Authorization": []string{"Bearer " + vc.Token},
-	}
-
-	req, err := http.NewRequestWithContext(ctx, "DELETE", u.String(), nil)
+	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
 	if err != nil {
-		vc.Logger.Errorf("unable to create delete request; err=%s", err.Error())
-		return errorsx.G11NError("unable to create delete request %w", err)
+		vc.Logger.Errorf("unable to get the user ID; err=%s", err.Error())
+		return errorsx.G11NError("unable to get the user ID; err=%s", err.Error())
 	}
-	req.Header = headers
 
-	respo, err := c.Client.Do(req)
+	headers := &openapi.Headers{
+		Token:       vc.Token,
+		ContentType: "application/json",
+	}
+
+	resp, err := client.DeleteApplicationWithResponse(ctx, id, openapi.DefaultRequestEditors(ctx, headers)...)
 	if err != nil {
-		vc.Logger.Errorf("unable to delete an Application; err=%s", err.Error())
-		return errorsx.G11NError("unable to create delete request %w", err)
+		vc.Logger.Errorf("unable to delete the Application; err=%s", err.Error())
+		return errorsx.G11NError("unable to delete the Application; err=%s", err.Error())
 	}
-	defer respo.Body.Close()
 
-	if respo.StatusCode != http.StatusNoContent && respo.StatusCode != http.StatusOK {
-		body, _ := io.ReadAll(respo.Body)
-		vc.Logger.Errorf("unable to delete the Application; code=%d, body=%s", respo.StatusCode, string(body))
-		return errorsx.G11NError("unable to delete the Application; code=%d, body=%s", respo.StatusCode, string(body))
+	if resp.StatusCode() != http.StatusNoContent && resp.StatusCode() != http.StatusOK {
+		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, "unable to update application"); err != nil {
+			vc.Logger.Errorf("unable to delete the application; err=%s", err.Error())
+			return err
+		}
+		vc.Logger.Errorf("Failed to delete application; code=%d, body=%s", resp.StatusCode(), string(resp.Body))
+		return errorsx.G11NError("failed to delete application; code=%d, body=%s", resp.StatusCode(), string(resp.Body))
 	}
 
 	return nil
