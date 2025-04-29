@@ -420,13 +420,13 @@ func (c *ApplicationClient) GetApplication(ctx context.Context, name string) (*A
 
 	if resp.StatusCode != http.StatusOK {
 		if err := errorsx.HandleCommonErrors(ctx, resp, "unable to get application"); err != nil {
-			vc.Logger.Errorf("unable to get the User; err=%s", err.Error())
+			vc.Logger.Errorf("unable to get the application; err=%s", err.Error())
 			return nil, "", err
 		}
 
 		data, _ := ioutil.ReadAll(resp.Body)
-		vc.Logger.Errorf("unable to get the User; code=%d, body=%s", resp.StatusCode, string(data))
-		return nil, "", errorsx.G11NError("unable to get the User")
+		vc.Logger.Errorf("unable to get the application; code=%d, body=%s", resp.StatusCode, string(data))
+		return nil, "", errorsx.G11NError("unable to get the application")
 	}
 
 	app := &Application{}
@@ -548,10 +548,6 @@ func (c *ApplicationClient) DeleteApplication(ctx context.Context, name string) 
 		return err
 	}
 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
-	if err != nil {
-		vc.Logger.Errorf("unable to get the user ID; err=%s", err.Error())
-		return errorsx.G11NError("unable to get the user ID; err=%s", err.Error())
-	}
 
 	headers := &openapi.Headers{
 		Token:       vc.Token,
