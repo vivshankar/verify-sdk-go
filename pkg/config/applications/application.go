@@ -5,6 +5,8 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
+	"io/ioutil"
 	"net/http"
 	"strconv"
 	"strings"
@@ -403,29 +405,37 @@ func (c *ApplicationClient) GetApplication(ctx context.Context, name string) (*A
 		Token:  vc.Token,
 		Accept: "application/json",
 	}
-	resp, err := client.GetApplicationWithResponse(ctx, id, openapi.DefaultRequestEditors(ctx, headers)...)
+	resp, err := client.GetApplication(ctx, id, openapi.DefaultRequestEditors(ctx, headers)...)
 	if err != nil {
 		vc.Logger.Errorf("unable to get the Application; err=%s", err.Error())
 		return nil, "", err
 	}
 
-	if resp.StatusCode() != http.StatusOK {
-		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, "unable to get application"); err != nil {
+	buf, err := io.ReadAll(resp.Body)
+	defer func() { _ = resp.Body.Close() }()
+	if err != nil {
+		vc.Logger.Errorf("unable to read the attributes body; err=%v", err)
+		return nil, "", err
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		if err := errorsx.HandleCommonErrors(ctx, resp, "unable to get application"); err != nil {
 			vc.Logger.Errorf("unable to get the User; err=%s", err.Error())
 			return nil, "", err
 		}
 
-		vc.Logger.Errorf("unable to get the User; code=%d, body=%s", resp.StatusCode(), string(resp.Body))
+		data, _ := ioutil.ReadAll(resp.Body)
+		vc.Logger.Errorf("unable to get the User; code=%d, body=%s", resp.StatusCode, string(data))
 		return nil, "", errorsx.G11NError("unable to get the User")
 	}
 
 	app := &Application{}
-	if err = json.Unmarshal(resp.Body, app); err != nil {
+	if err = json.Unmarshal(buf, app); err != nil {
 		vc.Logger.Errorf("unable to unmarshal response; err=%s", err.Error())
 		return nil, "", errorsx.G11NError("unable to get Application")
 	}
 
-	return app, resp.HTTPResponse.Request.URL.String(), nil
+	return app, resp.Request.URL.String(), nil
 }
 
 func (c *ApplicationClient) GetApplicationId(ctx context.Context, name string) (string, error) {
