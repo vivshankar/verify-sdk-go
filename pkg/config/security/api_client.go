@@ -20,37 +20,6 @@ type ApiClient struct {
 
 type APIClientListResponse = openapi.APIClientConfigPaginatedResponseContainer
 type APIClientConfig = openapi.APIClientConfig
-type Client struct {
-	ID               string                 `yaml:"id,omitempty" json:"id,omitempty"`
-	ClientID         string                 `yaml:"clientId,omitempty" json:"clientId,omitempty"`
-	ClientName       string                 `yaml:"clientName" json:"clientName"`
-	ClientSecret     string                 `yaml:"clientSecret,omitempty" json:"clientSecret,omitempty"`
-	Entitlements     []string               `yaml:"entitlements" json:"entitlements"`
-	Enabled          bool                   `yaml:"enabled" json:"enabled"`
-	OverrideSettings OverrideSettings       `yaml:"overrideSettings,omitempty" json:"overrideSettings,omitempty"`
-	Description      string                 `yaml:"description,omitempty" json:"description,omitempty"`
-	IPFilterOp       string                 `yaml:"ipFilterOp,omitempty" json:"ipFilterOp,omitempty"`
-	IPFilters        []string               `yaml:"ipFilters,omitempty" json:"ipFilters,omitempty"`
-	JWKUri           string                 `yaml:"jwkUri,omitempty" json:"jwkUri,omitempty"`
-	AdditionalConfig AdditionalConfig       `yaml:"additionalConfig,omitempty" json:"additionalConfig,omitempty"`
-	AdditionalProps  map[string]interface{} `yaml:"additionalProperties,omitempty" json:"additionalProperties,omitempty"`
-}
-
-type OverrideSettings struct {
-	RestrictScopes bool    `yaml:"restrictScopes" json:"restrictScopes"`
-	Scopes         []Scope `yaml:"scopes" json:"scopes"`
-}
-
-type Scope struct {
-	Name        string `yaml:"name" json:"name"`
-	Description string `yaml:"description" json:"description"`
-}
-
-type AdditionalConfig struct {
-	ClientAuthMethod                       string   `yaml:"clientAuthMethod" json:"clientAuthMethod"`
-	ValidateClientAssertionJti             bool     `yaml:"validateClientAssertionJti" json:"validateClientAssertionJti"`
-	AllowedClientAssertionVerificationKeys []string `yaml:"allowedClientAssertionVerificationKeys,omitempty" json:"allowedClientAssertionVerificationKeys,omitempty"`
-}
 
 func NewAPIClient() *ApiClient {
 	return &ApiClient{}
