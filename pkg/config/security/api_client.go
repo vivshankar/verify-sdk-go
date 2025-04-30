@@ -71,7 +71,7 @@ func (c *APIClient) GetAPIClientByName(ctx context.Context, clientName string) (
 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
 	ID, err := c.getAPIClientId(ctx, clientName)
 	if err != nil {
-		vc.Logger.Errorf("unable to get the group ID; err=%s", err.Error())
+		vc.Logger.Errorf("unable to get the api client ID; err=%s", err.Error())
 		return nil, "", err
 	}
 
@@ -230,6 +230,34 @@ func (c *APIClient) UpdateAPIClient(ctx context.Context, apiClientConfig *APICli
 
 	return nil
 
+}
+
+func (c *APIClient) DeleteAPIClientByName(ctx context.Context, clientName string) error {
+	vc := contextx.GetVerifyContext(ctx)
+	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
+	ID, err := c.getAPIClientId(ctx, clientName)
+	if err != nil {
+		vc.Logger.Errorf("unable to get the api client ID; err=%s", err.Error())
+		return err
+	}
+	headers := &openapi.Headers{
+		Token:  vc.Token,
+		Accept: "application/json",
+	}
+	response, err := client.DeleteAPIClientWithResponse(ctx, ID, openapi.DefaultRequestEditors(ctx, headers)...)
+	if err != nil {
+		vc.Logger.Errorf("unable to delete API client; err=%s", err.Error())
+		return errorsx.G11NError("unable to delete the API client; err=%s", err.Error())
+	}
+	if response.StatusCode() != http.StatusNoContent {
+		if err := errorsx.HandleCommonErrors(ctx, response.HTTPResponse, "unable to delete API client"); err != nil {
+			vc.Logger.Errorf("unable to delete the API client; err=%s", err.Error())
+			return errorsx.G11NError("unable to delete the API client; err=%s", err.Error())
+		}
+		vc.Logger.Errorf("unable to delete the API client; code=%d, body=%s", response.StatusCode(), string(response.Body))
+		return errorsx.G11NError("unable to delete the API client; code=%d, body=%s", response.StatusCode(), string(response.Body))
+	}
+	return nil
 }
 
 func (c *APIClient) DeleteAPIClientById(ctx context.Context, ID string) error {
