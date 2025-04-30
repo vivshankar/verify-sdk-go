@@ -124,21 +124,21 @@ func (s *APIClientTestSuite) TestAPIClient() {
 	_, err = s.client.CreateAPIClient(s.ctx, &s.apiClientCreateOrPatch)
 	require.NoError(s.T(), err, "unable to create API Client %s; err=%v", s.APIClientName, err)
 
-	// // Get API Client details
-	// _, _, err = s.client.GetAPIClient(s.ctx, s.APIClientName)
-	// require.NoError(s.T(), err, "unable to get API Client %s; err=%v", s.APIClientName, err)
+	// Get API Client details
+	_, _, err = s.client.GetAPIClient(s.ctx, s.APIClientName)
+	require.NoError(s.T(), err, "unable to get API Client %s; err=%v", s.APIClientName, err)
 
-	// // Get API Client list
-	// _, _, err = s.client.GetAPIClients(s.ctx, "", "", 0, 0)
-	// require.NoError(s.T(), err, "unable to list API Clients; err=%v", err)
+	// Get API Client list
+	_, _, err = s.client.GetAPIClients(s.ctx, "", "", 0, 0)
+	require.NoError(s.T(), err, "unable to list API Clients; err=%v", err)
 
-	// // Update API Client
-	// err = s.client.UpdateAPIClient(s.ctx, &s.apiClientCreateOrPatch)
-	// require.NoError(s.T(), err, "unable to update API Client %s; err=%v", s.APIClientName, err)
+	// Update API Client
+	err = s.client.UpdateAPIClient(s.ctx, &s.apiClientCreateOrPatch)
+	require.NoError(s.T(), err, "unable to update API Client %s; err=%v", s.APIClientName, err)
 
-	// // Delete API Client
-	// err = s.client.DeleteAPIClientById(s.ctx, s.APIClientName)
-	// require.NoError(s.T(), err, "unable to delete API Client %s; err=%v", s.APIClientName, err)
+	// Delete API Client
+	err = s.client.DeleteAPIClientById(s.ctx, s.APIClientName)
+	require.NoError(s.T(), err, "unable to delete API Client %s; err=%v", s.APIClientName, err)
 }
 
 func TestAPIClientTestSuite(t *testing.T) {
