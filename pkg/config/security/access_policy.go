@@ -13,10 +13,6 @@ import (
 	errorsx "github.com/ibm-verify/verify-sdk-go/pkg/core/errors"
 )
 
-const (
-	apiAccesspolicies = "v5.0/policyvault/accesspolicy"
-)
-
 // Root structure
 type PolicyListResponse struct {
 	Total    int      `json:"total" yaml:"total"`
@@ -149,7 +145,7 @@ func (c *PolicyClient) CreateAccesspolicy(ctx context.Context, accesspolicy *Pol
 		return "", fmt.Errorf("Failed to parse 'id' as float64")
 	}
 
-	return fmt.Sprintf("https://%s/%s/%d", vc.Tenant, apiAccesspolicies, int(id)), nil
+	return fmt.Sprintf("https://%s/%d", response.HTTPResponse.Request.URL.String(), int(id)), nil
 }
 
 func (c *PolicyClient) GetAccesspolicy(ctx context.Context, accesspolicyName string) (*openapi.Policy0, string, error) {
