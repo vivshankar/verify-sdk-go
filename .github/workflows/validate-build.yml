@@ -28,5 +28,7 @@ jobs:
           script: |
             const coredemo = require('@actions/core')
             let id_token = await coredemo.getIDToken()
-            coredemo.setOutput('id_token', id_token)
-            console.log(`IDTOKEN: ${id_token}`)
+            coredemp.exportVariable("ID_TOKEN", id_token);
+      - name: Read env
+        shell: bash
+        run: echo ${{ env.ID_TOKEN }}
