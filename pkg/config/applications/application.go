@@ -540,13 +540,8 @@ func (c *ApplicationClient) GetApplications(ctx context.Context, search string, 
 	return applicationsResponse, resp.HTTPResponse.Request.URL.String(), nil
 }
 
-func (c *ApplicationClient) DeleteApplication(ctx context.Context, name string) error {
+func (c *ApplicationClient) DeleteApplicationByID(ctx context.Context, appliactionID string) error {
 	vc := contextx.GetVerifyContext(ctx)
-	id, err := c.GetApplicationId(ctx, name)
-	if err != nil {
-		vc.Logger.Errorf("unable to get the Application ID; err=%s", err.Error())
-		return err
-	}
 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
 
 	headers := &openapi.Headers{
@@ -554,7 +549,7 @@ func (c *ApplicationClient) DeleteApplication(ctx context.Context, name string) 
 		ContentType: "application/json",
 	}
 
-	resp, err := client.DeleteApplicationWithResponse(ctx, id, openapi.DefaultRequestEditors(ctx, headers)...)
+	resp, err := client.DeleteApplicationWithResponse(ctx, appliactionID, openapi.DefaultRequestEditors(ctx, headers)...)
 	if err != nil {
 		vc.Logger.Errorf("unable to delete the Application; err=%s", err.Error())
 		return errorsx.G11NError("unable to delete the Application; err=%s", err.Error())
