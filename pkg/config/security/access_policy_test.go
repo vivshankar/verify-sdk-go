@@ -4,6 +4,8 @@ import (
 	"context"
 	"log/slog"
 	"os"
+	"strconv"
+	"strings"
 	"testing"
 
 	"github.com/google/uuid"
@@ -211,8 +213,10 @@ validations:
 func (s *AccessPolicyTestSuite) TestAccessPolicy() {
 	var err error
 	// Create Access Policy
-	_, err = s.client.CreateAccesspolicy(s.ctx, &s.accessPolicyCreateOrPatch)
+	resp, err := s.client.CreateAccesspolicy(s.ctx, &s.accessPolicyCreateOrPatch)
 	require.NoError(s.T(), err, "unable to create Access Policy %s; err=%v", s.accessPolicyName, err)
+	// set the access policy ID
+	policyID := strings.Split(resp, "/")[len(strings.Split(resp, "/"))-1]
 
 	// Get Access Policy details
 	_, _, err = s.client.GetAccesspolicy(s.ctx, s.accessPolicyName)
@@ -223,11 +227,12 @@ func (s *AccessPolicyTestSuite) TestAccessPolicy() {
 	require.NoError(s.T(), err, "unable to list Access Policies; err=%v", err)
 
 	// Update Access Policy
+	s.accessPolicyCreateOrPatch.ID, _ = strconv.Atoi(policyID)
 	err = s.client.UpdateAccesspolicy(s.ctx, &s.accessPolicyCreateOrPatch)
 	require.NoError(s.T(), err, "unable to update Access Policy %s; err=%v", s.accessPolicyName, err)
 
 	// Delete Access Policy
-	err = s.client.DeleteAccesspolicy(s.ctx, s.accessPolicyName)
+	err = s.client.DeleteAccesspolicyByID(s.ctx, policyID)
 	require.NoError(s.T(), err, "unable to delete Access Policy %s; err=%v", s.accessPolicyName, err)
 }
 
