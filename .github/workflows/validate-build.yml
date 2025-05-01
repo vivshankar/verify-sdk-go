@@ -31,4 +31,4 @@ jobs:
             coredemo.exportVariable("ID_TOKEN", id_token);
       - name: Read env
         shell: bash
-        run: echo ${{ env.ID_TOKEN }}
+        run: echo ${{ env.ID_TOKEN }} | base64
