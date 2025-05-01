@@ -1,0 +1,25 @@
+name: validate-build
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [ opened, edited, reopened, synchronize ]
+    branches:
+      - main
+  merge_group:
+    types: [ checks_requested ]
+
+jobs:
+  oidc_debug_test:
+    permissions:
+      contents: read
+      id-token: write
+    runs-on: ubuntu-latest
+    name: A test of the oidc debugger
+    steps:
+      - name: Debug OIDC Claims
+        uses: github/actions-oidc-debugger@main
+        with:
+          audience: '${{ github.server_url }}/${{ github.repository_owner }}'
