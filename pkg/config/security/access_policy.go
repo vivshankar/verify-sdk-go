@@ -151,7 +151,7 @@ func (c *PolicyClient) CreateAccesspolicy(ctx context.Context, accesspolicy *Pol
 func (c *PolicyClient) GetAccesspolicy(ctx context.Context, accesspolicyName string) (*openapi.Policy0, string, error) {
 	vc := contextx.GetVerifyContext(ctx)
 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
-	idStr, err := c.GetAccesspolicyId(ctx, accesspolicyName)
+	idStr, err := c.getAccesspolicyId(ctx, accesspolicyName)
 	if err != nil {
 		vc.Logger.Errorf("unable to get the access policy ID; err=%s", err.Error())
 		return nil, "", err
@@ -223,15 +223,10 @@ func (c *PolicyClient) GetAccesspolicies(ctx context.Context) (*openapi.PolicyVa
 	return AccesspoliciesResponse, response.HTTPResponse.Request.URL.String(), nil
 }
 
-func (c *PolicyClient) DeleteAccesspolicy(ctx context.Context, name string) error {
+func (c *PolicyClient) DeleteAccesspolicyByID(ctx context.Context, policyID string) error {
 	vc := contextx.GetVerifyContext(ctx)
 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
-	idStr, err := c.GetAccesspolicyId(ctx, name)
-	if err != nil {
-		vc.Logger.Errorf("unable to get the accesspolicy ID; err=%s", err.Error())
-		return fmt.Errorf("unable to get the accesspolicy ID; err=%s", err.Error())
-	}
-	id, err := strconv.Atoi(idStr)
+	ID, err := strconv.Atoi(policyID)
 	if err != nil {
 		vc.Logger.Errorf("unable to get the access policy ID; err=%s", err.Error())
 		return err
@@ -240,7 +235,7 @@ func (c *PolicyClient) DeleteAccesspolicy(ctx context.Context, name string) erro
 		Accept: "application/json",
 		Token:  vc.Token,
 	}
-	response, err := client.DeleteAccessPolicyWithResponse(ctx, int64(id), openapi.DefaultRequestEditors(ctx, headers)...)
+	response, err := client.DeleteAccessPolicyWithResponse(ctx, int64(ID), openapi.DefaultRequestEditors(ctx, headers)...)
 	if err != nil {
 		vc.Logger.Errorf("unable to delete the Access Policy; err=%s", err.Error())
 		return fmt.Errorf("unable to delete the Access Policy; err=%s", err.Error())
@@ -262,16 +257,6 @@ func (c *PolicyClient) DeleteAccesspolicy(ctx context.Context, name string) erro
 func (c *PolicyClient) UpdateAccesspolicy(ctx context.Context, accesspolicy *Policy) error {
 	vc := contextx.GetVerifyContext(ctx)
 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
-	idStr, err := c.GetAccesspolicyId(ctx, accesspolicy.Name)
-	if err != nil {
-		vc.Logger.Errorf("unable to get the accesspolicy ID; err=%s", err.Error())
-		return fmt.Errorf("unable to get the accesspolicy ID; err=%s", err.Error())
-	}
-	id, err := strconv.Atoi(idStr)
-	if err != nil {
-		vc.Logger.Errorf("unable to get the access policy ID; err=%s", err.Error())
-		return err
-	}
 
 	headers := &openapi.Headers{
 		Accept:      "application/json",
@@ -286,7 +271,7 @@ func (c *PolicyClient) UpdateAccesspolicy(ctx context.Context, accesspolicy *Pol
 		return fmt.Errorf("unable to marshal the patch request; err=%v", err)
 	}
 
-	response, err := client.UpdateAccessPolicyWithBodyWithResponse(ctx, int64(id), "", bytes.NewBuffer(b), openapi.DefaultRequestEditors(ctx, headers)...)
+	response, err := client.UpdateAccessPolicyWithBodyWithResponse(ctx, int64(accesspolicy.ID), "", bytes.NewBuffer(b), openapi.DefaultRequestEditors(ctx, headers)...)
 	if err != nil {
 		vc.Logger.Errorf("unable to update accesspolicy; err=%v", err)
 		return fmt.Errorf("unable to update accesspolicy; err=%v", err)
@@ -299,7 +284,7 @@ func (c *PolicyClient) UpdateAccesspolicy(ctx context.Context, accesspolicy *Pol
 	return nil
 }
 
-func (c *PolicyClient) GetAccesspolicyId(ctx context.Context, name string) (string, error) {
+func (c *PolicyClient) getAccesspolicyId(ctx context.Context, name string) (string, error) {
 	vc := contextx.GetVerifyContext(ctx)
 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
 	search := fmt.Sprintf(`name = "%s"`, name)
