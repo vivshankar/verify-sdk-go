@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"strconv"
 	"strings"
@@ -420,7 +419,7 @@ func (c *ApplicationClient) GetApplication(ctx context.Context, name string) (*A
 			return nil, "", err
 		}
 
-		data, _ := ioutil.ReadAll(resp.Body)
+		data, _ := io.ReadAll(resp.Body)
 		vc.Logger.Errorf("unable to get the application; code=%d, body=%s", resp.StatusCode, string(data))
 		return nil, "", errorsx.G11NError("unable to get the application")
 	}
