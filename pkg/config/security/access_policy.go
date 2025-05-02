@@ -148,7 +148,7 @@ func (c *PolicyClient) CreateAccesspolicy(ctx context.Context, accesspolicy *Pol
 	return fmt.Sprintf("https://%s/%d", response.HTTPResponse.Request.URL.String(), int(id)), nil
 }
 
-func (c *PolicyClient) GetAccesspolicy(ctx context.Context, accesspolicyName string) (*openapi.Policy0, string, error) {
+func (c *PolicyClient) GetAccesspolicy(ctx context.Context, accesspolicyName string) (*Policy, string, error) {
 	vc := contextx.GetVerifyContext(ctx)
 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
 	idStr, err := c.getAccesspolicyId(ctx, accesspolicyName)
@@ -181,7 +181,7 @@ func (c *PolicyClient) GetAccesspolicy(ctx context.Context, accesspolicyName str
 		return nil, "", fmt.Errorf("unable to get the Access Policy")
 	}
 
-	Accesspolicy := &openapi.Policy0{}
+	Accesspolicy := &Policy{}
 	if err = json.Unmarshal(response.Body, Accesspolicy); err != nil {
 		return nil, "", fmt.Errorf("unable to get the Access Policy")
 	}
