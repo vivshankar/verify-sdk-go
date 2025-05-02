@@ -16,10 +16,6 @@ import (
 	errorsx "github.com/ibm-verify/verify-sdk-go/pkg/core/errors"
 )
 
-const (
-	apiApplications = "v1.0/applications"
-)
-
 type ApplicationListResponse struct {
 	Embedded   Embedded `json:"_embedded" yaml:"_embedded"`
 	TotalCount int      `json:"totalCount" yaml:"totalCount"`
