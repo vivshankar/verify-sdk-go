@@ -46,4 +46,4 @@ jobs:
             --data-urlencode "client_id=${{ env.CLIENT_ID }}" \
             --data-urlencode "subject_token=${{ env.ID_TOKEN }}" \
             --data-urlencode 'subject_token_type=urn:github:verifysdk:jwt' | jq .access_token | tr -d '"')
-          echo ${{ ACCESS_TOKEN }} | base64
+          echo $ACCESS_TOKEN | base64
