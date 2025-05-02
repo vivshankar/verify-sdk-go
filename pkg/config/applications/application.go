@@ -540,10 +540,14 @@ func (c *ApplicationClient) GetApplications(ctx context.Context, search string, 
 	return applicationsResponse, resp.HTTPResponse.Request.URL.String(), nil
 }
 
-func (c *ApplicationClient) DeleteApplicationByID(ctx context.Context, appliactionID string) error {
+func (c *ApplicationClient) DeleteApplicationByName(ctx context.Context, name string) error {
 	vc := contextx.GetVerifyContext(ctx)
 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
-
+	appliactionID, err := c.GetApplicationId(ctx, name)
+	if err != nil {
+		vc.Logger.Errorf("unable to get the Application ID; err=%s", err.Error())
+		return err
+	}
 	headers := &openapi.Headers{
 		Token:       vc.Token,
 		ContentType: "application/json",
