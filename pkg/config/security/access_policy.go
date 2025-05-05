@@ -108,7 +108,7 @@ func NewAccesspolicyClient() *PolicyClient {
 func (c *PolicyClient) CreateAccesspolicy(ctx context.Context, accesspolicy *Policy) (string, error) {
 	vc := contextx.GetVerifyContext(ctx)
 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
-	defaultErr := fmt.Errorf("unable to create accesspolicy.")
+	defaultErr := fmt.Errorf("unable to create accesspolicy")
 
 	b, err := json.Marshal(accesspolicy)
 	if err != nil {
@@ -137,12 +137,12 @@ func (c *PolicyClient) CreateAccesspolicy(ctx context.Context, accesspolicy *Pol
 
 	m := map[string]interface{}{}
 	if err := json.Unmarshal(response.Body, &m); err != nil {
-		return "", fmt.Errorf("Failed to parse response: %v", err)
+		return "", fmt.Errorf("failed to parse response: %v", err)
 	}
 
 	id, ok := m["id"].(float64)
 	if !ok {
-		return "", fmt.Errorf("Failed to parse 'id' as float64")
+		return "", fmt.Errorf("failed to parse 'id' as float64")
 	}
 
 	return fmt.Sprintf("https://%s/%d", response.HTTPResponse.Request.URL.String(), int(id)), nil
