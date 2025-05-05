@@ -70,9 +70,9 @@ func NewPasswordPolicyClient() *PasswordPolicyClient {
 	return &PasswordPolicyClient{}
 }
 
-func (c *PasswordPolicyClient) GetPasswordPolicy(ctx context.Context, id string) (*PasswordPolicy, string, error) {
+func (c *PasswordPolicyClient) GetPasswordPolicy(ctx context.Context, passwordPolicyName string) (*PasswordPolicy, string, error) {
 	vc := contextx.GetVerifyContext(ctx)
-	id, err := c.GetPasswordPolicyId(ctx, id)
+	id, err := c.GetPasswordPolicyId(ctx, passwordPolicyName)
 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
 
 	if err != nil {
@@ -250,10 +250,6 @@ func (c *PasswordPolicyClient) DeletePasswordPolicy(ctx context.Context, policyN
 	}
 
 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
-	if err != nil {
-		vc.Logger.Errorf("unable to get the password policy ID; err=%s", err.Error())
-		return errorsx.G11NError("unable to get the password policy ID; err=%s", err.Error())
-	}
 
 	headers := &openapi.Headers{
 		Token:       vc.Token,
