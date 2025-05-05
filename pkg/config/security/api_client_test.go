@@ -24,7 +24,7 @@ type APIClientTestSuite struct {
 	ctx                    context.Context
 	vctx                   *contextx.VerifyContext
 	APIClientName          string
-	client                 *security.ApiClient
+	client                 *security.APIClient
 	apiClientCreateOrPatch security.APIClientConfig
 }
 
@@ -60,7 +60,7 @@ func (s *APIClientTestSuite) SetupTest() {
 	require.NotEmpty(s.T(), s.APIClientName, "invalid config: API_CLIENT_NAME is missing")
 	// api client details for creation
 
-	apiCleintCreateRawData := `
+	apiClientCreateRawData := `
 clientName: TestClientSabuj
 description: custom TestClientSabuj descriptionn
 entitlements:
@@ -86,9 +86,9 @@ additionalConfig:
 idTokenSigningAlg: none
 `
 
-	_ = yaml.Unmarshal([]byte(apiCleintCreateRawData), &s.apiClientCreateOrPatch)
+	_ = yaml.Unmarshal([]byte(apiClientCreateRawData), &s.apiClientCreateOrPatch)
 
-	apiCleintPatchRawData := `
+	apiClientPatchRawData := `
 clientName: TestClientSabuj
 description: custom TestClientSabuj1122 descriptionn
 entitlements:
@@ -113,7 +113,7 @@ additionalConfig:
   validateClientAssertionJti: true
 idTokenSigningAlg: none
 `
-	_ = yaml.Unmarshal([]byte(apiCleintPatchRawData), &s.apiClientCreateOrPatch)
+	_ = yaml.Unmarshal([]byte(apiClientPatchRawData), &s.apiClientCreateOrPatch)
 
 	s.client = security.NewAPIClient()
 }
@@ -124,21 +124,21 @@ func (s *APIClientTestSuite) TestAPIClient() {
 	_, err = s.client.CreateAPIClient(s.ctx, &s.apiClientCreateOrPatch)
 	require.NoError(s.T(), err, "unable to create API Client %s; err=%v", s.APIClientName, err)
 
-	// // Get API Client details
-	// _, _, err = s.client.GetAPIClient(s.ctx, s.APIClientName)
-	// require.NoError(s.T(), err, "unable to get API Client %s; err=%v", s.APIClientName, err)
+	// Get API Client details
+	_, _, err = s.client.GetAPIClientByName(s.ctx, s.APIClientName)
+	require.NoError(s.T(), err, "unable to get API Client %s; err=%v", s.APIClientName, err)
 
-	// // Get API Client list
-	// _, _, err = s.client.GetAPIClients(s.ctx, "", "", 0, 0)
-	// require.NoError(s.T(), err, "unable to list API Clients; err=%v", err)
+	// Get API Client list
+	_, _, err = s.client.GetAPIClients(s.ctx, "", "", 0, 0)
+	require.NoError(s.T(), err, "unable to list API Clients; err=%v", err)
 
-	// // Update API Client
-	// err = s.client.UpdateAPIClient(s.ctx, &s.apiClientCreateOrPatch)
-	// require.NoError(s.T(), err, "unable to update API Client %s; err=%v", s.APIClientName, err)
+	// Update API Client
+	err = s.client.UpdateAPIClient(s.ctx, &s.apiClientCreateOrPatch)
+	require.NoError(s.T(), err, "unable to update API Client %s; err=%v", s.APIClientName, err)
 
-	// // Delete API Client
-	// err = s.client.DeleteAPIClientById(s.ctx, s.APIClientName)
-	// require.NoError(s.T(), err, "unable to delete API Client %s; err=%v", s.APIClientName, err)
+	// Delete API Client
+	err = s.client.DeleteAPIClientById(s.ctx, s.APIClientName)
+	require.NoError(s.T(), err, "unable to delete API Client %s; err=%v", s.APIClientName, err)
 }
 
 func TestAPIClientTestSuite(t *testing.T) {

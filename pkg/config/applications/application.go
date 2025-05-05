@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"strconv"
 	"strings"
@@ -14,17 +15,13 @@ import (
 	errorsx "github.com/ibm-verify/verify-sdk-go/pkg/core/errors"
 )
 
-const (
-	apiApplications = "v1.0/applications"
-)
-
 type ApplicationListResponse struct {
 	Embedded   Embedded `json:"_embedded" yaml:"_embedded"`
 	TotalCount int      `json:"totalCount" yaml:"totalCount"`
 }
 
 type Embedded struct {
-	Applications []Application `json:"applications" yaml:"applications"`
+	Applications *[]Application `json:"applications" yaml:"applications"`
 }
 
 type Application struct {
@@ -33,17 +30,17 @@ type Application struct {
 	Links                  Links                  `json:"_links" yaml:"_links"`
 	Providers              Providers              `json:"providers" yaml:"providers"`
 	Provisioning           Provisioning           `json:"provisioning" yaml:"provisioning"`
-	AttributeMappings      []AttributeMapping     `json:"attributeMappings" yaml:"attributeMappings,omitempty"`
+	AttributeMappings      *[]AttributeMapping    `json:"attributeMappings" yaml:"attributeMappings,omitempty"`
 	ApplicationState       bool                   `json:"applicationState" yaml:"applicationState,omitempty"`
 	ApprovalRequired       bool                   `json:"approvalRequired" yaml:"approvalRequired,omitempty"`
 	SignonState            bool                   `json:"signonState" yaml:"signonState,omitempty"`
 	Description            string                 `json:"description" yaml:"description,omitempty"`
 	ProvisioningMode       string                 `json:"provisioningMode" yaml:"provisioningMode,omitempty"`
-	IdentitySources        []string               `json:"identitySources" yaml:"identitySources,omitempty"`
+	IdentitySources        *[]string              `json:"identitySources" yaml:"identitySources,omitempty"`
 	VisibleOnLaunchpad     bool                   `json:"visibleOnLaunchpad" yaml:"visibleOnLaunchpad,omitempty"`
 	Customization          Customization          `json:"customization" yaml:"customization,omitempty"`
 	DevportalSettings      DevportalSettings      `json:"devportalSettings" yaml:"devportalSettings,omitempty"`
-	APIAccessClients       []APIAccessClients     `json:"apiAccessClients" yaml:"apiAccessClients,omitempty"`
+	APIAccessClients       *[]APIAccessClients    `json:"apiAccessClients" yaml:"apiAccessClients,omitempty"`
 	CustomIcon             string                 `json:"customIcon" yaml:"customIcon,omitempty"`
 	DefaultIcon            string                 `json:"defaultIcon" yaml:"defaultIcon,omitempty"`
 	AdaptiveAuthentication AdaptiveAuthentication `json:"adaptiveAuthentication" yaml:"adaptiveAuthentication,omitempty"`
@@ -58,19 +55,19 @@ type AdaptiveAuthentication struct {
 	StorageLink string `json:"storageLink" yaml:"storageLink,omitempty"`
 }
 type DevportalSettings struct {
-	GrantTypes                 GrantTypes         `json:"grantTypes" yaml:"grantTypes,omitempty"`
-	AuthPolicy                 AuthPolicy         `json:"authPolicy" yaml:"authPolicy,omitempty"`
-	ExtendedProperties         map[string]string  `json:"extendedProperties" yaml:"extendedProperties,omitempty"`
-	IdentitySources            []string           `json:"identitySources" yaml:"identitySources,omitempty"`
-	SendAllKnownUserAttributes string             `json:"sendAllKnownUserAttributes" yaml:"sendAllKnownUserAttributes,omitempty"`
-	AttributeMappings          []AttributeMapping `json:"attributeMappings" yaml:"attributeMappings,omitempty"`
+	GrantTypes                 GrantTypes          `json:"grantTypes" yaml:"grantTypes,omitempty"`
+	AuthPolicy                 AuthPolicy          `json:"authPolicy" yaml:"authPolicy,omitempty"`
+	ExtendedProperties         map[string]string   `json:"extendedProperties" yaml:"extendedProperties,omitempty"`
+	IdentitySources            *[]string           `json:"identitySources" yaml:"identitySources,omitempty"`
+	SendAllKnownUserAttributes string              `json:"sendAllKnownUserAttributes" yaml:"sendAllKnownUserAttributes,omitempty"`
+	AttributeMappings          *[]AttributeMapping `json:"attributeMappings" yaml:"attributeMappings,omitempty"`
 }
 type AuthPolicy struct {
-	ID               string           `json:"id" yaml:"id,omitempty"`
-	Name             string           `json:"name" yaml:"name,omitempty"`
-	GrantTypes       []GrantTypeEntry `json:"grantTypes" yaml:"grantTypes,omitempty"`
-	ErrorCode        string           `json:"errorCode" yaml:"errorCode,omitempty"`
-	ErrorDescription string           `json:"errorDescription" yaml:"errorDescription,omitempty"`
+	ID               string            `json:"id" yaml:"id,omitempty"`
+	Name             string            `json:"name" yaml:"name,omitempty"`
+	GrantTypes       *[]GrantTypeEntry `json:"grantTypes" yaml:"grantTypes,omitempty"`
+	ErrorCode        string            `json:"errorCode" yaml:"errorCode,omitempty"`
+	ErrorDescription string            `json:"errorDescription" yaml:"errorDescription,omitempty"`
 }
 type GrantTypeEntry struct {
 	Name  string `json:"name" yaml:"name,omitempty"`
@@ -229,10 +226,10 @@ type SigningSettings struct {
 
 type Provisioning struct {
 	Extension                Extension            `json:"extension" yaml:"extension,omitempty"`
-	AttributeMappings        []AttributeMapping   `json:"attributeMappings" yaml:"attributeMappings,omitempty"`
+	AttributeMappings        *[]AttributeMapping  `json:"attributeMappings" yaml:"attributeMappings,omitempty"`
 	Policies                 ProvisioningPolicies `json:"policies" yaml:"policies,omitempty"`
 	SendNotifications        bool                 `json:"sendNotifications" yaml:"sendNotifications"`
-	ReverseAttributeMappings []AttributeMapping   `json:"reverseAttributeMappings" yaml:"reverseAttributeMappings,omitempty"`
+	ReverseAttributeMappings *[]AttributeMapping  `json:"reverseAttributeMappings" yaml:"reverseAttributeMappings,omitempty"`
 	Authentication           Authentication       `json:"authentication" yaml:"authentication,omitempty"`
 	ProvisioningState        string               `json:"provisioningState" yaml:"provisioningState,omitempty"`
 }
@@ -256,7 +253,7 @@ type ProvisioningPolicies struct {
 }
 
 type AdoptionPolicy struct {
-	MatchingAttributes []AttributeMapping `json:"matchingAttributes" yaml:"matchingAttributes,omitempty"`
+	MatchingAttributes *[]AttributeMapping `json:"matchingAttributes" yaml:"matchingAttributes,omitempty"`
 }
 
 type Authentication struct {
@@ -264,19 +261,19 @@ type Authentication struct {
 }
 
 type APIAccessClients struct {
-	AccessTokenLifetime int32    `json:"accessTokenLifetime" yaml:"accessTokenLifetime"`
-	AccessTokenType     string   `json:"accessTokenType" yaml:"accessTokenType"`
-	ClientName          string   `json:"clientName" yaml:"clientName"`
-	ClientID            string   `json:"clientId" yaml:"clientId,omitempty"`
-	Enabled             bool     `json:"enabled" yaml:"enabled"`
-	JWTSigningAlg       string   `json:"jwtSigningAlg" yaml:"jwtSigningAlg,omitempty"`
-	SignKeyLabel        string   `json:"signKeyLabel" yaml:"signKeyLabel,omitempty"`
-	RestrictScopes      bool     `json:"restrictScopes" yaml:"restrictScopes,omitempty"`
-	IPFilterOp          string   `json:"ipFilterOp" yaml:"ipFilterOp,omitempty"`
-	IPFilters           []string `json:"ipFilters" yaml:"ipFilters,omitempty"`
-	JWKURI              string   `json:"jwkUri" yaml:"jwkUri,omitempty"`
-	Scopes              []string `json:"scopes" yaml:"scopes,omitempty"`
-	DefaultEntitlements []string `json:"defaultEntitlements" yaml:"defaultEntitlements,omitempty"`
+	AccessTokenLifetime int32     `json:"accessTokenLifetime" yaml:"accessTokenLifetime"`
+	AccessTokenType     string    `json:"accessTokenType" yaml:"accessTokenType"`
+	ClientName          string    `json:"clientName" yaml:"clientName"`
+	ClientID            string    `json:"clientId" yaml:"clientId,omitempty"`
+	Enabled             bool      `json:"enabled" yaml:"enabled"`
+	JWTSigningAlg       string    `json:"jwtSigningAlg" yaml:"jwtSigningAlg,omitempty"`
+	SignKeyLabel        string    `json:"signKeyLabel" yaml:"signKeyLabel,omitempty"`
+	RestrictScopes      bool      `json:"restrictScopes" yaml:"restrictScopes,omitempty"`
+	IPFilterOp          string    `json:"ipFilterOp" yaml:"ipFilterOp,omitempty"`
+	IPFilters           *[]string `json:"ipFilters" yaml:"ipFilters,omitempty"`
+	JWKURI              string    `json:"jwkUri" yaml:"jwkUri,omitempty"`
+	Scopes              *[]string `json:"scopes" yaml:"scopes,omitempty"`
+	DefaultEntitlements *[]string `json:"defaultEntitlements" yaml:"defaultEntitlements,omitempty"`
 }
 
 type ApplicationClient struct {
@@ -403,29 +400,37 @@ func (c *ApplicationClient) GetApplication(ctx context.Context, name string) (*A
 		Token:  vc.Token,
 		Accept: "application/json",
 	}
-	resp, err := client.GetApplicationWithResponse(ctx, id, openapi.DefaultRequestEditors(ctx, headers)...)
+	resp, err := client.GetApplication(ctx, id, openapi.DefaultRequestEditors(ctx, headers)...)
 	if err != nil {
 		vc.Logger.Errorf("unable to get the Application; err=%s", err.Error())
 		return nil, "", err
 	}
 
-	if resp.StatusCode() != http.StatusOK {
-		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, "unable to get application"); err != nil {
-			vc.Logger.Errorf("unable to get the User; err=%s", err.Error())
+	buf, err := io.ReadAll(resp.Body)
+	defer func() { _ = resp.Body.Close() }()
+	if err != nil {
+		vc.Logger.Errorf("unable to read the attributes body; err=%v", err)
+		return nil, "", err
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		if err := errorsx.HandleCommonErrors(ctx, resp, "unable to get application"); err != nil {
+			vc.Logger.Errorf("unable to get the application; err=%s", err.Error())
 			return nil, "", err
 		}
 
-		vc.Logger.Errorf("unable to get the User; code=%d, body=%s", resp.StatusCode(), string(resp.Body))
-		return nil, "", errorsx.G11NError("unable to get the User")
+		data, _ := io.ReadAll(resp.Body)
+		vc.Logger.Errorf("unable to get the application; code=%d, body=%s", resp.StatusCode, string(data))
+		return nil, "", errorsx.G11NError("unable to get the application")
 	}
 
 	app := &Application{}
-	if err = json.Unmarshal(resp.Body, app); err != nil {
+	if err = json.Unmarshal(buf, app); err != nil {
 		vc.Logger.Errorf("unable to unmarshal response; err=%s", err.Error())
 		return nil, "", errorsx.G11NError("unable to get Application")
 	}
 
-	return app, resp.HTTPResponse.Request.URL.String(), nil
+	return app, resp.Request.URL.String(), nil
 }
 
 func (c *ApplicationClient) GetApplicationId(ctx context.Context, name string) (string, error) {
@@ -459,11 +464,11 @@ func (c *ApplicationClient) GetApplicationId(ctx context.Context, name string) (
 		return "", errorsx.G11NError("failed to parse API response: %w", err)
 	}
 
-	if len(data.Embedded.Applications) == 0 {
+	if len(*data.Embedded.Applications) == 0 {
 		return "", errorsx.G11NError("no application found with name %s", name)
 	}
 
-	for _, app := range data.Embedded.Applications {
+	for _, app := range *data.Embedded.Applications {
 		if app.Name == name {
 			if app.Links.Self.Href == "" {
 				return "", errorsx.G11NError("no self link found for application %s", name)
@@ -530,25 +535,20 @@ func (c *ApplicationClient) GetApplications(ctx context.Context, search string, 
 	return applicationsResponse, resp.HTTPResponse.Request.URL.String(), nil
 }
 
-func (c *ApplicationClient) DeleteApplication(ctx context.Context, name string) error {
+func (c *ApplicationClient) DeleteApplicationByName(ctx context.Context, name string) error {
 	vc := contextx.GetVerifyContext(ctx)
-	id, err := c.GetApplicationId(ctx, name)
+	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
+	appliactionID, err := c.GetApplicationId(ctx, name)
 	if err != nil {
 		vc.Logger.Errorf("unable to get the Application ID; err=%s", err.Error())
 		return err
 	}
-	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
-	if err != nil {
-		vc.Logger.Errorf("unable to get the user ID; err=%s", err.Error())
-		return errorsx.G11NError("unable to get the user ID; err=%s", err.Error())
-	}
-
 	headers := &openapi.Headers{
 		Token:       vc.Token,
 		ContentType: "application/json",
 	}
 
-	resp, err := client.DeleteApplicationWithResponse(ctx, id, openapi.DefaultRequestEditors(ctx, headers)...)
+	resp, err := client.DeleteApplicationWithResponse(ctx, appliactionID, openapi.DefaultRequestEditors(ctx, headers)...)
 	if err != nil {
 		vc.Logger.Errorf("unable to delete the Application; err=%s", err.Error())
 		return errorsx.G11NError("unable to delete the Application; err=%s", err.Error())

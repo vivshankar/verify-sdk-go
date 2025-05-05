@@ -11,54 +11,21 @@ import (
 	"github.com/ibm-verify/verify-sdk-go/internal/openapi"
 	contextx "github.com/ibm-verify/verify-sdk-go/pkg/core/context"
 	errorsx "github.com/ibm-verify/verify-sdk-go/pkg/core/errors"
-	typesx "github.com/ibm-verify/verify-sdk-go/x/types"
 )
 
-type ApiClient struct {
+type APIClient struct {
 	Client *http.Client
 }
 
 type APIClientListResponse = openapi.APIClientConfigPaginatedResponseContainer
 type APIClientConfig = openapi.APIClientConfig
-type Client struct {
-	ID               string                 `yaml:"id,omitempty" json:"id,omitempty"`
-	ClientID         string                 `yaml:"clientId,omitempty" json:"clientId,omitempty"`
-	ClientName       string                 `yaml:"clientName" json:"clientName"`
-	ClientSecret     string                 `yaml:"clientSecret,omitempty" json:"clientSecret,omitempty"`
-	Entitlements     []string               `yaml:"entitlements" json:"entitlements"`
-	Enabled          bool                   `yaml:"enabled" json:"enabled"`
-	OverrideSettings OverrideSettings       `yaml:"overrideSettings,omitempty" json:"overrideSettings,omitempty"`
-	Description      string                 `yaml:"description,omitempty" json:"description,omitempty"`
-	IPFilterOp       string                 `yaml:"ipFilterOp,omitempty" json:"ipFilterOp,omitempty"`
-	IPFilters        []string               `yaml:"ipFilters,omitempty" json:"ipFilters,omitempty"`
-	JWKUri           string                 `yaml:"jwkUri,omitempty" json:"jwkUri,omitempty"`
-	AdditionalConfig AdditionalConfig       `yaml:"additionalConfig,omitempty" json:"additionalConfig,omitempty"`
-	AdditionalProps  map[string]interface{} `yaml:"additionalProperties,omitempty" json:"additionalProperties,omitempty"`
+
+func NewAPIClient() *APIClient {
+	return &APIClient{}
 }
 
-type OverrideSettings struct {
-	RestrictScopes bool    `yaml:"restrictScopes" json:"restrictScopes"`
-	Scopes         []Scope `yaml:"scopes" json:"scopes"`
-}
-
-type Scope struct {
-	Name        string `yaml:"name" json:"name"`
-	Description string `yaml:"description" json:"description"`
-}
-
-type AdditionalConfig struct {
-	ClientAuthMethod                       string   `yaml:"clientAuthMethod" json:"clientAuthMethod"`
-	ValidateClientAssertionJti             bool     `yaml:"validateClientAssertionJti" json:"validateClientAssertionJti"`
-	AllowedClientAssertionVerificationKeys []string `yaml:"allowedClientAssertionVerificationKeys,omitempty" json:"allowedClientAssertionVerificationKeys,omitempty"`
-}
-
-func NewAPIClient() *ApiClient {
-	return &ApiClient{}
-}
-
-func (c *ApiClient) CreateAPIClient(ctx context.Context, apiClientConfig *APIClientConfig) (string, error) {
+func (c *APIClient) CreateAPIClient(ctx context.Context, apiClientConfig *APIClientConfig) (string, error) {
 	if apiClientConfig == nil {
-		fmt.Println("ERROR: Client object is nil!")
 		return "", errorsx.G11NError("client object is nil")
 	}
 
@@ -72,11 +39,11 @@ func (c *ApiClient) CreateAPIClient(ctx context.Context, apiClientConfig *APICli
 		return "", defaultErr
 	}
 
-	response, err := client.CreateAPIClientWithBodyWithResponse(ctx, "application/json", bytes.NewBuffer(body), func(ctx context.Context, req *http.Request) error {
-		req.Header.Set("Accept", "application/json")
-		req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", vc.Token))
-		return nil
-	})
+	headers := &openapi.Headers{
+		Token:  vc.Token,
+		Accept: "application/json",
+	}
+	response, err := client.CreateAPIClientWithBodyWithResponse(ctx, "application/json", bytes.NewBuffer(body), openapi.DefaultRequestEditors(ctx, headers)...)
 	if err != nil {
 		vc.Logger.Errorf("Unable to create API client; err=%v", err)
 		return "", defaultErr
@@ -93,33 +60,26 @@ func (c *ApiClient) CreateAPIClient(ctx context.Context, apiClientConfig *APICli
 	}
 
 	// unmarshal the response body to get the ID
-	m := map[string]interface{}{}
 	resourceURI := ""
-	if err := json.Unmarshal(response.Body, &m); err != nil {
-		vc.Logger.Warnf("unable to unmarshal the response body to get the 'id'")
-		resourceURI = response.HTTPResponse.Header.Get("Location")
-	} else {
-		id := typesx.Map(m).SafeString("id", "")
-		resourceURI = fmt.Sprintf("%s/%s", response.HTTPResponse.Request.URL.String(), id)
-	}
+	resourceURI = response.HTTPResponse.Header.Get("Location")
 
 	return resourceURI, nil
 }
 
-func (c *ApiClient) GetAPIClient(ctx context.Context, clientName string) (*APIClientConfig, string, error) {
+func (c *APIClient) GetAPIClientByName(ctx context.Context, clientName string) (*APIClientConfig, string, error) {
 	vc := contextx.GetVerifyContext(ctx)
 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
-	id, err := c.GetAPIClientId(ctx, clientName)
+	ID, err := c.getAPIClientId(ctx, clientName)
 	if err != nil {
-		vc.Logger.Errorf("unable to get the group ID; err=%s", err.Error())
+		vc.Logger.Errorf("unable to get the api client ID; err=%s", err.Error())
 		return nil, "", err
 	}
 
-	response, err := client.GetAPIClientWithResponse(ctx, id, func(ctx context.Context, req *http.Request) error {
-		req.Header.Set("Accept", "application/json")
-		req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", vc.Token))
-		return nil
-	})
+	headers := &openapi.Headers{
+		Token:  vc.Token,
+		Accept: "application/json",
+	}
+	response, err := client.GetAPIClientWithResponse(ctx, ID, openapi.DefaultRequestEditors(ctx, headers)...)
 	if err != nil {
 		vc.Logger.Errorf("unable to get the API client; err=%s", err.Error())
 		return nil, "", err
@@ -135,15 +95,47 @@ func (c *ApiClient) GetAPIClient(ctx context.Context, clientName string) (*APICl
 		return nil, "", errorsx.G11NError("unable to get the API client with clientName %s; status=%d", clientName, response.StatusCode())
 	}
 
-	Client := &APIClientConfig{}
-	if err = json.Unmarshal(response.Body, Client); err != nil {
+	APIClient := &APIClientConfig{}
+	if err = json.Unmarshal(response.Body, APIClient); err != nil {
 		return nil, "", errorsx.G11NError("unable to get the API client")
 	}
 
-	return Client, response.HTTPResponse.Request.URL.String(), nil
+	return APIClient, response.HTTPResponse.Request.URL.String(), nil
 }
 
-func (c *ApiClient) GetAPIClients(ctx context.Context, search string, sort string, page int, limit int) (*APIClientListResponse, string, error) {
+func (c *APIClient) GetAPIClientByID(ctx context.Context, clientID string) (*APIClientConfig, string, error) {
+	vc := contextx.GetVerifyContext(ctx)
+	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
+
+	headers := &openapi.Headers{
+		Token:  vc.Token,
+		Accept: "application/json",
+	}
+	response, err := client.GetAPIClientWithResponse(ctx, clientID, openapi.DefaultRequestEditors(ctx, headers)...)
+	if err != nil {
+		vc.Logger.Errorf("unable to get the API client; err=%s", err.Error())
+		return nil, "", err
+	}
+
+	if response.StatusCode() != http.StatusOK {
+		if err := errorsx.HandleCommonErrors(ctx, response.HTTPResponse, "unable to get API client"); err != nil {
+			vc.Logger.Errorf("unable to get the API client; err=%s", err.Error())
+			return nil, "", err
+		}
+
+		vc.Logger.Errorf("unable to get the API client; code=%d, body=%s", response.StatusCode(), string(response.Body))
+		return nil, "", errorsx.G11NError("unable to get the API client with clientID %s; status=%d", clientID, response.StatusCode())
+	}
+
+	APIClient := &APIClientConfig{}
+	if err = json.Unmarshal(response.Body, APIClient); err != nil {
+		return nil, "", errorsx.G11NError("unable to get the API client")
+	}
+
+	return APIClient, response.HTTPResponse.Request.URL.String(), nil
+}
+
+func (c *APIClient) GetAPIClients(ctx context.Context, search string, sort string, page int, limit int) (*APIClientListResponse, string, error) {
 	vc := contextx.GetVerifyContext(ctx)
 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
 	params := &openapi.GetAPIClientsParams{}
@@ -168,11 +160,11 @@ func (c *ApiClient) GetAPIClients(ctx context.Context, search string, sort strin
 		params.Pagination = &paginationStr
 	}
 
-	response, err := client.GetAPIClientsWithResponse(ctx, params, func(ctx context.Context, req *http.Request) error {
-		req.Header.Set("Accept", "application/json")
-		req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", vc.Token))
-		return nil
-	})
+	headers := &openapi.Headers{
+		Token:  vc.Token,
+		Accept: "application/json",
+	}
+	response, err := client.GetAPIClientsWithResponse(ctx, params, openapi.DefaultRequestEditors(ctx, headers)...)
 
 	if err != nil {
 		vc.Logger.Errorf("unable to get the API clients; err=%s", err.Error())
@@ -198,7 +190,7 @@ func (c *ApiClient) GetAPIClients(ctx context.Context, search string, sort strin
 	return apiclientsResponse, response.HTTPResponse.Request.URL.String(), nil
 }
 
-func (c *ApiClient) UpdateAPIClient(ctx context.Context, apiClientConfig *APIClientConfig) error {
+func (c *APIClient) UpdateAPIClient(ctx context.Context, apiClientConfig *APIClientConfig) error {
 	vc := contextx.GetVerifyContext(ctx)
 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
 	if apiClientConfig == nil {
@@ -206,23 +198,23 @@ func (c *ApiClient) UpdateAPIClient(ctx context.Context, apiClientConfig *APICli
 		return errorsx.G11NError("client object is nil")
 	}
 
-	id, err := c.GetAPIClientId(ctx, apiClientConfig.ClientName)
+	ID, err := c.getAPIClientId(ctx, apiClientConfig.ClientName)
 	if err != nil {
 		vc.Logger.Errorf("unable to get the client ID for API client '%s'; err=%s", apiClientConfig.ClientName, err.Error())
 		return errorsx.G11NError("unable to get the client ID for API client '%s'; err=%s", apiClientConfig.ClientName, err.Error())
 	}
-
+	apiClientConfig.ID = &ID
 	body, err := json.Marshal(apiClientConfig)
 	if err != nil {
 		vc.Logger.Errorf("unable to marshal the API client; err=%v", err)
 		return errorsx.G11NError("unable to marshal the API client; err=%v", err)
 	}
 
-	response, err := client.UpdateAPIClientWithBodyWithResponse(ctx, id, "application/json", bytes.NewBuffer(body), func(ctx context.Context, req *http.Request) error {
-		req.Header.Set("Accept", "application/json")
-		req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", vc.Token))
-		return nil
-	})
+	headers := &openapi.Headers{
+		Token:  vc.Token,
+		Accept: "application/json",
+	}
+	response, err := client.UpdateAPIClientWithBodyWithResponse(ctx, ID, "application/json", bytes.NewBuffer(body), openapi.DefaultRequestEditors(ctx, headers)...)
 	if err != nil {
 		if err := errorsx.HandleCommonErrors(ctx, response.HTTPResponse, "unable to update API client"); err != nil {
 			vc.Logger.Errorf("unable to update the API client; err=%s", err.Error())
@@ -240,7 +232,58 @@ func (c *ApiClient) UpdateAPIClient(ctx context.Context, apiClientConfig *APICli
 
 }
 
-func (c *ApiClient) GetAPIClientId(ctx context.Context, clientName string) (string, error) {
+func (c *APIClient) DeleteAPIClientByName(ctx context.Context, clientName string) error {
+	vc := contextx.GetVerifyContext(ctx)
+	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
+	ID, err := c.getAPIClientId(ctx, clientName)
+	if err != nil {
+		vc.Logger.Errorf("unable to get the api client ID; err=%s", err.Error())
+		return err
+	}
+	headers := &openapi.Headers{
+		Token:  vc.Token,
+		Accept: "application/json",
+	}
+	response, err := client.DeleteAPIClientWithResponse(ctx, ID, openapi.DefaultRequestEditors(ctx, headers)...)
+	if err != nil {
+		vc.Logger.Errorf("unable to delete API client; err=%s", err.Error())
+		return errorsx.G11NError("unable to delete the API client; err=%s", err.Error())
+	}
+	if response.StatusCode() != http.StatusNoContent {
+		if err := errorsx.HandleCommonErrors(ctx, response.HTTPResponse, "unable to delete API client"); err != nil {
+			vc.Logger.Errorf("unable to delete the API client; err=%s", err.Error())
+			return errorsx.G11NError("unable to delete the API client; err=%s", err.Error())
+		}
+		vc.Logger.Errorf("unable to delete the API client; code=%d, body=%s", response.StatusCode(), string(response.Body))
+		return errorsx.G11NError("unable to delete the API client; code=%d, body=%s", response.StatusCode(), string(response.Body))
+	}
+	return nil
+}
+
+func (c *APIClient) DeleteAPIClientById(ctx context.Context, ID string) error {
+	vc := contextx.GetVerifyContext(ctx)
+	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
+	headers := &openapi.Headers{
+		Token:  vc.Token,
+		Accept: "application/json",
+	}
+	response, err := client.DeleteAPIClientWithResponse(ctx, ID, openapi.DefaultRequestEditors(ctx, headers)...)
+	if err != nil {
+		vc.Logger.Errorf("unable to delete API client; err=%s", err.Error())
+		return errorsx.G11NError("unable to delete the API client; err=%s", err.Error())
+	}
+	if response.StatusCode() != http.StatusNoContent {
+		if err := errorsx.HandleCommonErrors(ctx, response.HTTPResponse, "unable to delete API client"); err != nil {
+			vc.Logger.Errorf("unable to delete the API client; err=%s", err.Error())
+			return errorsx.G11NError("unable to delete the API client; err=%s", err.Error())
+		}
+		vc.Logger.Errorf("unable to delete the API client; code=%d, body=%s", response.StatusCode(), string(response.Body))
+		return errorsx.G11NError("unable to delete the API client; code=%d, body=%s", response.StatusCode(), string(response.Body))
+	}
+	return nil
+}
+
+func (c *APIClient) getAPIClientId(ctx context.Context, clientName string) (string, error) {
 	vc := contextx.GetVerifyContext(ctx)
 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
 
@@ -249,11 +292,11 @@ func (c *ApiClient) GetAPIClientId(ctx context.Context, clientName string) (stri
 		Search: &search,
 	}
 
-	response, err := client.GetAPIClientsWithResponse(ctx, params, func(ctx context.Context, req *http.Request) error {
-		req.Header.Set("Accept", "application/json")
-		req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", vc.Token))
-		return nil
-	})
+	headers := &openapi.Headers{
+		Token:  vc.Token,
+		Accept: "application/json",
+	}
+	response, err := client.GetAPIClientsWithResponse(ctx, params, openapi.DefaultRequestEditors(ctx, headers)...)
 
 	if err != nil {
 		vc.Logger.Errorf("unable to query API clients; err=%s", err.Error())
@@ -297,39 +340,16 @@ func (c *ApiClient) GetAPIClientId(ctx context.Context, clientName string) (stri
 		}
 
 		if name == clientName {
-			id, ok := client["id"].(string)
+			ID, ok := client["id"].(string)
 			if !ok {
 				vc.Logger.Errorf("ID not found or invalid type in API response")
 				return "", errorsx.G11NError("ID not found or invalid type in API response")
 			}
-			vc.Logger.Debugf("Resolved clientName %s to ID %s", clientName, id)
-			return id, nil
+			vc.Logger.Debugf("Resolved clientName %s to ID %s", clientName, ID)
+			return ID, nil
 		}
 	}
 
 	vc.Logger.Infof("no exact match found for clientName %s", clientName)
 	return "", errorsx.G11NError("no API client found with exact clientName %s", clientName)
-}
-
-func (c *ApiClient) DeleteAPIClientById(ctx context.Context, id string) error {
-	vc := contextx.GetVerifyContext(ctx)
-	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
-	response, err := client.DeleteAPIClientWithResponse(ctx, id, func(ctx context.Context, req *http.Request) error {
-		req.Header.Set("Accept", "application/json")
-		req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", vc.Token))
-		return nil
-	})
-	if err != nil {
-		vc.Logger.Errorf("unable to delete API client; err=%s", err.Error())
-		return errorsx.G11NError("unable to delete the API client; err=%s", err.Error())
-	}
-	if response.StatusCode() != http.StatusNoContent {
-		if err := errorsx.HandleCommonErrors(ctx, response.HTTPResponse, "unable to delete API client"); err != nil {
-			vc.Logger.Errorf("unable to delete the API client; err=%s", err.Error())
-			return errorsx.G11NError("unable to delete the API client; err=%s", err.Error())
-		}
-		vc.Logger.Errorf("unable to delete the API client; code=%d, body=%s", response.StatusCode(), string(response.Body))
-		return errorsx.G11NError("unable to delete the API client; code=%d, body=%s", response.StatusCode(), string(response.Body))
-	}
-	return nil
 }
