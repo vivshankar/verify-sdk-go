@@ -352,7 +352,7 @@ func (s *ApplicationTestSuite) TestApplication() {
 		if err != nil {
 			if strings.Contains(err.Error(), "code=206") {
 				fmt.Println("===============================================================")
-				fmt.Println("Retrying Update as creation still in progress in 5 seconds.....")
+				fmt.Println("Retrying Update in 5 seconds, as creation still in progress.....")
 				fmt.Println("===============================================================")
 				time.Sleep(5 * time.Second)
 				continue

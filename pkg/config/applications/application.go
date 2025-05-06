@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"strconv"
 	"strings"
@@ -22,7 +21,7 @@ type ApplicationListResponse struct {
 }
 
 type Embedded struct {
-	Applications []Application `json:"applications" yaml:"applications"`
+	Applications *[]Application `json:"applications" yaml:"applications"`
 }
 
 type Application struct {
@@ -31,17 +30,17 @@ type Application struct {
 	Links                  Links                  `json:"_links" yaml:"_links"`
 	Providers              Providers              `json:"providers" yaml:"providers"`
 	Provisioning           Provisioning           `json:"provisioning" yaml:"provisioning"`
-	AttributeMappings      []AttributeMapping     `json:"attributeMappings" yaml:"attributeMappings,omitempty"`
+	AttributeMappings      *[]AttributeMapping    `json:"attributeMappings" yaml:"attributeMappings,omitempty"`
 	ApplicationState       bool                   `json:"applicationState" yaml:"applicationState,omitempty"`
 	ApprovalRequired       bool                   `json:"approvalRequired" yaml:"approvalRequired,omitempty"`
 	SignonState            bool                   `json:"signonState" yaml:"signonState,omitempty"`
 	Description            string                 `json:"description" yaml:"description,omitempty"`
 	ProvisioningMode       string                 `json:"provisioningMode" yaml:"provisioningMode,omitempty"`
-	IdentitySources        []string               `json:"identitySources" yaml:"identitySources,omitempty"`
+	IdentitySources        *[]string              `json:"identitySources" yaml:"identitySources,omitempty"`
 	VisibleOnLaunchpad     bool                   `json:"visibleOnLaunchpad" yaml:"visibleOnLaunchpad,omitempty"`
 	Customization          Customization          `json:"customization" yaml:"customization,omitempty"`
 	DevportalSettings      DevportalSettings      `json:"devportalSettings" yaml:"devportalSettings,omitempty"`
-	APIAccessClients       []APIAccessClients     `json:"apiAccessClients" yaml:"apiAccessClients,omitempty"`
+	APIAccessClients       *[]APIAccessClients    `json:"apiAccessClients" yaml:"apiAccessClients,omitempty"`
 	CustomIcon             string                 `json:"customIcon" yaml:"customIcon,omitempty"`
 	DefaultIcon            string                 `json:"defaultIcon" yaml:"defaultIcon,omitempty"`
 	AdaptiveAuthentication AdaptiveAuthentication `json:"adaptiveAuthentication" yaml:"adaptiveAuthentication,omitempty"`
@@ -56,19 +55,19 @@ type AdaptiveAuthentication struct {
 	StorageLink string `json:"storageLink" yaml:"storageLink,omitempty"`
 }
 type DevportalSettings struct {
-	GrantTypes                 GrantTypes         `json:"grantTypes" yaml:"grantTypes,omitempty"`
-	AuthPolicy                 AuthPolicy         `json:"authPolicy" yaml:"authPolicy,omitempty"`
-	ExtendedProperties         map[string]string  `json:"extendedProperties" yaml:"extendedProperties,omitempty"`
-	IdentitySources            []string           `json:"identitySources" yaml:"identitySources,omitempty"`
-	SendAllKnownUserAttributes string             `json:"sendAllKnownUserAttributes" yaml:"sendAllKnownUserAttributes,omitempty"`
-	AttributeMappings          []AttributeMapping `json:"attributeMappings" yaml:"attributeMappings,omitempty"`
+	GrantTypes                 GrantTypes          `json:"grantTypes" yaml:"grantTypes,omitempty"`
+	AuthPolicy                 AuthPolicy          `json:"authPolicy" yaml:"authPolicy,omitempty"`
+	ExtendedProperties         map[string]string   `json:"extendedProperties" yaml:"extendedProperties,omitempty"`
+	IdentitySources            *[]string           `json:"identitySources" yaml:"identitySources,omitempty"`
+	SendAllKnownUserAttributes string              `json:"sendAllKnownUserAttributes" yaml:"sendAllKnownUserAttributes,omitempty"`
+	AttributeMappings          *[]AttributeMapping `json:"attributeMappings" yaml:"attributeMappings,omitempty"`
 }
 type AuthPolicy struct {
-	ID               string           `json:"id" yaml:"id,omitempty"`
-	Name             string           `json:"name" yaml:"name,omitempty"`
-	GrantTypes       []GrantTypeEntry `json:"grantTypes" yaml:"grantTypes,omitempty"`
-	ErrorCode        string           `json:"errorCode" yaml:"errorCode,omitempty"`
-	ErrorDescription string           `json:"errorDescription" yaml:"errorDescription,omitempty"`
+	ID               string            `json:"id" yaml:"id,omitempty"`
+	Name             string            `json:"name" yaml:"name,omitempty"`
+	GrantTypes       *[]GrantTypeEntry `json:"grantTypes" yaml:"grantTypes,omitempty"`
+	ErrorCode        string            `json:"errorCode" yaml:"errorCode,omitempty"`
+	ErrorDescription string            `json:"errorDescription" yaml:"errorDescription,omitempty"`
 }
 type GrantTypeEntry struct {
 	Name  string `json:"name" yaml:"name,omitempty"`
@@ -227,10 +226,10 @@ type SigningSettings struct {
 
 type Provisioning struct {
 	Extension                Extension            `json:"extension" yaml:"extension,omitempty"`
-	AttributeMappings        []AttributeMapping   `json:"attributeMappings" yaml:"attributeMappings,omitempty"`
+	AttributeMappings        *[]AttributeMapping  `json:"attributeMappings" yaml:"attributeMappings,omitempty"`
 	Policies                 ProvisioningPolicies `json:"policies" yaml:"policies,omitempty"`
 	SendNotifications        bool                 `json:"sendNotifications" yaml:"sendNotifications"`
-	ReverseAttributeMappings []AttributeMapping   `json:"reverseAttributeMappings" yaml:"reverseAttributeMappings,omitempty"`
+	ReverseAttributeMappings *[]AttributeMapping  `json:"reverseAttributeMappings" yaml:"reverseAttributeMappings,omitempty"`
 	Authentication           Authentication       `json:"authentication" yaml:"authentication,omitempty"`
 	ProvisioningState        string               `json:"provisioningState" yaml:"provisioningState,omitempty"`
 }
@@ -254,7 +253,7 @@ type ProvisioningPolicies struct {
 }
 
 type AdoptionPolicy struct {
-	MatchingAttributes []AttributeMapping `json:"matchingAttributes" yaml:"matchingAttributes,omitempty"`
+	MatchingAttributes *[]AttributeMapping `json:"matchingAttributes" yaml:"matchingAttributes,omitempty"`
 }
 
 type Authentication struct {
@@ -262,19 +261,19 @@ type Authentication struct {
 }
 
 type APIAccessClients struct {
-	AccessTokenLifetime int32    `json:"accessTokenLifetime" yaml:"accessTokenLifetime"`
-	AccessTokenType     string   `json:"accessTokenType" yaml:"accessTokenType"`
-	ClientName          string   `json:"clientName" yaml:"clientName"`
-	ClientID            string   `json:"clientId" yaml:"clientId,omitempty"`
-	Enabled             bool     `json:"enabled" yaml:"enabled"`
-	JWTSigningAlg       string   `json:"jwtSigningAlg" yaml:"jwtSigningAlg,omitempty"`
-	SignKeyLabel        string   `json:"signKeyLabel" yaml:"signKeyLabel,omitempty"`
-	RestrictScopes      bool     `json:"restrictScopes" yaml:"restrictScopes,omitempty"`
-	IPFilterOp          string   `json:"ipFilterOp" yaml:"ipFilterOp,omitempty"`
-	IPFilters           []string `json:"ipFilters" yaml:"ipFilters,omitempty"`
-	JWKURI              string   `json:"jwkUri" yaml:"jwkUri,omitempty"`
-	Scopes              []string `json:"scopes" yaml:"scopes,omitempty"`
-	DefaultEntitlements []string `json:"defaultEntitlements" yaml:"defaultEntitlements,omitempty"`
+	AccessTokenLifetime int32     `json:"accessTokenLifetime" yaml:"accessTokenLifetime"`
+	AccessTokenType     string    `json:"accessTokenType" yaml:"accessTokenType"`
+	ClientName          string    `json:"clientName" yaml:"clientName"`
+	ClientID            string    `json:"clientId" yaml:"clientId,omitempty"`
+	Enabled             bool      `json:"enabled" yaml:"enabled"`
+	JWTSigningAlg       string    `json:"jwtSigningAlg" yaml:"jwtSigningAlg,omitempty"`
+	SignKeyLabel        string    `json:"signKeyLabel" yaml:"signKeyLabel,omitempty"`
+	RestrictScopes      bool      `json:"restrictScopes" yaml:"restrictScopes,omitempty"`
+	IPFilterOp          string    `json:"ipFilterOp" yaml:"ipFilterOp,omitempty"`
+	IPFilters           *[]string `json:"ipFilters" yaml:"ipFilters,omitempty"`
+	JWKURI              string    `json:"jwkUri" yaml:"jwkUri,omitempty"`
+	Scopes              *[]string `json:"scopes" yaml:"scopes,omitempty"`
+	DefaultEntitlements *[]string `json:"defaultEntitlements" yaml:"defaultEntitlements,omitempty"`
 }
 
 type ApplicationClient struct {
@@ -420,7 +419,7 @@ func (c *ApplicationClient) GetApplication(ctx context.Context, name string) (*A
 			return nil, "", err
 		}
 
-		data, _ := ioutil.ReadAll(resp.Body)
+		data, _ := io.ReadAll(resp.Body)
 		vc.Logger.Errorf("unable to get the application; code=%d, body=%s", resp.StatusCode, string(data))
 		return nil, "", errorsx.G11NError("unable to get the application")
 	}
@@ -465,11 +464,11 @@ func (c *ApplicationClient) GetApplicationId(ctx context.Context, name string) (
 		return "", errorsx.G11NError("failed to parse API response: %w", err)
 	}
 
-	if len(data.Embedded.Applications) == 0 {
+	if len(*data.Embedded.Applications) == 0 {
 		return "", errorsx.G11NError("no application found with name %s", name)
 	}
 
-	for _, app := range data.Embedded.Applications {
+	for _, app := range *data.Embedded.Applications {
 		if app.Name == name {
 			if app.Links.Self.Href == "" {
 				return "", errorsx.G11NError("no self link found for application %s", name)
