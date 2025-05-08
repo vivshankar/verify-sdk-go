@@ -35,17 +35,6 @@ type PersonalCertListResponse struct {
 	PersonalCerts []PersonalCert `yaml:"Resources" json:"Resources"`
 }
 
-type SignerCertListResponse struct {
-	TotalResults int          `yaml:"totalResults" json:"totalResults"`
-	SignerCerts  []SignerCert `yaml:"Resources" json:"Resources"`
-}
-
-type SignerCert struct {
-	ID    string `yaml:"id,omitempty" json:"id,omitempty"`
-	Cert  string `yaml:"cert" json:"cert"`
-	Label string `yaml:"label" json:"label"`
-}
-
 type PersonalCertClient struct {
 	Client *http.Client
 }
@@ -249,28 +238,6 @@ func (c *PersonalCertClient) GetPersonalCerts(ctx context.Context, sort string, 
 
 	certList := &PersonalCertListResponse{
 		PersonalCerts: certs,
-	}
-
-	for i, cert := range certList.PersonalCerts {
-		getCertParams := &openapi.GetPersonalCertParams{}
-		resp, err := client.GetPersonalCertWithResponse(ctx, cert.Label, getCertParams, openapi.DefaultRequestEditors(ctx, headers)...)
-		if err != nil {
-			vc.Logger.Errorf("unable to get personal certificate for label %s; err=%s", cert.Label, err.Error())
-			continue
-		}
-		if resp.StatusCode() != http.StatusOK {
-			vc.Logger.Errorf("unable to get personal certificate for label %s; code=%d, body=%s", cert.Label, resp.StatusCode(), string(resp.Body))
-			continue
-		}
-
-		var certResponse struct {
-			Cert string `json:"cert"`
-		}
-		if err = json.Unmarshal(resp.Body, &certResponse); err != nil {
-			vc.Logger.Errorf("unable to parse personal certificate response for label %s; err=%s", cert.Label, err.Error())
-			continue
-		}
-		certList.PersonalCerts[i].Cert = certResponse.Cert
 	}
 
 	return certList, resp.HTTPResponse.Request.URL.String(), nil
