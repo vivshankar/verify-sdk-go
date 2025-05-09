@@ -18,12 +18,27 @@ type IdentityAgents struct {
 	Client *http.Client
 }
 
+var provModule map[string]map[string]interface{} = map[string]map[string]interface{}{
+	"external": {
+		"caCerts":  "",
+		"id":       "",
+		"password": "",
+		"uri":      []string{},
+	},
+}
+
 type IdentityAgentListResponse = []openapi.OnpremAgentConfiguration
 
 type IdentityAgentConfig = openapi.OnpremAgentConfiguration
 
 func NewIdentityAgents() *IdentityAgents {
 	return &IdentityAgents{}
+}
+
+func AddModule(identityAgent *IdentityAgentConfig, identityType string) {
+	if identityType == "PROV" {
+		identityAgent.Modules = append(identityAgent.Modules, provModule)
+	}
 }
 
 func (c *IdentityAgents) CreateIdentityAgent(ctx context.Context, IdentityAgentConfig *IdentityAgentConfig) (string, error) {
