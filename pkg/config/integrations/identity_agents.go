@@ -266,28 +266,28 @@ func (c *IdentityAgents) GetIdentityAgents(ctx context.Context, search string, p
 // 	return nil
 // }
 
-// func (c *IdentityAgents) DeleteIdentityAgentsById(ctx context.Context, ID string) error {
-// 	vc := contextx.GetVerifyContext(ctx)
-// 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
-// 	headers := &openapi.Headers{
-// 		Token:  vc.Token,
-// 		Accept: "application/json",
-// 	}
-// 	response, err := client.DeleteIdentityAgentsWithResponse(ctx, ID, openapi.DefaultRequestEditors(ctx, headers)...)
-// 	if err != nil {
-// 		vc.Logger.Errorf("unable to delete API client; err=%s", err.Error())
-// 		return errorsx.G11NError("unable to delete the API client; err=%s", err.Error())
-// 	}
-// 	if response.StatusCode() != http.StatusNoContent {
-// 		if err := errorsx.HandleCommonErrors(ctx, response.HTTPResponse, "unable to delete API client"); err != nil {
-// 			vc.Logger.Errorf("unable to delete the API client; err=%s", err.Error())
-// 			return errorsx.G11NError("unable to delete the API client; err=%s", err.Error())
-// 		}
-// 		vc.Logger.Errorf("unable to delete the API client; code=%d, body=%s", response.StatusCode(), string(response.Body))
-// 		return errorsx.G11NError("unable to delete the API client; code=%d, body=%s", response.StatusCode(), string(response.Body))
-// 	}
-// 	return nil
-// }
+func (c *IdentityAgents) DeleteIdentityAgentsById(ctx context.Context, identityAgentID string) error {
+	vc := contextx.GetVerifyContext(ctx)
+	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
+	headers := &openapi.Headers{
+		Token:  vc.Token,
+		Accept: "application/json",
+	}
+	response, err := client.DeleteOnpremAgentWithResponse(ctx, identityAgentID, openapi.DefaultRequestEditors(ctx, headers)...)
+	if err != nil {
+		vc.Logger.Errorf("unable to delete Identity Agent; err=%s", err.Error())
+		return errorsx.G11NError("unable to delete the Identity Agent; err=%s", err.Error())
+	}
+	if response.StatusCode() != http.StatusNoContent {
+		if err := errorsx.HandleCommonErrors(ctx, response.HTTPResponse, "unable to delete API client"); err != nil {
+			vc.Logger.Errorf("unable to delete the Identity Agent; err=%s", err.Error())
+			return errorsx.G11NError("unable to delete the Identity Agent; err=%s", err.Error())
+		}
+		vc.Logger.Errorf("unable to delete the Identity Agent; code=%d, body=%s", response.StatusCode(), string(response.Body))
+		return errorsx.G11NError("unable to delete the Identity Agent; code=%d, body=%s", response.StatusCode(), string(response.Body))
+	}
+	return nil
+}
 
 // func (c *IdentityAgents) getIdentityAgentsId(ctx context.Context, clientName string) (string, error) {
 // 	vc := contextx.GetVerifyContext(ctx)
