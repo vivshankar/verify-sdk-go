@@ -1,6 +1,7 @@
 package integrations
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -17,55 +18,51 @@ type IdentityAgents struct {
 	Client *http.Client
 }
 
-type IdentityAgentsListResponse = []openapi.OnpremAgentConfiguration
+type IdentityAgentListResponse = []openapi.OnpremAgentConfiguration
 
-type IdentityAgentsConfig = openapi.OnpremAgentConfiguration
+type IdentityAgentConfig = openapi.OnpremAgentConfiguration
 
 func NewIdentityAgents() *IdentityAgents {
 	return &IdentityAgents{}
 }
 
-// func (c *IdentityAgents) CreateIdentityAgents(ctx context.Context, IdentityAgentsConfig *IdentityAgentsConfig) (string, error) {
-// 	if IdentityAgentsConfig == nil {
-// 		return "", errorsx.G11NError("client object is nil")
-// 	}
+func (c *IdentityAgents) CreateIdentityAgent(ctx context.Context, IdentityAgentConfig *IdentityAgentConfig) (string, error) {
+	vc := contextx.GetVerifyContext(ctx)
+	defaultErr := errorsx.G11NError("unable to create Identity Agent")
+	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
 
-// 	vc := contextx.GetVerifyContext(ctx)
-// 	defaultErr := errorsx.G11NError("unable to create API client")
-// 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
+	body, err := json.Marshal(IdentityAgentConfig)
+	if err != nil {
+		vc.Logger.Errorf("Unable to marshal Identity Agent data; err=%v", err)
+		return "", defaultErr
+	}
 
-// 	body, err := json.Marshal(IdentityAgentsConfig)
-// 	if err != nil {
-// 		vc.Logger.Errorf("Unable to marshal API client data; err=%v", err)
-// 		return "", defaultErr
-// 	}
+	headers := &openapi.Headers{
+		Token:  vc.Token,
+		Accept: "application/json",
+	}
+	response, err := client.CreateOnpremAgentWithBodyWithResponse(ctx, "application/json", bytes.NewBuffer(body), openapi.DefaultRequestEditors(ctx, headers)...)
+	if err != nil {
+		vc.Logger.Errorf("Unable to create Identity Agent; err=%v", err)
+		return "", defaultErr
+	}
 
-// 	headers := &openapi.Headers{
-// 		Token:  vc.Token,
-// 		Accept: "application/json",
-// 	}
-// 	response, err := client.CreateIdentityAgentsWithBodyWithResponse(ctx, "application/json", bytes.NewBuffer(body), openapi.DefaultRequestEditors(ctx, headers)...)
-// 	if err != nil {
-// 		vc.Logger.Errorf("Unable to create API client; err=%v", err)
-// 		return "", defaultErr
-// 	}
+	if response.StatusCode() != http.StatusCreated {
+		if err := errorsx.HandleCommonErrors(ctx, response.HTTPResponse, "unable to get Identity Agent"); err != nil {
+			vc.Logger.Errorf("unable to create the Identity Agent; err=%s", err.Error())
+			return "", err
+		}
 
-// 	if response.StatusCode() != http.StatusCreated {
-// 		if err := errorsx.HandleCommonErrors(ctx, response.HTTPResponse, "unable to get API client"); err != nil {
-// 			vc.Logger.Errorf("unable to create the API client; err=%s", err.Error())
-// 			return "", err
-// 		}
+		vc.Logger.Errorf("unable to create the Identity Agent; code=%d, body=%s", response.StatusCode(), string(response.Body))
+		return "", defaultErr
+	}
 
-// 		vc.Logger.Errorf("unable to create the API client; code=%d, body=%s", response.StatusCode(), string(response.Body))
-// 		return "", defaultErr
-// 	}
+	// unmarshal the response body to get the ID
+	resourceURI := ""
+	resourceURI = response.HTTPResponse.Header.Get("Location")
 
-// 	// unmarshal the response body to get the ID
-// 	resourceURI := ""
-// 	resourceURI = response.HTTPResponse.Header.Get("Location")
-
-// 	return resourceURI, nil
-// }
+	return resourceURI, nil
+}
 
 // func (c *IdentityAgents) GetIdentityAgentsByName(ctx context.Context, clientName string) (*IdentityAgentsConfig, string, error) {
 // 	vc := contextx.GetVerifyContext(ctx)
@@ -104,7 +101,7 @@ func NewIdentityAgents() *IdentityAgents {
 // 	return IdentityAgents, response.HTTPResponse.Request.URL.String(), nil
 // }
 
-func (c *IdentityAgents) GetIdentityAgentByID(ctx context.Context, identityAgentID string) (*IdentityAgentsConfig, string, error) {
+func (c *IdentityAgents) GetIdentityAgentByID(ctx context.Context, identityAgentID string) (*IdentityAgentConfig, string, error) {
 	vc := contextx.GetVerifyContext(ctx)
 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
 
@@ -128,15 +125,15 @@ func (c *IdentityAgents) GetIdentityAgentByID(ctx context.Context, identityAgent
 		return nil, "", errorsx.G11NError("unable to get the Identity agent with identityAgentID %s; status=%d", identityAgentID, response.StatusCode())
 	}
 
-	IdentityAgents := &IdentityAgentsConfig{}
-	if err = json.Unmarshal(response.Body, IdentityAgents); err != nil {
+	identityAgent := &IdentityAgentConfig{}
+	if err = json.Unmarshal(response.Body, identityAgent); err != nil {
 		return nil, "", errorsx.G11NError("unable to get the Identity agent")
 	}
 
-	return IdentityAgents, response.HTTPResponse.Request.URL.String(), nil
+	return identityAgent, response.HTTPResponse.Request.URL.String(), nil
 }
 
-func (c *IdentityAgents) GetIdentityAgents(ctx context.Context, search string, page int, limit int) (*IdentityAgentsListResponse, string, error) {
+func (c *IdentityAgents) GetIdentityAgents(ctx context.Context, search string, page int, limit int) (*IdentityAgentListResponse, string, error) {
 	vc := contextx.GetVerifyContext(ctx)
 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
 	params := &openapi.ListOnpremAgentsParams{}
@@ -187,13 +184,13 @@ func (c *IdentityAgents) GetIdentityAgents(ctx context.Context, search string, p
 		return nil, "", errorsx.G11NError("unable to get the Identity agents")
 	}
 
-	IdentityAgentssResponse := &IdentityAgentsListResponse{}
-	if err = json.Unmarshal(buf, &IdentityAgentssResponse); err != nil {
+	identityAgentResponse := &IdentityAgentListResponse{}
+	if err = json.Unmarshal(buf, &identityAgentResponse); err != nil {
 		vc.Logger.Errorf("unable to get the Identity agents; err=%s, body=%s", err)
 		return nil, "", errorsx.G11NError("unable to get the Identity agents")
 	}
 
-	return IdentityAgentssResponse, response.Request.URL.String(), nil
+	return identityAgentResponse, response.Request.URL.String(), nil
 }
 
 // func (c *IdentityAgents) UpdateIdentityAgents(ctx context.Context, IdentityAgentsConfig *IdentityAgentsConfig) error {
