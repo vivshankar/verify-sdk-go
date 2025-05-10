@@ -60,8 +60,8 @@ func (s *AccessPolicyTestSuite) SetupTest() {
 	// load specific config
 	s.accessPolicyName = os.Getenv("ACCESS_POLICY_NAME")
 	require.NotEmpty(s.T(), s.accessPolicyName, "invalid config: ACCESS_POLICY_NAME is missing")
-	// Access Policy details for creation
 
+	// Access Policy details for creation
 	accessPolicyCreateRawData := `
 name: TestPolicy
 description: custom access policy
@@ -213,7 +213,7 @@ validations:
 func (s *AccessPolicyTestSuite) TestAccessPolicy() {
 	var err error
 	// Create Access Policy
-	resp, err := s.client.CreateAccesspolicy(s.ctx, &s.accessPolicyCreateOrPatch)
+	resp, err := s.client.CreateAccessPolicy(s.ctx, &s.accessPolicyCreateOrPatch)
 	require.NoError(s.T(), err, "unable to create Access Policy %s; err=%v", s.accessPolicyName, err)
 	// set the access policy ID
 	policyID := strings.Split(resp, "/")[len(strings.Split(resp, "/"))-1]

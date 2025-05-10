@@ -19,7 +19,7 @@ type PolicyListResponse struct {
 	Count    int       `json:"count" yaml:"count"`
 	Limit    int       `json:"limit" yaml:"limit"`
 	Page     int       `json:"page" yaml:"page"`
-	Policies *[]Policy `json:"policies" yaml:"policies"`
+	Policies []*Policy `json:"policies" yaml:"policies"`
 }
 
 // Policy structure
@@ -27,10 +27,10 @@ type Policy struct {
 	ID                    int              `json:"id" yaml:"id"`
 	Name                  string           `json:"name" yaml:"name"`
 	Description           string           `json:"description" yaml:"description"`
-	Rules                 *[]Rule          `json:"rules" yaml:"rules"`
+	Rules                 []*Rule          `json:"rules" yaml:"rules"`
 	Meta                  AccesspolicyMeta `json:"meta" yaml:"meta"`
 	Validations           Validations      `json:"validations" yaml:"validations"`
-	RequiredSubscriptions *[]string        `json:"requiredSubscriptions" yaml:"requiredSubscriptions"`
+	RequiredSubscriptions []string         `json:"requiredSubscriptions" yaml:"requiredSubscriptions"`
 }
 
 // Rule structure
@@ -40,31 +40,31 @@ type Rule struct {
 	Description string       `json:"description" yaml:"description"`
 	AlwaysRun   bool         `json:"alwaysRun" yaml:"alwaysRun"`
 	FirstFactor bool         `json:"firstFactor" yaml:"firstFactor"`
-	Conditions  *[]Condition `json:"conditions" yaml:"conditions"`
+	Conditions  []*Condition `json:"conditions" yaml:"conditions"`
 	Result      Result       `json:"result" yaml:"result"`
 }
 
 // Condition represents a policy condition
 type Condition struct {
 	Type       string        `json:"type" yaml:"type"`
-	Values     *[]string     `json:"values,omitempty" yaml:"values,omitempty"`
+	Values     []string      `json:"values,omitempty" yaml:"values,omitempty"`
 	Enabled    *bool         `json:"enabled,omitempty" yaml:"enabled,omitempty"`       // Nullable boolean
 	Opcode     *string       `json:"opCode,omitempty" yaml:"opCode,omitempty"`         // Nullable string
-	Attributes *[]Attributes `json:"attributes,omitempty" yaml:"attributes,omitempty"` // Nested attributes
+	Attributes []*Attributes `json:"attributes,omitempty" yaml:"attributes,omitempty"` // Nested attributes
 }
 
 // Attribute represents an attribute within a condition
 type Attributes struct {
-	Name   string    `json:"name" yaml:"name"`
-	Opcode string    `json:"opCode" yaml:"opCode"`
-	Values *[]string `json:"values,omitempty" yaml:"values,omitempty"`
+	Name   string   `json:"name" yaml:"name"`
+	Opcode string   `json:"opCode" yaml:"opCode"`
+	Values []string `json:"values,omitempty" yaml:"values,omitempty"`
 }
 
 // Result structure
 type Result struct {
 	Action            string              `json:"action" yaml:"action"`
-	ServerSideActions *[]ServerSideAction `json:"serverSideActions" yaml:"serverSideActions"`
-	AuthnMethods      *[]string           `json:"authnMethods" yaml:"authnMethods"`
+	ServerSideActions []*ServerSideAction `json:"serverSideActions" yaml:"serverSideActions"`
+	AuthnMethods      []string            `json:"authnMethods" yaml:"authnMethods"`
 }
 
 // ServerSideAction structure
@@ -75,26 +75,26 @@ type ServerSideAction struct {
 
 // Meta structure
 type AccesspolicyMeta struct {
-	State               string    `json:"state" yaml:"state"`
-	Schema              string    `json:"schema" yaml:"schema"`
-	Revision            int       `json:"revision" yaml:"revision"`
-	Label               string    `json:"label" yaml:"label"`
-	Predefined          bool      `json:"predefined" yaml:"predefined"`
-	Created             int64     `json:"created" yaml:"created"`
-	CreatedBy           string    `json:"createdBy" yaml:"createdBy"`
-	LastActive          int64     `json:"lastActive" yaml:"lastActive"`
-	Modified            int64     `json:"modified" yaml:"modified"`
-	ModifiedBy          string    `json:"modifiedBy" yaml:"modifiedBy"`
-	Scope               *[]string `json:"scope" yaml:"scope"`
-	EnforcementType     string    `json:"enforcementType" yaml:"enforcementType"`
-	ReferencedBy        *[]string `json:"referencedBy,omitempty" yaml:"referencedBy,omitempty"`
-	References          *[]string `json:"references,omitempty" yaml:"references,omitempty"`
-	TenantDefaultPolicy bool      `json:"tenantDefaultPolicy" yaml:"tenantDefaultPolicy"`
+	State               string   `json:"state" yaml:"state"`
+	Schema              string   `json:"schema" yaml:"schema"`
+	Revision            int      `json:"revision" yaml:"revision"`
+	Label               string   `json:"label" yaml:"label"`
+	Predefined          bool     `json:"predefined" yaml:"predefined"`
+	Created             int64    `json:"created" yaml:"created"`
+	CreatedBy           string   `json:"createdBy" yaml:"createdBy"`
+	LastActive          int64    `json:"lastActive" yaml:"lastActive"`
+	Modified            int64    `json:"modified" yaml:"modified"`
+	ModifiedBy          string   `json:"modifiedBy" yaml:"modifiedBy"`
+	Scope               []string `json:"scope" yaml:"scope"`
+	EnforcementType     string   `json:"enforcementType" yaml:"enforcementType"`
+	ReferencedBy        []string `json:"referencedBy,omitempty" yaml:"referencedBy,omitempty"`
+	References          []string `json:"references,omitempty" yaml:"references,omitempty"`
+	TenantDefaultPolicy bool     `json:"tenantDefaultPolicy" yaml:"tenantDefaultPolicy"`
 }
 
 // Validations structure
 type Validations struct {
-	SubscriptionsNeeded *[]string `json:"subscriptionsNeeded" yaml:"subscriptionsNeeded"`
+	SubscriptionsNeeded []string `json:"subscriptionsNeeded" yaml:"subscriptionsNeeded"`
 }
 
 type PolicyClient struct {
@@ -105,12 +105,12 @@ func NewAccesspolicyClient() *PolicyClient {
 	return &PolicyClient{}
 }
 
-func (c *PolicyClient) CreateAccesspolicy(ctx context.Context, accesspolicy *Policy) (string, error) {
+func (c *PolicyClient) CreateAccessPolicy(ctx context.Context, accessPolicy *Policy) (string, error) {
 	vc := contextx.GetVerifyContext(ctx)
 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
 	defaultErr := fmt.Errorf("unable to create accesspolicy")
 
-	b, err := json.Marshal(accesspolicy)
+	b, err := json.Marshal(accessPolicy)
 	if err != nil {
 		vc.Logger.Errorf("Unable to marshal accesspolicy data; err=%v", err)
 		return "", defaultErr
@@ -145,7 +145,7 @@ func (c *PolicyClient) CreateAccesspolicy(ctx context.Context, accesspolicy *Pol
 		return "", fmt.Errorf("failed to parse 'id' as float64")
 	}
 
-	return fmt.Sprintf("https://%s/%d", response.HTTPResponse.Request.URL.String(), int(id)), nil
+	return fmt.Sprintf("%s/%d", response.HTTPResponse.Request.URL.String(), int(id)), nil
 }
 
 func (c *PolicyClient) GetAccesspolicy(ctx context.Context, accesspolicyName string) (*Policy, string, error) {
