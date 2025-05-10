@@ -15,11 +15,11 @@ import (
 
 // Root structure
 type PolicyListResponse struct {
-	Total    int      `json:"total" yaml:"total"`
-	Count    int      `json:"count" yaml:"count"`
-	Limit    int      `json:"limit" yaml:"limit"`
-	Page     int      `json:"page" yaml:"page"`
-	Policies []Policy `json:"policies" yaml:"policies"`
+	Total    int       `json:"total" yaml:"total"`
+	Count    int       `json:"count" yaml:"count"`
+	Limit    int       `json:"limit" yaml:"limit"`
+	Page     int       `json:"page" yaml:"page"`
+	Policies []*Policy `json:"policies" yaml:"policies"`
 }
 
 // Policy structure
@@ -27,7 +27,7 @@ type Policy struct {
 	ID                    int              `json:"id" yaml:"id"`
 	Name                  string           `json:"name" yaml:"name"`
 	Description           string           `json:"description" yaml:"description"`
-	Rules                 []Rule           `json:"rules" yaml:"rules"`
+	Rules                 []*Rule          `json:"rules" yaml:"rules"`
 	Meta                  AccesspolicyMeta `json:"meta" yaml:"meta"`
 	Validations           Validations      `json:"validations" yaml:"validations"`
 	RequiredSubscriptions []string         `json:"requiredSubscriptions" yaml:"requiredSubscriptions"`
@@ -35,22 +35,22 @@ type Policy struct {
 
 // Rule structure
 type Rule struct {
-	ID          string      `json:"id,omitempty" yaml:"id,omitempty"`
-	Name        string      `json:"name" yaml:"name"`
-	Description string      `json:"description" yaml:"description"`
-	AlwaysRun   bool        `json:"alwaysRun" yaml:"alwaysRun"`
-	FirstFactor bool        `json:"firstFactor" yaml:"firstFactor"`
-	Conditions  []Condition `json:"conditions" yaml:"conditions"`
-	Result      Result      `json:"result" yaml:"result"`
+	ID          string       `json:"id,omitempty" yaml:"id,omitempty"`
+	Name        string       `json:"name" yaml:"name"`
+	Description string       `json:"description" yaml:"description"`
+	AlwaysRun   bool         `json:"alwaysRun" yaml:"alwaysRun"`
+	FirstFactor bool         `json:"firstFactor" yaml:"firstFactor"`
+	Conditions  []*Condition `json:"conditions" yaml:"conditions"`
+	Result      Result       `json:"result" yaml:"result"`
 }
 
 // Condition represents a policy condition
 type Condition struct {
-	Type       string       `json:"type" yaml:"type"`
-	Values     []string     `json:"values,omitempty" yaml:"values,omitempty"`
-	Enabled    *bool        `json:"enabled,omitempty" yaml:"enabled,omitempty"`       // Nullable boolean
-	Opcode     *string      `json:"opCode,omitempty" yaml:"opCode,omitempty"`         // Nullable string
-	Attributes []Attributes `json:"attributes,omitempty" yaml:"attributes,omitempty"` // Nested attributes
+	Type       string        `json:"type" yaml:"type"`
+	Values     []string      `json:"values,omitempty" yaml:"values,omitempty"`
+	Enabled    *bool         `json:"enabled,omitempty" yaml:"enabled,omitempty"`       // Nullable boolean
+	Opcode     *string       `json:"opCode,omitempty" yaml:"opCode,omitempty"`         // Nullable string
+	Attributes []*Attributes `json:"attributes,omitempty" yaml:"attributes,omitempty"` // Nested attributes
 }
 
 // Attribute represents an attribute within a condition
@@ -62,9 +62,9 @@ type Attributes struct {
 
 // Result structure
 type Result struct {
-	Action            string             `json:"action" yaml:"action"`
-	ServerSideActions []ServerSideAction `json:"serverSideActions" yaml:"serverSideActions"`
-	AuthnMethods      []string           `json:"authnMethods" yaml:"authnMethods"`
+	Action            string              `json:"action" yaml:"action"`
+	ServerSideActions []*ServerSideAction `json:"serverSideActions" yaml:"serverSideActions"`
+	AuthnMethods      []string            `json:"authnMethods" yaml:"authnMethods"`
 }
 
 // ServerSideAction structure
@@ -105,12 +105,12 @@ func NewAccesspolicyClient() *PolicyClient {
 	return &PolicyClient{}
 }
 
-func (c *PolicyClient) CreateAccesspolicy(ctx context.Context, accesspolicy *Policy) (string, error) {
+func (c *PolicyClient) CreateAccessPolicy(ctx context.Context, accessPolicy *Policy) (string, error) {
 	vc := contextx.GetVerifyContext(ctx)
 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
-	defaultErr := fmt.Errorf("unable to create accesspolicy.")
+	defaultErr := fmt.Errorf("unable to create accesspolicy")
 
-	b, err := json.Marshal(accesspolicy)
+	b, err := json.Marshal(accessPolicy)
 	if err != nil {
 		vc.Logger.Errorf("Unable to marshal accesspolicy data; err=%v", err)
 		return "", defaultErr
@@ -137,18 +137,18 @@ func (c *PolicyClient) CreateAccesspolicy(ctx context.Context, accesspolicy *Pol
 
 	m := map[string]interface{}{}
 	if err := json.Unmarshal(response.Body, &m); err != nil {
-		return "", fmt.Errorf("Failed to parse response: %v", err)
+		return "", fmt.Errorf("failed to parse response: %v", err)
 	}
 
 	id, ok := m["id"].(float64)
 	if !ok {
-		return "", fmt.Errorf("Failed to parse 'id' as float64")
+		return "", fmt.Errorf("failed to parse 'id' as float64")
 	}
 
-	return fmt.Sprintf("https://%s/%d", response.HTTPResponse.Request.URL.String(), int(id)), nil
+	return fmt.Sprintf("%s/%d", response.HTTPResponse.Request.URL.String(), int(id)), nil
 }
 
-func (c *PolicyClient) GetAccesspolicy(ctx context.Context, accesspolicyName string) (*openapi.Policy0, string, error) {
+func (c *PolicyClient) GetAccesspolicy(ctx context.Context, accesspolicyName string) (*Policy, string, error) {
 	vc := contextx.GetVerifyContext(ctx)
 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
 	idStr, err := c.getAccesspolicyId(ctx, accesspolicyName)
@@ -181,7 +181,7 @@ func (c *PolicyClient) GetAccesspolicy(ctx context.Context, accesspolicyName str
 		return nil, "", fmt.Errorf("unable to get the Access Policy")
 	}
 
-	Accesspolicy := &openapi.Policy0{}
+	Accesspolicy := &Policy{}
 	if err = json.Unmarshal(response.Body, Accesspolicy); err != nil {
 		return nil, "", fmt.Errorf("unable to get the Access Policy")
 	}
@@ -189,7 +189,7 @@ func (c *PolicyClient) GetAccesspolicy(ctx context.Context, accesspolicyName str
 	return Accesspolicy, response.HTTPResponse.Request.URL.String(), nil
 }
 
-func (c *PolicyClient) GetAccesspolicies(ctx context.Context) (*openapi.PolicyVaultList0, string, error) {
+func (c *PolicyClient) GetAccesspolicies(ctx context.Context) (*PolicyListResponse, string, error) {
 
 	vc := contextx.GetVerifyContext(ctx)
 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
@@ -214,7 +214,7 @@ func (c *PolicyClient) GetAccesspolicies(ctx context.Context) (*openapi.PolicyVa
 		return nil, "", fmt.Errorf("unable to get the Access Policies")
 	}
 
-	AccesspoliciesResponse := &openapi.PolicyVaultList0{}
+	AccesspoliciesResponse := &PolicyListResponse{}
 	if err = json.Unmarshal(response.Body, &AccesspoliciesResponse); err != nil {
 		vc.Logger.Errorf("unable to get the Accesspolicies; err=%s, body=%s", err, string(response.Body))
 		return nil, "", fmt.Errorf("unable to get the Accesspolicies")
