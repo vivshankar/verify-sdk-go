@@ -1849,6 +1849,18 @@ type Error0 struct {
 	ErrorDescription *string `json:"error_description,omitempty" yaml:"error_description,omitempty"`
 }
 
+// ExternalErrorMessage defines model for ExternalErrorMessage.
+type ExternalErrorMessage struct {
+	// Detail A detailed human-readable message.
+	Detail *string `json:"detail,omitempty" yaml:"detail,omitempty"`
+
+	// Schemas An array of strings that contain the URIs that indicate the namespaces of the SCIM schemas that define the attributes in the current JSON structure.  The schema "urn:ietf:params:scim:api:messages:2.0:Error" is the URI as required by the SCIM specification.
+	Schemas []string `json:"schemas" yaml:"schemas"`
+
+	// Status The HTTP status code expressed as a JSON string.
+	Status string `json:"status" yaml:"status"`
+}
+
 // ExternalErrorMessage1 defines model for ExternalErrorMessage1.
 type ExternalErrorMessage1 struct {
 	// Detail A detailed human-readable message.
@@ -2776,6 +2788,109 @@ type PaginatedAttribute0 struct {
 	Limit      int          `json:"limit" yaml:"limit"`
 	Page       int          `json:"page" yaml:"page"`
 	Total      int          `json:"total" yaml:"total"`
+}
+
+// PasswordPoliciesResponseV3 defines model for PasswordPoliciesResponseV3.
+type PasswordPoliciesResponseV3 struct {
+	// Resources A list of password policies
+	Resources *[]PasswordPolicyResponseV3 `json:"Resources,omitempty" yaml:"Resources,omitempty"`
+
+	// TotalMembers The total number of password policies returned in the Resources array.
+	TotalMembers int32 `json:"totalMembers" yaml:"totalMembers"`
+}
+
+// PasswordPolicyCreateRequestV3 defines model for PasswordPolicyCreateRequestV3.
+type PasswordPolicyCreateRequestV3 struct {
+	PasswordSecurity PasswordSecurityV3 `json:"passwordSecurity" yaml:"passwordSecurity"`
+	PasswordStrength PasswordStrengthV3 `json:"passwordStrength" yaml:"passwordStrength"`
+
+	// PolicyDescription A description of the password policy
+	PolicyDescription string `json:"policyDescription" yaml:"policyDescription"`
+
+	// PolicyName User defined name of the password policy
+	PolicyName string `json:"policyName" yaml:"policyName"`
+
+	// Schemas An array of strings that contain the URIs that indicate the namespaces of the SCIM schemas that define the attributes in the current JSON structure.  The schema "urn:ietf:params:scim:schemas:ibm:core:3.0:policy:Password"is returned.
+	Schemas []string `json:"schemas" yaml:"schemas"`
+}
+
+// PasswordPolicyPatchRequestV3 defines model for PasswordPolicyPatchRequestV3.
+type PasswordPolicyPatchRequestV3 struct {
+	PasswordSecurity *PasswordSecurityV3 `json:"passwordSecurity,omitempty" yaml:"passwordSecurity,omitempty"`
+	PasswordStrength *PasswordStrengthV3 `json:"passwordStrength,omitempty" yaml:"passwordStrength,omitempty"`
+
+	// PolicyName The user defined name of the password policy.
+	PolicyName string `json:"policyName" yaml:"policyName"`
+
+	// Schemas An array of strings that contain the URIs that indicate the namespaces of the SCIM schemas that define the attributes in the current JSON structure.  The schema "urn:ietf:params:scim:schemas:ibm:core:3.0:policy:Password"is returned.
+	Schemas []string `json:"schemas" yaml:"schemas"`
+}
+
+// PasswordPolicyResponseV3 defines model for PasswordPolicyResponseV3.
+type PasswordPolicyResponseV3 struct {
+	Description *string `json:"description,omitempty" yaml:"description,omitempty"`
+
+	// ID The unique id of this password policy.
+	ID               string             `json:"id" yaml:"id"`
+	Name             *string            `json:"name,omitempty" yaml:"name,omitempty"`
+	PasswordSecurity PasswordSecurityV3 `json:"passwordSecurity" yaml:"passwordSecurity"`
+	PasswordStrength PasswordStrengthV3 `json:"passwordStrength" yaml:"passwordStrength"`
+	Predefined       *bool              `json:"predefined,omitempty" yaml:"predefined,omitempty"`
+}
+
+// PasswordSecurityV3 defines model for PasswordSecurityV3.
+type PasswordSecurityV3 struct {
+	// PwdExpireWarning Specifies the maximum number of seconds before a password expires that an expiration warning message is returned to an authenticating user.
+	PwdExpireWarning *int32 `json:"pwdExpireWarning,omitempty" yaml:"pwdExpireWarning,omitempty"`
+
+	// PwdInHistory Specifies the number of passwords that are stored in the pwdHistory attribute.
+	PwdInHistory *int32 `json:"pwdInHistory,omitempty" yaml:"pwdInHistory,omitempty"`
+
+	// PwdLockout Indicates whether a password can be used to authenticate after a specified number of consecutive failed bind attempts. If the attribute is not provided, the behavior defaults to false.
+	PwdLockout *bool `json:"pwdLockout,omitempty" yaml:"pwdLockout,omitempty"`
+
+	// PwdLockoutDuration Specifies the number of seconds that the password cannot be used to authenticate due to the specified 'pwdMaxFailure' failed bind attempts.
+	PwdLockoutDuration *int32 `json:"pwdLockoutDuration,omitempty" yaml:"pwdLockoutDuration,omitempty"`
+
+	// PwdMaxAge Specifies the number of seconds after which a password will expire (0 means password does not expire)Must be greater than or equal to pwdMinAge.
+	PwdMaxAge     *int32 `json:"pwdMaxAge,omitempty" yaml:"pwdMaxAge,omitempty"`
+	PwdMaxFailure *int32 `json:"pwdMaxFailure,omitempty" yaml:"pwdMaxFailure,omitempty"`
+
+	// PwdMinAge Specifies the number of seconds before a password can be modified again.  Can't be larger than pwdMaxAge.
+	PwdMinAge *int32 `json:"pwdMinAge,omitempty" yaml:"pwdMinAge,omitempty"`
+}
+
+// PasswordStrengthV3 defines model for PasswordStrengthV3.
+type PasswordStrengthV3 struct {
+	// PasswordMaxConsecutiveRepeatedChars Specifies the maximum successive repetitions of a given character in the password.
+	PasswordMaxConsecutiveRepeatedChars *int32 `json:"passwordMaxConsecutiveRepeatedChars,omitempty" yaml:"passwordMaxConsecutiveRepeatedChars,omitempty"`
+
+	// PasswordMaxRepeatedChars Specifies the maximum number of times a given character can be used in a password. If the server is unable to check the actual password characters, then the server will continue processing depending on the value of the pwdCheckSyntax attribute.
+	PasswordMaxRepeatedChars *int32 `json:"passwordMaxRepeatedChars,omitempty" yaml:"passwordMaxRepeatedChars,omitempty"`
+
+	// PasswordMinAlphaChars Specifies the minimum number of alphabetic characters that the password string must have. If the server is unable to check the number of alphabetic characters, then the server continues processing depending on the value of the pwdCheckSyntax attribute.
+	PasswordMinAlphaChars *int32 `json:"passwordMinAlphaChars,omitempty" yaml:"passwordMinAlphaChars,omitempty"`
+
+	// PasswordMinDiffChars Specifies the minimum number of characters in the new password that must be different from the characters in the old password, and any passwords stored in the pwdHistory. If the password has been one-way encrypted the server is unable to check actual password characters, then the server will continue processing depending on the value of the pwdCheckSyntax attribute.
+	PasswordMinDiffChars *int32 `json:"passwordMinDiffChars,omitempty" yaml:"passwordMinDiffChars,omitempty"`
+
+	// PasswordMinLowerCaseChars Specifies the minimum number of lower case alphabetic characters that the password string must have.
+	PasswordMinLowerCaseChars *int32 `json:"passwordMinLowerCaseChars,omitempty" yaml:"passwordMinLowerCaseChars,omitempty"`
+
+	// PasswordMinNumberChars Specifies the minimum number of numeric characters that the password string must have.
+	PasswordMinNumberChars *int32 `json:"passwordMinNumberChars,omitempty" yaml:"passwordMinNumberChars,omitempty"`
+
+	// PasswordMinOtherChars Specifies the minimum number of numeric and special characters that the password string must have. If the server is unable to check the number of other characters, then the server continues processing depending on the value of the pwdCheckSyntax attribute.
+	PasswordMinOtherChars *int32 `json:"passwordMinOtherChars,omitempty" yaml:"passwordMinOtherChars,omitempty"`
+
+	// PasswordMinSpecialChars Specifies the minimum number of special characters that the password string must have.
+	PasswordMinSpecialChars *int32 `json:"passwordMinSpecialChars,omitempty" yaml:"passwordMinSpecialChars,omitempty"`
+
+	// PasswordMinUpperCaseChars Specifies the minimum number of upper case alphabetic characters that the password string must have.
+	PasswordMinUpperCaseChars *int32 `json:"passwordMinUpperCaseChars,omitempty" yaml:"passwordMinUpperCaseChars,omitempty"`
+
+	// PwdMinLength Specifies the minimum length for the password string. The server checks the minimum length depending upon the value of the pwdCheckSyntax attribute.Must be greater than or equal to the sum of 'passwordMinAlphaChars' and 'passwordMinOtherChars'
+	PwdMinLength *int32 `json:"pwdMinLength,omitempty" yaml:"pwdMinLength,omitempty"`
 }
 
 // PatchBody defines model for PatchBody.
@@ -4304,6 +4419,12 @@ type CreateIdentitySourceV2JSONRequestBody = IdentitySourceInstancesData
 // UpdateIdentitySourceV2JSONRequestBody defines body for UpdateIdentitySourceV2 for application/json ContentType.
 type UpdateIdentitySourceV2JSONRequestBody = IdentitySourceInstancesData
 
+// CreatePasswordPolicyApplicationScimPlusJSONRequestBody defines body for CreatePasswordPolicy for application/scim+json ContentType.
+type CreatePasswordPolicyApplicationScimPlusJSONRequestBody = PasswordPolicyCreateRequestV3
+
+// PatchPasswordPolicyApplicationScimPlusJSONRequestBody defines body for PatchPasswordPolicy for application/scim+json ContentType.
+type PatchPasswordPolicyApplicationScimPlusJSONRequestBody = PasswordPolicyPatchRequestV3
+
 // CreateAccessPolicyJSONRequestBody defines body for CreateAccessPolicy for application/json ContentType.
 type CreateAccessPolicyJSONRequestBody = AccessPolicyRequest
 
@@ -4645,6 +4766,25 @@ type ClientInterface interface {
 	UpdateIdentitySourceV2WithBody(ctx context.Context, instanceID string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	UpdateIdentitySourceV2(ctx context.Context, instanceID string, body UpdateIdentitySourceV2JSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetPasswordPolicies request
+	GetPasswordPolicies(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreatePasswordPolicyWithBody request with any body
+	CreatePasswordPolicyWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	CreatePasswordPolicyWithApplicationScimPlusJSONBody(ctx context.Context, body CreatePasswordPolicyApplicationScimPlusJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeletePasswordPolicy request
+	DeletePasswordPolicy(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetPasswordPolicy0 request
+	GetPasswordPolicy0(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// PatchPasswordPolicyWithBody request with any body
+	PatchPasswordPolicyWithBody(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	PatchPasswordPolicyWithApplicationScimPlusJSONBody(ctx context.Context, id string, body PatchPasswordPolicyApplicationScimPlusJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ListAccessPolicies request
 	ListAccessPolicies(ctx context.Context, params *ListAccessPoliciesParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -5429,6 +5569,90 @@ func (c *Client) UpdateIdentitySourceV2WithBody(ctx context.Context, instanceID 
 
 func (c *Client) UpdateIdentitySourceV2(ctx context.Context, instanceID string, body UpdateIdentitySourceV2JSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewUpdateIdentitySourceV2Request(c.Server, instanceID, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetPasswordPolicies(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetPasswordPoliciesRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreatePasswordPolicyWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreatePasswordPolicyRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreatePasswordPolicyWithApplicationScimPlusJSONBody(ctx context.Context, body CreatePasswordPolicyApplicationScimPlusJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreatePasswordPolicyRequestWithApplicationScimPlusJSONBody(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeletePasswordPolicy(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeletePasswordPolicyRequest(c.Server, id)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetPasswordPolicy0(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetPasswordPolicy0Request(c.Server, id)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) PatchPasswordPolicyWithBody(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPatchPasswordPolicyRequestWithBody(c.Server, id, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) PatchPasswordPolicyWithApplicationScimPlusJSONBody(ctx context.Context, id string, body PatchPasswordPolicyApplicationScimPlusJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPatchPasswordPolicyRequestWithApplicationScimPlusJSONBody(c.Server, id, body)
 	if err != nil {
 		return nil, err
 	}
@@ -8543,6 +8767,188 @@ func NewUpdateIdentitySourceV2RequestWithBody(server string, instanceID string, 
 	return req, nil
 }
 
+// NewGetPasswordPoliciesRequest generates requests for GetPasswordPolicies
+func NewGetPasswordPoliciesRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v3.0/PasswordPolicies")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewCreatePasswordPolicyRequestWithApplicationScimPlusJSONBody calls the generic CreatePasswordPolicy builder with application/scim+json body
+func NewCreatePasswordPolicyRequestWithApplicationScimPlusJSONBody(server string, body CreatePasswordPolicyApplicationScimPlusJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreatePasswordPolicyRequestWithBody(server, "application/scim+json", bodyReader)
+}
+
+// NewCreatePasswordPolicyRequestWithBody generates requests for CreatePasswordPolicy with any type of body
+func NewCreatePasswordPolicyRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v3.0/PasswordPolicies")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewDeletePasswordPolicyRequest generates requests for DeletePasswordPolicy
+func NewDeletePasswordPolicyRequest(server string, id string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "id", runtime.ParamLocationPath, id)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v3.0/PasswordPolicies/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetPasswordPolicy0Request generates requests for GetPasswordPolicy0
+func NewGetPasswordPolicy0Request(server string, id string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "id", runtime.ParamLocationPath, id)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v3.0/PasswordPolicies/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewPatchPasswordPolicyRequestWithApplicationScimPlusJSONBody calls the generic PatchPasswordPolicy builder with application/scim+json body
+func NewPatchPasswordPolicyRequestWithApplicationScimPlusJSONBody(server string, id string, body PatchPasswordPolicyApplicationScimPlusJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewPatchPasswordPolicyRequestWithBody(server, id, "application/scim+json", bodyReader)
+}
+
+// NewPatchPasswordPolicyRequestWithBody generates requests for PatchPasswordPolicy with any type of body
+func NewPatchPasswordPolicyRequestWithBody(server string, id string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "id", runtime.ParamLocationPath, id)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v3.0/PasswordPolicies/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PATCH", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 // NewListAccessPoliciesRequest generates requests for ListAccessPolicies
 func NewListAccessPoliciesRequest(server string, params *ListAccessPoliciesParams) (*http.Request, error) {
 	var err error
@@ -9045,6 +9451,25 @@ type ClientWithResponsesInterface interface {
 	UpdateIdentitySourceV2WithBodyWithResponse(ctx context.Context, instanceID string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateIdentitySourceV2Object, error)
 
 	UpdateIdentitySourceV2WithResponse(ctx context.Context, instanceID string, body UpdateIdentitySourceV2JSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateIdentitySourceV2Object, error)
+
+	// GetPasswordPoliciesWithResponse request
+	GetPasswordPoliciesWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetPasswordPoliciesObject, error)
+
+	// CreatePasswordPolicyWithBodyWithResponse request with any body
+	CreatePasswordPolicyWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreatePasswordPolicyObject, error)
+
+	CreatePasswordPolicyWithApplicationScimPlusJSONBodyWithResponse(ctx context.Context, body CreatePasswordPolicyApplicationScimPlusJSONRequestBody, reqEditors ...RequestEditorFn) (*CreatePasswordPolicyObject, error)
+
+	// DeletePasswordPolicyWithResponse request
+	DeletePasswordPolicyWithResponse(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*DeletePasswordPolicyObject, error)
+
+	// GetPasswordPolicy0WithResponse request
+	GetPasswordPolicy0WithResponse(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*GetPasswordPolicy0Object, error)
+
+	// PatchPasswordPolicyWithBodyWithResponse request with any body
+	PatchPasswordPolicyWithBodyWithResponse(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PatchPasswordPolicyObject, error)
+
+	PatchPasswordPolicyWithApplicationScimPlusJSONBodyWithResponse(ctx context.Context, id string, body PatchPasswordPolicyApplicationScimPlusJSONRequestBody, reqEditors ...RequestEditorFn) (*PatchPasswordPolicyObject, error)
 
 	// ListAccessPoliciesWithResponse request
 	ListAccessPoliciesWithResponse(ctx context.Context, params *ListAccessPoliciesParams, reqEditors ...RequestEditorFn) (*ListAccessPoliciesObject, error)
@@ -10250,6 +10675,128 @@ func (r UpdateIdentitySourceV2Object) StatusCode() int {
 	return 0
 }
 
+type GetPasswordPoliciesObject struct {
+	Body                   []byte
+	HTTPResponse           *http.Response
+	ApplicationScimJSON200 *PasswordPoliciesResponseV3
+	ApplicationScimJSON400 *ExternalErrorMessage
+	ApplicationScimJSON500 *ExternalErrorMessage
+}
+
+// Status returns HTTPResponse.Status
+func (r GetPasswordPoliciesObject) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetPasswordPoliciesObject) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type CreatePasswordPolicyObject struct {
+	Body                   []byte
+	HTTPResponse           *http.Response
+	ApplicationScimJSON201 *PasswordPolicyResponseV3
+	ApplicationScimJSON400 *ExternalErrorMessage
+	ApplicationScimJSON500 *ExternalErrorMessage
+}
+
+// Status returns HTTPResponse.Status
+func (r CreatePasswordPolicyObject) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreatePasswordPolicyObject) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type DeletePasswordPolicyObject struct {
+	Body                   []byte
+	HTTPResponse           *http.Response
+	ApplicationScimJSON400 *ExternalErrorMessage
+	ApplicationScimJSON403 *ExternalErrorMessage
+	ApplicationScimJSON404 *ExternalErrorMessage
+	ApplicationScimJSON500 *ExternalErrorMessage
+}
+
+// Status returns HTTPResponse.Status
+func (r DeletePasswordPolicyObject) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeletePasswordPolicyObject) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetPasswordPolicy0Object struct {
+	Body                   []byte
+	HTTPResponse           *http.Response
+	ApplicationScimJSON200 *PasswordPolicyResponseV3
+	ApplicationScimJSON400 *ExternalErrorMessage
+	ApplicationScimJSON500 *ExternalErrorMessage
+}
+
+// Status returns HTTPResponse.Status
+func (r GetPasswordPolicy0Object) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetPasswordPolicy0Object) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type PatchPasswordPolicyObject struct {
+	Body                   []byte
+	HTTPResponse           *http.Response
+	ApplicationScimJSON400 *ExternalErrorMessage
+	ApplicationScimJSON403 *ExternalErrorMessage
+	ApplicationScimJSON404 *ExternalErrorMessage
+	ApplicationScimJSON500 *ExternalErrorMessage
+}
+
+// Status returns HTTPResponse.Status
+func (r PatchPasswordPolicyObject) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r PatchPasswordPolicyObject) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type ListAccessPoliciesObject struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -10954,6 +11501,67 @@ func (c *ClientWithResponses) UpdateIdentitySourceV2WithResponse(ctx context.Con
 		return nil, err
 	}
 	return ParseUpdateIdentitySourceV2Object(rsp)
+}
+
+// GetPasswordPoliciesWithResponse request returning *GetPasswordPoliciesObject
+func (c *ClientWithResponses) GetPasswordPoliciesWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetPasswordPoliciesObject, error) {
+	rsp, err := c.GetPasswordPolicies(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetPasswordPoliciesObject(rsp)
+}
+
+// CreatePasswordPolicyWithBodyWithResponse request with arbitrary body returning *CreatePasswordPolicyObject
+func (c *ClientWithResponses) CreatePasswordPolicyWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreatePasswordPolicyObject, error) {
+	rsp, err := c.CreatePasswordPolicyWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreatePasswordPolicyObject(rsp)
+}
+
+func (c *ClientWithResponses) CreatePasswordPolicyWithApplicationScimPlusJSONBodyWithResponse(ctx context.Context, body CreatePasswordPolicyApplicationScimPlusJSONRequestBody, reqEditors ...RequestEditorFn) (*CreatePasswordPolicyObject, error) {
+	rsp, err := c.CreatePasswordPolicyWithApplicationScimPlusJSONBody(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreatePasswordPolicyObject(rsp)
+}
+
+// DeletePasswordPolicyWithResponse request returning *DeletePasswordPolicyObject
+func (c *ClientWithResponses) DeletePasswordPolicyWithResponse(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*DeletePasswordPolicyObject, error) {
+	rsp, err := c.DeletePasswordPolicy(ctx, id, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeletePasswordPolicyObject(rsp)
+}
+
+// GetPasswordPolicy0WithResponse request returning *GetPasswordPolicy0Object
+func (c *ClientWithResponses) GetPasswordPolicy0WithResponse(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*GetPasswordPolicy0Object, error) {
+	rsp, err := c.GetPasswordPolicy0(ctx, id, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetPasswordPolicy0Object(rsp)
+}
+
+// PatchPasswordPolicyWithBodyWithResponse request with arbitrary body returning *PatchPasswordPolicyObject
+func (c *ClientWithResponses) PatchPasswordPolicyWithBodyWithResponse(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PatchPasswordPolicyObject, error) {
+	rsp, err := c.PatchPasswordPolicyWithBody(ctx, id, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePatchPasswordPolicyObject(rsp)
+}
+
+func (c *ClientWithResponses) PatchPasswordPolicyWithApplicationScimPlusJSONBodyWithResponse(ctx context.Context, id string, body PatchPasswordPolicyApplicationScimPlusJSONRequestBody, reqEditors ...RequestEditorFn) (*PatchPasswordPolicyObject, error) {
+	rsp, err := c.PatchPasswordPolicyWithApplicationScimPlusJSONBody(ctx, id, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePatchPasswordPolicyObject(rsp)
 }
 
 // ListAccessPoliciesWithResponse request returning *ListAccessPoliciesObject
@@ -12956,6 +13564,220 @@ func ParseUpdateIdentitySourceV2Object(rsp *http.Response) (*UpdateIdentitySourc
 	response := &UpdateIdentitySourceV2Object{
 		Body:         bodyBytes,
 		HTTPResponse: rsp,
+	}
+
+	return response, nil
+}
+
+// ParseGetPasswordPoliciesObject parses an HTTP response from a GetPasswordPoliciesWithResponse call
+func ParseGetPasswordPoliciesObject(rsp *http.Response) (*GetPasswordPoliciesObject, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetPasswordPoliciesObject{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest PasswordPoliciesResponseV3
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationScimJSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest ExternalErrorMessage
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationScimJSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ExternalErrorMessage
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationScimJSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreatePasswordPolicyObject parses an HTTP response from a CreatePasswordPolicyWithResponse call
+func ParseCreatePasswordPolicyObject(rsp *http.Response) (*CreatePasswordPolicyObject, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreatePasswordPolicyObject{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
+		var dest PasswordPolicyResponseV3
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationScimJSON201 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest ExternalErrorMessage
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationScimJSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ExternalErrorMessage
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationScimJSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeletePasswordPolicyObject parses an HTTP response from a DeletePasswordPolicyWithResponse call
+func ParseDeletePasswordPolicyObject(rsp *http.Response) (*DeletePasswordPolicyObject, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeletePasswordPolicyObject{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest ExternalErrorMessage
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationScimJSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest ExternalErrorMessage
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationScimJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest ExternalErrorMessage
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationScimJSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ExternalErrorMessage
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationScimJSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetPasswordPolicy0Object parses an HTTP response from a GetPasswordPolicy0WithResponse call
+func ParseGetPasswordPolicy0Object(rsp *http.Response) (*GetPasswordPolicy0Object, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetPasswordPolicy0Object{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest PasswordPolicyResponseV3
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationScimJSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest ExternalErrorMessage
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationScimJSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ExternalErrorMessage
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationScimJSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParsePatchPasswordPolicyObject parses an HTTP response from a PatchPasswordPolicyWithResponse call
+func ParsePatchPasswordPolicyObject(rsp *http.Response) (*PatchPasswordPolicyObject, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &PatchPasswordPolicyObject{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest ExternalErrorMessage
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationScimJSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest ExternalErrorMessage
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationScimJSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest ExternalErrorMessage
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationScimJSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ExternalErrorMessage
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationScimJSON500 = &dest
+
 	}
 
 	return response, nil

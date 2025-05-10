@@ -4116,6 +4116,300 @@
                 "x-publicAPI": "true"
             }
         },
+        "/v3.0/PasswordPolicies": {
+            "get": {
+                "tags": [
+                    "Password Policy Management 3.0"
+                ],
+                "summary": "Get all password policies for a specified tenant.",
+                "description": "Entitlement required: readPwdPolicy (Read password policy) or managePwdPolicy (Manage password policy). \n<br>Note: You only need one entitlement, but you can have more than one.",
+                "operationId": "getPasswordPolicies",
+                "responses": {
+                    "200": {
+                        "description": "The operation was successful.",
+                        "content": {
+                            "application/scim+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PasswordPoliciesResponseV3"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "The request was incorrect.",
+                        "content": {
+                            "application/scim+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ExternalErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "An internal server error occurred.",
+                        "content": {
+                            "application/scim+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ExternalErrorMessage"
+                                }
+                            }
+                        }
+                    }
+                },
+                "x-publicAPI": "true"
+            },
+            "post": {
+                "tags": [
+                    "Password Policy Management 3.0"
+                ],
+                "summary": "Create a password policy on the given tenant",
+                "description": "Entitlement required: managePwdPolicy (Manage password policy).",
+                "operationId": "createPasswordPolicy",
+                "requestBody": {
+                    "description": "The password policy attributes.",
+                    "content": {
+                        "application/scim+json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PasswordPolicyCreateRequestV3"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created.",
+                        "content": {
+                            "application/scim+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PasswordPolicyResponseV3"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "The request was incorrect.",
+                        "content": {
+                            "application/scim+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ExternalErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "An internal server error occurred.",
+                        "content": {
+                            "application/scim+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ExternalErrorMessage"
+                                }
+                            }
+                        }
+                    }
+                },
+                "x-publicAPI": "true",
+                "x-codegen-request-body-name": "body"
+            }
+        },
+        "/v3.0/PasswordPolicies/{id}": {
+            "get": {
+                "tags": [
+                    "Password Policy Management 3.0"
+                ],
+                "summary": "Get a password policy with a given id for a specified tenant.",
+                "description": "Entitlement required: readPwdPolicy (Read password policy) or managePwdPolicy (Manage password policy). \n<br>Note: You only need one entitlement, but you can have more than one.",
+                "operationId": "getPasswordPolicy_0",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "The identifier of the password policy whose details are being retrieved.",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The operation was successful.",
+                        "content": {
+                            "application/scim+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PasswordPolicyResponseV3"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "The request was incorrect.",
+                        "content": {
+                            "application/scim+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ExternalErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "An internal server error occurred.",
+                        "content": {
+                            "application/scim+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ExternalErrorMessage"
+                                }
+                            }
+                        }
+                    }
+                },
+                "x-publicAPI": "true"
+            },
+            "delete": {
+                "tags": [
+                    "Password Policy Management 3.0"
+                ],
+                "summary": "Deletes a password policy from a specified tenant in Cloud Directory.  Can only delete a password policy that is not predefined.",
+                "description": "Entitlement required: managePwdPolicy (Manage password policy).",
+                "operationId": "deletePasswordPolicy",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "The identifier of the password policy that is being deleted.",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content.",
+                        "content": {}
+                    },
+                    "400": {
+                        "description": "The request was incorrect.",
+                        "content": {
+                            "application/scim+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ExternalErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden.",
+                        "content": {
+                            "application/scim+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ExternalErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found.",
+                        "content": {
+                            "application/scim+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ExternalErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "An internal server error occurred.",
+                        "content": {
+                            "application/scim+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ExternalErrorMessage"
+                                }
+                            }
+                        }
+                    }
+                },
+                "x-publicAPI": "true"
+            },
+            "patch": {
+                "tags": [
+                    "Password Policy Management 3.0"
+                ],
+                "summary": "Modify a password policy's attributes in Cloud Directory.  It can be used to update one or more attributes.",
+                "description": "Entitlement required: managePwdPolicy (Manage password policy).",
+                "operationId": "patchPasswordPolicy",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "The ID of the password policy to be patched.",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "The body for the password policy's patch operation.",
+                    "content": {
+                        "application/scim+json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PasswordPolicyPatchRequestV3"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "204": {
+                        "description": "No Content.",
+                        "content": {}
+                    },
+                    "400": {
+                        "description": "The request was incorrect.",
+                        "content": {
+                            "application/scim+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ExternalErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden.",
+                        "content": {
+                            "application/scim+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ExternalErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found.",
+                        "content": {
+                            "application/scim+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ExternalErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "An internal server error occurred.",
+                        "content": {
+                            "application/scim+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ExternalErrorMessage"
+                                }
+                            }
+                        }
+                    }
+                },
+                "x-publicAPI": "true",
+                "x-codegen-request-body-name": "body"
+            }
+        },
         "/v5.0/policyvault/accesspolicy": {
             "get": {
                 "tags": [
