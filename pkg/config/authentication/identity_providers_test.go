@@ -24,7 +24,7 @@ type IdentityProvidersTestSuite struct {
 	ctx                    context.Context
 	vctx                   *contextx.VerifyContext
 	identityProviderName   string
-	client                 *authentication.IdentitysourceClient
+	client                 *authentication.IdentitySourceClient
 	identityProviderCreate *authentication.IdentitySource
 	identityProviderPatch  *authentication.IdentitySource
 }
@@ -132,23 +132,23 @@ sourceTypeId: 8
 func (s *IdentityProvidersTestSuite) TestIdentityProviders() {
 	var err error
 	// Create Identity Provider
-	_, err = s.client.CreateIdentitysource(s.ctx, s.identityProviderCreate)
+	_, err = s.client.CreateIdentitySource(s.ctx, s.identityProviderCreate)
 	require.NoError(s.T(), err, "unable to create Identity Provider %s; err=%v", s.identityProviderName, err)
 
 	// Get Identity Provider details
-	_, _, err = s.client.GetIdentitysource(s.ctx, s.identityProviderName)
+	_, _, err = s.client.GetIdentitySource(s.ctx, s.identityProviderName)
 	require.NoError(s.T(), err, "unable to get Identity Provider %s; err=%v", s.identityProviderName, err)
 
 	// Get Identity Provider list
-	_, _, err = s.client.GetIdentitysources(s.ctx, "", "")
+	_, _, err = s.client.GetIdentitySources(s.ctx, "", "")
 	require.NoError(s.T(), err, "unable to list Identity Providers; err=%v", err)
 
 	// Update Identity Provider
-	err = s.client.UpdateIdentitysource(s.ctx, s.identityProviderPatch)
+	err = s.client.UpdateIdentitySource(s.ctx, s.identityProviderPatch)
 	require.NoError(s.T(), err, "unable to update Identity Provider %s; err=%v", s.identityProviderName, err)
 
 	// Delete Identity Provider
-	err = s.client.DeleteIdentitysourceByName(s.ctx, s.identityProviderName)
+	err = s.client.DeleteIdentitySourceByName(s.ctx, s.identityProviderName)
 	require.NoError(s.T(), err, "unable to delete Identity Provider %s; err=%v", s.identityProviderName, err)
 }
 
