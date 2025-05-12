@@ -207,7 +207,7 @@ validations:
 `
 	_ = yaml.Unmarshal([]byte(accessPolicyPatchRawData), &s.accessPolicyCreateOrPatch)
 
-	s.client = security.NewAccesspolicyClient()
+	s.client = security.NewAccessPolicyClient()
 }
 
 func (s *AccessPolicyTestSuite) TestAccessPolicy() {
@@ -219,21 +219,21 @@ func (s *AccessPolicyTestSuite) TestAccessPolicy() {
 	policyID := strings.Split(resp, "/")[len(strings.Split(resp, "/"))-1]
 
 	// Get Access Policy details
-	_, _, err = s.client.GetAccesspolicy(s.ctx, s.accessPolicyName)
-	require.NoError(s.T(), err, "unable to get Access Policy %s; err=%v", s.accessPolicyName, err)
+	_, _, err = s.client.GetAccessPolicy(s.ctx, policyID)
+	require.NoError(s.T(), err, "unable to get Access Policy %s; err=%v", policyID, err)
 
 	// Get Access Policy list
-	_, _, err = s.client.GetAccesspolicies(s.ctx)
+	_, _, err = s.client.GetAccessPolicies(s.ctx)
 	require.NoError(s.T(), err, "unable to list Access Policies; err=%v", err)
 
 	// Update Access Policy
 	s.accessPolicyCreateOrPatch.ID, _ = strconv.Atoi(policyID)
-	err = s.client.UpdateAccesspolicy(s.ctx, &s.accessPolicyCreateOrPatch)
-	require.NoError(s.T(), err, "unable to update Access Policy %s; err=%v", s.accessPolicyName, err)
+	err = s.client.UpdateAccessPolicy(s.ctx, &s.accessPolicyCreateOrPatch)
+	require.NoError(s.T(), err, "unable to update Access Policy %s; err=%v", policyID, err)
 
 	// Delete Access Policy
-	err = s.client.DeleteAccesspolicyByID(s.ctx, policyID)
-	require.NoError(s.T(), err, "unable to delete Access Policy %s; err=%v", s.accessPolicyName, err)
+	err = s.client.DeleteAccessPolicyByID(s.ctx, policyID)
+	require.NoError(s.T(), err, "unable to delete Access Policy %s; err=%v", policyID, err)
 }
 
 func TestAccessPolicyTestSuite(t *testing.T) {
