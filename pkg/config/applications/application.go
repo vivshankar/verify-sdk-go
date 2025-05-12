@@ -295,7 +295,7 @@ func (c *ApplicationClient) CreateApplication(ctx context.Context, application *
 	}
 	body, err := json.Marshal(application)
 	if err != nil {
-		vc.Logger.Errorf("Unable to marshal API application data; err=%s", err.Error())
+		vc.Logger.Errorf("Unable to marshal application data; err=%s", err.Error())
 		return "", errorsx.G11NError("unable to marshal application data")
 	}
 
@@ -315,8 +315,8 @@ func (c *ApplicationClient) CreateApplication(ctx context.Context, application *
 	}
 
 	m := map[string]interface{}{}
-	if err := json.Unmarshal(body, &m); err != nil {
-		vc.Logger.Errorf("Failed to unmarshal API response; err=%s", err.Error())
+	if err := json.Unmarshal(resp.Body, &m); err != nil {
+		vc.Logger.Errorf("Failed to unmarshal application response; err=%s", err.Error())
 		return "", errorsx.G11NError("unable to parse response")
 	}
 
@@ -341,19 +341,13 @@ func (c *ApplicationClient) CreateApplication(ctx context.Context, application *
 	return resourceURI, nil
 }
 
-func (c *ApplicationClient) UpdateApplication(ctx context.Context, application *Application) error {
+func (c *ApplicationClient) UpdateApplication(ctx context.Context, applicationID string, application *Application) error {
 	vc := contextx.GetVerifyContext(ctx)
 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
 
 	if application == nil {
 		vc.Logger.Errorf("application object is nil")
 		return errorsx.G11NError("application object is nil")
-	}
-
-	applicationId, err := c.GetApplicationId(ctx, application.Name)
-	if err != nil {
-		vc.Logger.Errorf("unable to get the application ID for Application '%s'; err=%s", application.Name, err.Error())
-		return errorsx.G11NError("unable to get the application ID for Application '%s'; err=%s", application.Name, err.Error())
 	}
 
 	headers := &openapi.Headers{
@@ -368,7 +362,7 @@ func (c *ApplicationClient) UpdateApplication(ctx context.Context, application *
 		return errorsx.G11NError("unable to marshal the Application data")
 	}
 
-	resp, err := client.UpdateApplicationWithBodyWithResponse(ctx, applicationId, "*/*", bytes.NewBuffer(body), openapi.DefaultRequestEditors(ctx, headers)...)
+	resp, err := client.UpdateApplicationWithBodyWithResponse(ctx, applicationID, "*/*", bytes.NewBuffer(body), openapi.DefaultRequestEditors(ctx, headers)...)
 	if err != nil {
 		vc.Logger.Errorf("unable to update an Application; err=%s", err.Error())
 		return errorsx.G11NError("unable to update application")
@@ -386,21 +380,15 @@ func (c *ApplicationClient) UpdateApplication(ctx context.Context, application *
 	return nil
 }
 
-func (c *ApplicationClient) GetApplication(ctx context.Context, name string) (*Application, string, error) {
+func (c *ApplicationClient) GetApplicationByID(ctx context.Context, applicationID string) (*Application, string, error) {
 	vc := contextx.GetVerifyContext(ctx)
-
-	id, err := c.GetApplicationId(ctx, name)
 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
-	if err != nil {
-		vc.Logger.Errorf("unable to get the Application ID; err=%s", err.Error())
-		return nil, "", err
-	}
 
 	headers := &openapi.Headers{
 		Token:  vc.Token,
 		Accept: "application/json",
 	}
-	resp, err := client.GetApplication(ctx, id, openapi.DefaultRequestEditors(ctx, headers)...)
+	resp, err := client.GetApplication(ctx, applicationID, openapi.DefaultRequestEditors(ctx, headers)...)
 	if err != nil {
 		vc.Logger.Errorf("unable to get the Application; err=%s", err.Error())
 		return nil, "", err
@@ -433,7 +421,7 @@ func (c *ApplicationClient) GetApplication(ctx context.Context, name string) (*A
 	return app, resp.Request.URL.String(), nil
 }
 
-func (c *ApplicationClient) GetApplicationId(ctx context.Context, name string) (string, error) {
+func (c *ApplicationClient) GetApplicationID(ctx context.Context, name string) (string, error) {
 	vc := contextx.GetVerifyContext(ctx)
 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
 	filter := fmt.Sprintf(`"q=%s"`, name)
@@ -461,7 +449,7 @@ func (c *ApplicationClient) GetApplicationId(ctx context.Context, name string) (
 
 	var data ApplicationListResponse
 	if err := json.Unmarshal(resp.Body, &data); err != nil {
-		return "", errorsx.G11NError("failed to parse API response: %w", err)
+		return "", errorsx.G11NError("failed to parse application response: %w", err)
 	}
 
 	if len(data.Embedded.Applications) == 0 {
@@ -535,14 +523,9 @@ func (c *ApplicationClient) GetApplications(ctx context.Context, search string, 
 	return applicationsResponse, resp.HTTPResponse.Request.URL.String(), nil
 }
 
-func (c *ApplicationClient) DeleteApplicationByName(ctx context.Context, name string) error {
+func (c *ApplicationClient) DeleteApplicationByID(ctx context.Context, appliactionID string) error {
 	vc := contextx.GetVerifyContext(ctx)
 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
-	appliactionID, err := c.GetApplicationId(ctx, name)
-	if err != nil {
-		vc.Logger.Errorf("unable to get the Application ID; err=%s", err.Error())
-		return err
-	}
 	headers := &openapi.Headers{
 		Token:       vc.Token,
 		ContentType: "application/json",

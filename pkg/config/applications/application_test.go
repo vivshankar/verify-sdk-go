@@ -335,12 +335,14 @@ apiAccessClients:
 func (s *ApplicationTestSuite) TestApplication() {
 	var err error
 	// Create Application
-	_, err = s.client.CreateApplication(s.ctx, s.applicationCreate)
+	resp, err := s.client.CreateApplication(s.ctx, s.applicationCreate)
 	require.NoError(s.T(), err, "unable to create Application %s; err=%v", s.ApplicationName, err)
+	// set the access policy ID
+	applicationID := strings.Split(resp, "/")[len(strings.Split(resp, "/"))-1]
 
 	// Get Application details
-	_, _, err = s.client.GetApplication(s.ctx, s.ApplicationName)
-	require.NoError(s.T(), err, "unable to get Application %s; err=%v", s.ApplicationName, err)
+	_, _, err = s.client.GetApplicationByID(s.ctx, applicationID)
+	require.NoError(s.T(), err, "unable to get Application %s; err=%v", applicationID, err)
 
 	// Get Application list
 	_, _, err = s.client.GetApplications(s.ctx, "", "", 0, 0)
@@ -348,7 +350,7 @@ func (s *ApplicationTestSuite) TestApplication() {
 
 	// Update Application
 	for {
-		err = s.client.UpdateApplication(s.ctx, s.applicationPatch)
+		err = s.client.UpdateApplication(s.ctx, applicationID, s.applicationPatch)
 		if err != nil {
 			if strings.Contains(err.Error(), "code=206") {
 				fmt.Println("===============================================================")
@@ -363,11 +365,11 @@ func (s *ApplicationTestSuite) TestApplication() {
 			break
 		}
 	}
-	require.NoError(s.T(), err, "unable to update Application %s; err=%v", s.ApplicationName, err)
+	require.NoError(s.T(), err, "unable to update Application %s; err=%v", applicationID, err)
 
 	// Delete Application
-	err = s.client.DeleteApplicationByName(s.ctx, s.ApplicationName)
-	require.NoError(s.T(), err, "unable to delete Application %s; err=%v", s.ApplicationName, err)
+	err = s.client.DeleteApplicationByID(s.ctx, applicationID)
+	require.NoError(s.T(), err, "unable to delete Application %s; err=%v", applicationID, err)
 }
 
 func TestApplicationTestSuite(t *testing.T) {
