@@ -148,15 +148,10 @@ func (c *PolicyClient) CreateAccessPolicy(ctx context.Context, accessPolicy *Pol
 	return fmt.Sprintf("%s/%d", response.HTTPResponse.Request.URL.String(), int(id)), nil
 }
 
-func (c *PolicyClient) GetAccesspolicy(ctx context.Context, accesspolicyName string) (*Policy, string, error) {
+func (c *PolicyClient) GetAccesspolicy(ctx context.Context, policyID string) (*Policy, string, error) {
 	vc := contextx.GetVerifyContext(ctx)
 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
-	idStr, err := c.getAccesspolicyId(ctx, accesspolicyName)
-	if err != nil {
-		vc.Logger.Errorf("unable to get the access policy ID; err=%s", err.Error())
-		return nil, "", err
-	}
-	id, err := strconv.Atoi(idStr)
+	id, err := strconv.Atoi(policyID)
 	if err != nil {
 		vc.Logger.Errorf("unable to get the access policy ID; err=%s", err.Error())
 		return nil, "", err
@@ -284,7 +279,7 @@ func (c *PolicyClient) UpdateAccesspolicy(ctx context.Context, accesspolicy *Pol
 	return nil
 }
 
-func (c *PolicyClient) getAccesspolicyId(ctx context.Context, name string) (string, error) {
+func (c *PolicyClient) GetAccesspolicyID(ctx context.Context, name string) (string, error) {
 	vc := contextx.GetVerifyContext(ctx)
 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
 	search := fmt.Sprintf(`name = "%s"`, name)

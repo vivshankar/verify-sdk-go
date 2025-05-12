@@ -219,8 +219,8 @@ func (s *AccessPolicyTestSuite) TestAccessPolicy() {
 	policyID := strings.Split(resp, "/")[len(strings.Split(resp, "/"))-1]
 
 	// Get Access Policy details
-	_, _, err = s.client.GetAccesspolicy(s.ctx, s.accessPolicyName)
-	require.NoError(s.T(), err, "unable to get Access Policy %s; err=%v", s.accessPolicyName, err)
+	_, _, err = s.client.GetAccesspolicy(s.ctx, policyID)
+	require.NoError(s.T(), err, "unable to get Access Policy %s; err=%v", policyID, err)
 
 	// Get Access Policy list
 	_, _, err = s.client.GetAccesspolicies(s.ctx)
@@ -229,11 +229,11 @@ func (s *AccessPolicyTestSuite) TestAccessPolicy() {
 	// Update Access Policy
 	s.accessPolicyCreateOrPatch.ID, _ = strconv.Atoi(policyID)
 	err = s.client.UpdateAccesspolicy(s.ctx, &s.accessPolicyCreateOrPatch)
-	require.NoError(s.T(), err, "unable to update Access Policy %s; err=%v", s.accessPolicyName, err)
+	require.NoError(s.T(), err, "unable to update Access Policy %s; err=%v", policyID, err)
 
 	// Delete Access Policy
 	err = s.client.DeleteAccesspolicyByID(s.ctx, policyID)
-	require.NoError(s.T(), err, "unable to delete Access Policy %s; err=%v", s.accessPolicyName, err)
+	require.NoError(s.T(), err, "unable to delete Access Policy %s; err=%v", policyID, err)
 }
 
 func TestAccessPolicyTestSuite(t *testing.T) {
