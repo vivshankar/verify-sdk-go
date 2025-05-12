@@ -55,23 +55,18 @@ func (c *IdentitySourceClient) CreateIdentitySource(ctx context.Context, identit
 		return "", errorsx.G11NError("unable to create the identitySource; code=%d, body=%s", resp.StatusCode(), string(resp.Body))
 	}
 
-	return "Identity provider created successfully", nil
+	uri, _ := resp.HTTPResponse.Location()
+	return uri.String(), nil
 }
 
-func (c *IdentitySourceClient) GetIdentitySource(ctx context.Context, identitySourceName string) (*IdentitySource, string, error) {
+func (c *IdentitySourceClient) GetIdentitySourceByID(ctx context.Context, identitySourceID string) (*IdentitySource, string, error) {
 	vc := contextx.GetVerifyContext(ctx)
 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
-	id, err := c.getIdentitySourceID(ctx, identitySourceName)
-	if err != nil {
-		vc.Logger.Errorf("unable to get the group ID; err=%s", err.Error())
-		return nil, "", err
-	}
-
 	headers := &openapi.Headers{
 		Token:  vc.Token,
 		Accept: "application/json",
 	}
-	resp, err := client.GetInstanceV2WithResponse(ctx, id, openapi.DefaultRequestEditors(ctx, headers)...)
+	resp, err := client.GetInstanceV2WithResponse(ctx, identitySourceID, openapi.DefaultRequestEditors(ctx, headers)...)
 	if err != nil {
 		vc.Logger.Errorf("unable to get the IdentitySource; err=%s", err.Error())
 		return nil, "", err
@@ -136,20 +131,15 @@ func (c *IdentitySourceClient) GetIdentitySources(ctx context.Context, sort stri
 	return IdentitySourcesResponse, resp.HTTPResponse.Request.URL.String(), nil
 }
 
-func (c *IdentitySourceClient) DeleteIdentitySourceByName(ctx context.Context, name string) error {
+func (c *IdentitySourceClient) DeleteIdentitySourceByID(ctx context.Context, identitySourceID string) error {
 	vc := contextx.GetVerifyContext(ctx)
 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
-	id, err := c.getIdentitySourceID(ctx, name)
-	if err != nil {
-		vc.Logger.Errorf("unable to get the identitySource ID; err=%s", err.Error())
-		return errorsx.G11NError("unable to get the identitySource ID; err=%s", err.Error())
-	}
 
 	headers := &openapi.Headers{
 		Token:  vc.Token,
 		Accept: "application/json",
 	}
-	resp, err := client.DeleteIdentitySourceV2WithResponse(ctx, id, openapi.DefaultRequestEditors(ctx, headers)...)
+	resp, err := client.DeleteIdentitySourceV2WithResponse(ctx, identitySourceID, openapi.DefaultRequestEditors(ctx, headers)...)
 	if err != nil {
 		vc.Logger.Errorf("unable to delete the IdentitySource; err=%s", err.Error())
 		return errorsx.G11NError("unable to delete the IdentitySource; err=%s", err.Error())
@@ -168,15 +158,10 @@ func (c *IdentitySourceClient) DeleteIdentitySourceByName(ctx context.Context, n
 	return nil
 }
 
-func (c *IdentitySourceClient) UpdateIdentitySource(ctx context.Context, identitySource *IdentitySource) error {
+func (c *IdentitySourceClient) UpdateIdentitySource(ctx context.Context, identitySourceID string, identitySource *IdentitySource) error {
 	vc := contextx.GetVerifyContext(ctx)
 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
 	defaultErr := errorsx.G11NError("unable to update identitySource")
-	id, err := c.getIdentitySourceID(ctx, identitySource.InstanceName)
-	if err != nil {
-		vc.Logger.Errorf("unable to get the identitySource ID; err=%s", err.Error())
-		return errorsx.G11NError("unable to get the identitySource ID; err=%s", err.Error())
-	}
 	body, err := json.Marshal(identitySource)
 	if err != nil {
 		vc.Logger.Errorf("Unable to marshal identitySource data; err=%v", err)
@@ -187,7 +172,7 @@ func (c *IdentitySourceClient) UpdateIdentitySource(ctx context.Context, identit
 		Token:  vc.Token,
 		Accept: "application/json",
 	}
-	resp, err := client.UpdateIdentitySourceV2WithBodyWithResponse(ctx, id, "application/json", bytes.NewBuffer(body), openapi.DefaultRequestEditors(ctx, headers)...)
+	resp, err := client.UpdateIdentitySourceV2WithBodyWithResponse(ctx, identitySourceID, "application/json", bytes.NewBuffer(body), openapi.DefaultRequestEditors(ctx, headers)...)
 	if err != nil {
 		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, "unable to update Identity provider"); err != nil {
 			vc.Logger.Errorf("unable to update the Identity provider; err=%s", err.Error())
@@ -205,7 +190,7 @@ func (c *IdentitySourceClient) UpdateIdentitySource(ctx context.Context, identit
 	return nil
 }
 
-func (c *IdentitySourceClient) getIdentitySourceID(ctx context.Context, name string) (string, error) {
+func (c *IdentitySourceClient) GetIdentitySourceID(ctx context.Context, name string) (string, error) {
 	vc := contextx.GetVerifyContext(ctx)
 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
 	search := fmt.Sprintf(`instanceName = "%s"`, name)

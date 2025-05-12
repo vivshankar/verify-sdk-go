@@ -4,6 +4,7 @@ import (
 	"context"
 	"log/slog"
 	"os"
+	"strings"
 	"testing"
 
 	"github.com/google/uuid"
@@ -132,24 +133,26 @@ sourceTypeId: 8
 func (s *IdentityProvidersTestSuite) TestIdentityProviders() {
 	var err error
 	// Create Identity Provider
-	_, err = s.client.CreateIdentitySource(s.ctx, s.identityProviderCreate)
+	resp, err := s.client.CreateIdentitySource(s.ctx, s.identityProviderCreate)
 	require.NoError(s.T(), err, "unable to create Identity Provider %s; err=%v", s.identityProviderName, err)
+	// set the access policy ID
+	identitySourceID := strings.Split(resp, "/")[len(strings.Split(resp, "/"))-1]
 
 	// Get Identity Provider details
-	_, _, err = s.client.GetIdentitySource(s.ctx, s.identityProviderName)
-	require.NoError(s.T(), err, "unable to get Identity Provider %s; err=%v", s.identityProviderName, err)
+	_, _, err = s.client.GetIdentitySourceByID(s.ctx, identitySourceID)
+	require.NoError(s.T(), err, "unable to get Identity Provider %s; err=%v", identitySourceID, err)
 
 	// Get Identity Provider list
 	_, _, err = s.client.GetIdentitySources(s.ctx, "", "")
 	require.NoError(s.T(), err, "unable to list Identity Providers; err=%v", err)
 
 	// Update Identity Provider
-	err = s.client.UpdateIdentitySource(s.ctx, s.identityProviderPatch)
-	require.NoError(s.T(), err, "unable to update Identity Provider %s; err=%v", s.identityProviderName, err)
+	err = s.client.UpdateIdentitySource(s.ctx, identitySourceID, s.identityProviderPatch)
+	require.NoError(s.T(), err, "unable to update Identity Provider %s; err=%v", identitySourceID, err)
 
 	// Delete Identity Provider
-	err = s.client.DeleteIdentitySourceByName(s.ctx, s.identityProviderName)
-	require.NoError(s.T(), err, "unable to delete Identity Provider %s; err=%v", s.identityProviderName, err)
+	err = s.client.DeleteIdentitySourceByID(s.ctx, identitySourceID)
+	require.NoError(s.T(), err, "unable to delete Identity Provider %s; err=%v", identitySourceID, err)
 }
 
 func TestIdentityProvidersTestSuite(t *testing.T) {
