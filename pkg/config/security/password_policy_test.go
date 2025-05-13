@@ -4,6 +4,7 @@ import (
 	"context"
 	"log/slog"
 	"os"
+	"strings"
 	"testing"
 
 	"github.com/google/uuid"
@@ -122,24 +123,27 @@ schemas:
 func (s *PasswordPolicyTestSuite) TestPasswordPolicy() {
 	var err error
 	// Create Password Policy
-	_, err = s.client.CreatePasswordPolicy(s.ctx, &s.passwordPolicyCreate)
+	resp, err := s.client.CreatePasswordPolicy(s.ctx, &s.passwordPolicyCreate)
 	require.NoError(s.T(), err, "unable to create Password Policy %s; err=%v", s.PasswordPolicyName, err)
+	// set the Password Policy ID
+	passwordPolicyID := strings.Split(resp, "/")[len(strings.Split(resp, "/"))-1]
 
 	// Get Password Policy details
-	_, _, err = s.client.GetPasswordPolicy(s.ctx, s.PasswordPolicyName)
-	require.NoError(s.T(), err, "unable to get Password Policy %s; err=%v", s.PasswordPolicyName, err)
+	_, _, err = s.client.GetPasswordPolicyByID(s.ctx, passwordPolicyID)
+	require.NoError(s.T(), err, "unable to get Password Policy %s; err=%v", passwordPolicyID, err)
 
 	// Get Password Policy list
 	_, _, err = s.client.GetPasswordPolicies(s.ctx, "", "")
 	require.NoError(s.T(), err, "unable to list Password Policies; err=%v", err)
 
 	// Update Password Policy
+	s.passwordPolicyPatch.ID = passwordPolicyID
 	err = s.client.UpdatePasswordPolicy(s.ctx, &s.passwordPolicyPatch)
-	require.NoError(s.T(), err, "unable to update Password Policy %s; err=%v", s.PasswordPolicyName, err)
+	require.NoError(s.T(), err, "unable to update Password Policy %s; err=%v", passwordPolicyID, err)
 
 	// Delete Password Policy
-	err = s.client.DeletePasswordPolicy(s.ctx, s.PasswordPolicyName)
-	require.NoError(s.T(), err, "unable to delete Password Policy %s; err=%v", s.PasswordPolicyName, err)
+	err = s.client.DeletePasswordPolicyByID(s.ctx, passwordPolicyID)
+	require.NoError(s.T(), err, "unable to delete Password Policy %s; err=%v", passwordPolicyID, err)
 }
 
 func TestPasswordPolicyTestSuite(t *testing.T) {
