@@ -267,7 +267,7 @@ func (c *IdentitySourceClient) UpdateSignInOptions(ctx context.Context, identity
 
 // This function helps in boilerplate generation to update Sign in options
 func GetSignInOptions() *SignInOptions {
-	var signInOptions *SignInOptions = &SignInOptions{
+	var signInOptions = &SignInOptions{
 		InstanceName: "",
 		Properties: []map[string]interface{}{
 			{
