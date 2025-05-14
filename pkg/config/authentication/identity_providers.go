@@ -20,6 +20,11 @@ type IdentitySourceClient struct {
 type IdentitySource = openapi.IdentitySourceInstancesData
 type IdentitySourceList = openapi.IdentitySourceIntancesDataList
 
+type SignInOptions struct {
+	InstanceName string                   `json:"instanceName" yaml:"instanceName"`
+	Properties   []map[string]interface{} `json:"properties" yaml:"properties"`
+}
+
 func NewIdentitySourceClient() *IdentitySourceClient {
 	return &IdentitySourceClient{}
 }
@@ -232,4 +237,70 @@ func (c *IdentitySourceClient) GetIdentitySourceID(ctx context.Context, name str
 	}
 
 	return id, nil
+}
+
+func (c *IdentitySourceClient) UpdateSignInOptions(ctx context.Context, identitySource *IdentitySource) error {
+	vc := contextx.GetVerifyContext(ctx)
+	if identitySource.InstanceName == "" {
+		vc.Logger.Errorf("instanceName cannot be empty")
+		return errorsx.G11NError("instanceName cannot be empty")
+	}
+	ID, err := c.GetIdentitySourceID(ctx, identitySource.InstanceName)
+	if err != nil {
+		vc.Logger.Errorf("unable to get the identitySource ID; err=%s", err.Error())
+		return errorsx.G11NError("unable to get the identitySource ID; err=%s", err.Error())
+	}
+	identitySourceNew, _, err := c.GetIdentitySourceByID(ctx, ID)
+	if err != nil {
+		vc.Logger.Errorf("unable to get the IdentitySource with instanceName %s; err=%s", identitySource.InstanceName, err.Error())
+		return errorsx.G11NError("unable to get the IdentitySource with instanceName %s; err=%s", identitySource.InstanceName, err.Error())
+	}
+	identitySourceNew.Properties = identitySource.Properties
+
+	if err := c.UpdateIdentitySource(ctx, ID, identitySourceNew); err != nil {
+		vc.Logger.Errorf("unable to update the IdentitySource with instanceName %s; err=%s", identitySource.InstanceName, err.Error())
+		return errorsx.G11NError("unable to update the IdentitySource with instanceName %s; err=%s", identitySource.InstanceName, err.Error())
+	}
+
+	return nil
+}
+
+// This function helps in boilerplate generation to update Sign in options
+func GetSignInOptions() *SignInOptions {
+	var signInOptions = &SignInOptions{
+		InstanceName: "",
+		Properties: []map[string]interface{}{
+			{
+				"key":       "show_admin_user",
+				"value":     "false",
+				"sensitive": false,
+			},
+			{
+				"key":       "show_admin_user_qr",
+				"value":     "false",
+				"sensitive": false,
+			},
+			{
+				"key":       "show_admin_user_fido",
+				"value":     "false",
+				"sensitive": false,
+			},
+			{
+				"key":       "show_end_user",
+				"value":     "false",
+				"sensitive": false,
+			},
+			{
+				"key":       "show_end_user_qr",
+				"value":     "false",
+				"sensitive": false,
+			},
+			{
+				"key":       "show_end_user_fido",
+				"value":     "false",
+				"sensitive": false,
+			},
+		},
+	}
+	return signInOptions
 }
