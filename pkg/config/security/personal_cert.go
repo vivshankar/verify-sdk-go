@@ -23,6 +23,7 @@ type PersonalCert struct {
 	Label              string `yaml:"label" json:"label"`
 	Version            int    `yaml:"version" json:"version"`
 	Issuer             string `yaml:"issuer" json:"issuer"`
+	IsDefault          bool   `yaml:"isDefault" json:"isDefault"`
 	KeySize            int    `yaml:"keysize,omitempty" json:"keysize,omitempty"`
 	SignatureAlgorithm string `yaml:"signature_algorithm,omitempty" json:"signature_algorithm,omitempty"`
 	Cert               string `yaml:"cert" json:"cert"`
