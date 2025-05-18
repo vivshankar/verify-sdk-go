@@ -40,7 +40,7 @@ type Application struct {
 	VisibleOnLaunchpad     bool                   `json:"visibleOnLaunchpad" yaml:"visibleOnLaunchpad,omitempty"`
 	Customization          Customization          `json:"customization" yaml:"customization,omitempty"`
 	DevportalSettings      DevportalSettings      `json:"devportalSettings" yaml:"devportalSettings,omitempty"`
-	APIAccessClients       []*APIAccessClients    `json:"apiAccessClients" yaml:"apiAccessClients,omitempty"`
+	APIAccessClients       []*APIAccessClient     `json:"apiAccessClients" yaml:"apiAccessClients,omitempty"`
 	CustomIcon             string                 `json:"customIcon" yaml:"customIcon,omitempty"`
 	DefaultIcon            string                 `json:"defaultIcon" yaml:"defaultIcon,omitempty"`
 	AdaptiveAuthentication AdaptiveAuthentication `json:"adaptiveAuthentication" yaml:"adaptiveAuthentication,omitempty"`
@@ -260,7 +260,7 @@ type Authentication struct {
 	Properties map[string]string `json:"properties" yaml:"properties,omitempty"`
 }
 
-type APIAccessClients struct {
+type APIAccessClient struct {
 	AccessTokenLifetime int32    `json:"accessTokenLifetime" yaml:"accessTokenLifetime"`
 	AccessTokenType     string   `json:"accessTokenType" yaml:"accessTokenType"`
 	ClientName          string   `json:"clientName" yaml:"clientName"`
