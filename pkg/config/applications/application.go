@@ -15,10 +15,7 @@ import (
 	errorsx "github.com/ibm-verify/verify-sdk-go/pkg/core/errors"
 )
 
-type ApplicationListResponse struct {
-	Embedded   Embedded `json:"_embedded" yaml:"_embedded"`
-	TotalCount int      `json:"totalCount" yaml:"totalCount"`
-}
+type ApplicationListResponse = openapi.SearchAdminApplicationWithoutProvResponseBean
 
 type Embedded struct {
 	Applications []*Application `json:"applications" yaml:"applications"`
@@ -42,7 +39,6 @@ type Application struct {
 	DevportalSettings      DevportalSettings      `json:"devportalSettings" yaml:"devportalSettings,omitempty"`
 	APIAccessClients       []*APIAccessClient     `json:"apiAccessClients" yaml:"apiAccessClients,omitempty"`
 	CustomIcon             string                 `json:"customIcon" yaml:"customIcon,omitempty"`
-	DefaultIcon            string                 `json:"defaultIcon" yaml:"defaultIcon,omitempty"`
 	AdaptiveAuthentication AdaptiveAuthentication `json:"adaptiveAuthentication" yaml:"adaptiveAuthentication,omitempty"`
 	Target                 map[string]bool        `json:"target" yaml:"target,omitempty"`
 }
@@ -421,58 +417,7 @@ func (c *ApplicationClient) GetApplicationByID(ctx context.Context, applicationI
 	return app, resp.Request.URL.String(), nil
 }
 
-func (c *ApplicationClient) GetApplicationID(ctx context.Context, name string) (string, error) {
-	vc := contextx.GetVerifyContext(ctx)
-	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
-	filter := fmt.Sprintf(`"q=%s"`, name)
-	params := &openapi.SearchApplicationsParams{
-		Search: &filter,
-	}
-
-	headers := &openapi.Headers{
-		Token:  vc.Token,
-		Accept: "application/json",
-	}
-
-	resp, err := client.SearchApplicationsWithResponse(ctx, params, openapi.DefaultRequestEditors(ctx, headers)...)
-	if err != nil {
-		vc.Logger.Errorf("unable to get the Application with Name; err=%v", err)
-		return "", errorsx.G11NError("unable to get the Application with Name %s; err=%s", name, err.Error())
-	}
-
-	if resp.StatusCode() != http.StatusOK {
-		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, "unable to get Application111"); err != nil {
-			vc.Logger.Errorf("unable to get the Application with Name222 %s; err=%s", name, err.Error())
-			return "", errorsx.G11NError("unable to get the Application with Name333 %s; err=%s", name, err.Error())
-		}
-	}
-
-	var data ApplicationListResponse
-	if err := json.Unmarshal(resp.Body, &data); err != nil {
-		return "", errorsx.G11NError("failed to parse application response: %w", err)
-	}
-
-	if len(data.Embedded.Applications) == 0 {
-		return "", errorsx.G11NError("no application found with name %s", name)
-	}
-
-	for _, app := range data.Embedded.Applications {
-		if app.Name == name {
-			if app.Links.Self.Href == "" {
-				return "", errorsx.G11NError("no self link found for application %s", name)
-			}
-			id := app.Links.Self.Href
-			if idx := strings.LastIndex(id, "/"); idx != -1 {
-				id = id[idx+1:]
-			}
-			return id, nil
-		}
-	}
-
-	return "", errorsx.G11NError("no application found with exact name %s", name)
-}
-
-func (c *ApplicationClient) GetApplications(ctx context.Context, search string, sort string, page int, limit int) (*openapi.SearchAdminApplicationWithoutProvResponseBean, string, error) {
+func (c *ApplicationClient) GetApplications(ctx context.Context, search string, sort string, page int, limit int) (*ApplicationListResponse, string, error) {
 	vc := contextx.GetVerifyContext(ctx)
 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
 
@@ -514,7 +459,7 @@ func (c *ApplicationClient) GetApplications(ctx context.Context, search string, 
 
 	}
 
-	applicationsResponse := &openapi.SearchAdminApplicationWithoutProvResponseBean{}
+	applicationsResponse := &ApplicationListResponse{}
 	if err = json.Unmarshal(resp.Body, applicationsResponse); err != nil {
 		vc.Logger.Errorf("unable to unmarshal response; err=%s", err.Error())
 		return nil, "", errorsx.G11NError("unable to get the Applications")
