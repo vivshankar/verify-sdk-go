@@ -18,67 +18,13 @@ type IdentityAgentClient struct {
 	Client *http.Client
 }
 
-var provModule map[string]map[string]interface{} = map[string]map[string]interface{}{
-	"external": {
-		"caCerts":  "",
-		"id":       "",
-		"password": "",
-		"uri":      []string{},
-	},
-}
-
-var ldapAuthModule map[string]map[string]interface{} = map[string]map[string]interface{}{
-	"ldapauth": {
-		"ldapBindPwd":               "",
-		"ldapBindDn":                "",
-		"ldapCACerts":               "",
-		"ldapConnIdleTime":          0,
-		"ldapConnMaxTime":           0,
-		"ldapFetchAttributes":       []string{},
-		"ldapFetchBinaryAttributes": []string{},
-		"ldapMaxConnections":        0,
-		"ldapRequestTimeout":        0,
-		"ldapSearchBase":            "o=ibm,c=us",
-		"ldapStartTls":              false,
-		"ldapUri":                   []string{},
-		"ldapUsernameAttribute":     "",
-		"ldapUserSearchObjectclass": []string{},
-	},
-}
-
-var extauthnModule map[string]map[string]interface{} = map[string]map[string]interface{}{
-	"extauthn": {
-		"authentication": map[string]interface{}{
-			"type": "",
-			"basic": map[string]interface{}{
-				"username": "",
-				"password": "",
-			},
-		},
-
-		"caCerts":         "",
-		"uris":            []string{},
-		"fetchAttributes": []string{},
-	},
-}
-
 type IdentityAgentListResponse = []openapi.OnpremAgentConfiguration
-
 type IdentityAgentConfig = openapi.OnpremAgentConfiguration
+type OnpremAgentConfigurationPurpose = openapi.OnpremAgentConfigurationPurpose
+type OnpremAgentConfigReference = openapi.OnpremAgentConfigReference
 
 func NewIdentityAgentClient() *IdentityAgentClient {
 	return &IdentityAgentClient{}
-}
-
-func AddModule(identityAgent *IdentityAgentConfig, identityType string) {
-	identityAgent.Purpose = (*openapi.OnpremAgentConfigurationPurpose)(&identityType)
-	if identityType == "PROV" {
-		identityAgent.Modules = append(identityAgent.Modules, provModule)
-	} else if identityType == "LDAPAUTH" {
-		identityAgent.Modules = append(identityAgent.Modules, ldapAuthModule)
-	} else if identityType == "EXTAUTHN" {
-		identityAgent.Modules = append(identityAgent.Modules, extauthnModule)
-	}
 }
 
 func (c *IdentityAgentClient) CreateIdentityAgent(ctx context.Context, IdentityAgentConfig *IdentityAgentConfig) (string, error) {
