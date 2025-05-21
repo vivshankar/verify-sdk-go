@@ -27,10 +27,10 @@ type Embedded struct {
 type Application struct {
 	Name                   string                 `json:"name" yaml:"name"`
 	TemplateID             string                 `json:"templateId" yaml:"templateId"`
-	Links                  Links                  `json:"_links" yaml:"_links"`
+	Links                  Links                  `json:"_links" yaml:"_links,omitempty"`
 	Providers              Providers              `json:"providers" yaml:"providers"`
 	Provisioning           Provisioning           `json:"provisioning" yaml:"provisioning"`
-	AttributeMappings      []*AttributeMapping    `json:"attributeMappings" yaml:"attributeMappings,omitempty"`
+	AttributeMappings      []*AttributeMapping    `json:"attributeMappings" yaml:"attributeMappings"`
 	ApplicationState       bool                   `json:"applicationState" yaml:"applicationState,omitempty"`
 	ApprovalRequired       bool                   `json:"approvalRequired" yaml:"approvalRequired,omitempty"`
 	SignonState            bool                   `json:"signonState" yaml:"signonState,omitempty"`
@@ -40,11 +40,12 @@ type Application struct {
 	VisibleOnLaunchpad     bool                   `json:"visibleOnLaunchpad" yaml:"visibleOnLaunchpad,omitempty"`
 	Customization          Customization          `json:"customization" yaml:"customization,omitempty"`
 	DevportalSettings      DevportalSettings      `json:"devportalSettings" yaml:"devportalSettings,omitempty"`
-	APIAccessClients       []*APIAccessClients    `json:"apiAccessClients" yaml:"apiAccessClients,omitempty"`
+	APIAccessClients       []*APIAccessClients    `json:"apiAccessClients" yaml:"apiAccessClients"`
 	CustomIcon             string                 `json:"customIcon" yaml:"customIcon,omitempty"`
 	DefaultIcon            string                 `json:"defaultIcon" yaml:"defaultIcon,omitempty"`
 	AdaptiveAuthentication AdaptiveAuthentication `json:"adaptiveAuthentication" yaml:"adaptiveAuthentication,omitempty"`
 	Target                 map[string]bool        `json:"target" yaml:"target,omitempty"`
+	Owners                 []interface{}          `json:"owners,omitempty" yaml:"owners,omitempty"`
 }
 type Customization struct {
 	ThemeID string `json:"themeId" yaml:"themeId,omitempty"`
@@ -83,15 +84,15 @@ type Self struct {
 }
 
 type Providers struct {
-	SSO      SSO      `json:"sso" yaml:"sso"`
-	SAML     SAML     `json:"saml" yaml:"saml"`
-	Bookmark Bookmark `json:"bookmark" yaml:"bookmark"`
+	SSO      SSO      `json:"sso" yaml:"sso,omitempty"`
+	SAML     SAML     `json:"saml" yaml:"saml,omitempty"`
+	Bookmark Bookmark `json:"bookmark" yaml:"bookmark,omitempty"`
 	OIDC     OIDC     `json:"oidc" yaml:"oidc,omitempty"`
 	WSFed    WSFed    `json:"wsfed" yaml:"wsfed,omitempty"`
 }
 
 type SSO struct {
-	DomainName             string `json:"domainName" yaml:"domainName"`
+	DomainName             string `json:"domainName" yaml:"domainName,omitempty"`
 	UserOptions            string `json:"userOptions" yaml:"userOptions,omitempty"`
 	SPSSOURL               string `json:"spssoUrl" yaml:"spssoUrl,omitempty"`
 	TargetURL              string `json:"targetUrl" yaml:"targetUrl,omitempty"`
@@ -100,11 +101,11 @@ type SSO struct {
 
 type SAML struct {
 	JustInTimeProvisioning   string              `json:"justInTimeProvisioning" yaml:"justInTimeProvisioning,omitempty"`
-	Properties               SAMLProperties      `json:"properties" yaml:"properties"`
-	AssertionConsumerService []interface{}       `json:"assertionConsumerService" yaml:"assertionConsumerService"`
-	SingleLogoutService      []interface{}       `json:"singleLogoutService" yaml:"singleLogoutService"`
-	AdditionalProperties     []interface{}       `json:"additionalProperties" yaml:"additionalProperties"`
-	ManageNameIDService      ManageNameIDService `json:"manageNameIDService" yaml:"manageNameIDService"`
+	Properties               SAMLProperties      `json:"properties" yaml:"properties,omitempty"`
+	AssertionConsumerService []interface{}       `json:"assertionConsumerService" yaml:"assertionConsumerService,omitempty"`
+	SingleLogoutService      []interface{}       `json:"singleLogoutService" yaml:"singleLogoutService,omitempty"`
+	AdditionalProperties     []interface{}       `json:"additionalProperties" yaml:"additionalProperties,omitempty"`
+	ManageNameIDService      ManageNameIDService `json:"manageNameIDService" yaml:"manageNameIDService,omitempty"`
 }
 
 type SAMLProperties struct {
@@ -117,14 +118,17 @@ type SAMLProperties struct {
 	ICIReservedSubjectNameID         string `json:"ici_reserved_subjectNameID" yaml:"ici_reserved_subjectNameID,omitempty"`
 	IncludeAllAttributes             string `json:"includeAllAttributes" yaml:"includeAllAttributes,omitempty"`
 	DefaultNameIdFormat              string `json:"defaultNameIdFormat" yaml:"defaultNameIdFormat,omitempty"`
-	ProviderID                       string `json:"providerId" yaml:"providerId"`
-	AssertionConsumerServiceURL      string `json:"assertionConsumerServiceUrl" yaml:"assertionConsumerServiceUrl"`
+	ProviderID                       string `json:"providerId" yaml:"providerId,omitempty"`
+	AssertionConsumerServiceURL      string `json:"assertionConsumerServiceUrl" yaml:"assertionConsumerServiceUrl,omitempty"`
 	SignatureValidationKeyIdentifier string `json:"signatureValidationKeyIdentifier" yaml:"signatureValidationKeyIdentifier,omitempty"`
 	BlockEncryptionAlgorithm         string `json:"blockEncryptionAlgorithm" yaml:"blockEncryptionAlgorithm,omitempty"`
 	EncryptionKeyIdentifier          string `json:"encryptionKeyIdentifier" yaml:"encryptionKeyIdentifier,omitempty"`
 	UniqueID                         string `json:"uniqueID" yaml:"uniqueID,omitempty"`
 	SessionNotOnOrAfter              string `json:"sessionNotOnOrAfter" yaml:"sessionNotOnOrAfter,omitempty"`
 	SigningKeyIdentifier             string `json:"signingKeyIdentifier" yaml:"signingKeyIdentifier,omitempty"`
+	ValidateLogoutRequest            string `json:"validateLogoutRequest" yaml:"validateLogoutRequest,omitempty"`
+	ValidateLogoutResponse           string `json:"validateLogoutResponse" yaml:"validateLogoutResponse,omitempty"`
+	UseMetaData                      string `json:"useMetaData" yaml:"useMetaData,omitempty"`
 }
 
 type ManageNameIDService struct {
@@ -132,12 +136,12 @@ type ManageNameIDService struct {
 }
 
 type Bookmark struct {
-	BookmarkURL string `json:"bookmarkUrl" yaml:"bookmarkUrl"`
+	BookmarkURL string `json:"bookmarkUrl" yaml:"bookmarkUrl,omitempty"`
 }
 
 type OIDC struct {
 	Properties              OIDCProperties      `json:"properties" yaml:"properties,omitempty"`
-	GrantProperties         GrantProperties     `json:"grantProperties" yaml:"grantProperties"`
+	GrantProperties         GrantProperties     `json:"grantProperties" yaml:"grantProperties,omitempty"`
 	Token                   Token               `json:"token" yaml:"token,omitempty"`
 	JWTBearerProperties     JWTBearerProperties `json:"jwtBearerProperties" yaml:"jwtBearerProperties,omitempty"`
 	ApplicationURL          string              `json:"applicationUrl" yaml:"applicationUrl,omitempty"`
@@ -150,25 +154,54 @@ type OIDC struct {
 }
 
 type OIDCProperties struct {
-	GrantTypes                 GrantTypes    `json:"grantTypes" yaml:"grantTypes,omitempty"`
-	RedirectURIs               []interface{} `json:"redirectUris" yaml:"redirectUris,omitempty"`
-	IDTokenSigningAlg          string        `json:"idTokenSigningAlg" yaml:"idTokenSigningAlg,omitempty"`
-	AccessTokenExpiry          int           `json:"accessTokenExpiry" yaml:"accessTokenExpiry,omitempty"`
-	RefreshTokenExpiry         int           `json:"refreshTokenExpiry" yaml:"refreshTokenExpiry,omitempty"`
-	DoNotGenerateClientSecret  string        `json:"doNotGenerateClientSecret" yaml:"doNotGenerateClientSecret,omitempty"`
-	GenerateRefreshToken       string        `json:"generateRefreshToken" yaml:"generateRefreshToken,omitempty"`
-	RenewRefreshTokenExpiry    int           `json:"renewRefreshTokenExpiry" yaml:"renewRefreshTokenExpiry,omitempty"`
-	SignIDToken                string        `json:"signIdToken" yaml:"signIdToken,omitempty"`
-	SigningCertificate         string        `json:"signingCertificate" yaml:"signingCertificate,omitempty"`
-	ClientID                   string        `json:"clientId" yaml:"clientId,omitempty"`
-	ClientSecret               string        `json:"clientSecret" yaml:"clientSecret,omitempty"`
-	SendAllKnownUserAttributes string        `json:"sendAllKnownUserAttributes" yaml:"sendAllKnownUserAttributes,omitempty"`
-	JWKSURI                    string        `json:"jwksUri" yaml:"jwksUri,omitempty"`
-	ConsentType                string        `json:"consentType" yaml:"consentType,omitempty"`
-	RenewRefreshToken          string        `json:"renewRefreshToken" yaml:"renewRefreshToken,omitempty"`
-	IDTokenEncryptAlg          string        `json:"idTokenEncryptAlg" yaml:"idTokenEncryptAlg,omitempty"`
-	IDTokenEncryptEnc          string        `json:"idTokenEncryptEnc" yaml:"idTokenEncryptEnc,omitempty"`
-	IDTokenEncryptKey          string        `json:"idTokenEncryptKey" yaml:"idTokenEncryptKey,omitempty"`
+	GrantTypes                 GrantTypes           `json:"grantTypes" yaml:"grantTypes,omitempty"`
+	RedirectURIs               []interface{}        `json:"redirectUris" yaml:"redirectUris,omitempty"`
+	IDTokenSigningAlg          string               `json:"idTokenSigningAlg" yaml:"idTokenSigningAlg,omitempty"`
+	AccessTokenExpiry          int                  `json:"accessTokenExpiry" yaml:"accessTokenExpiry,omitempty"`
+	RefreshTokenExpiry         int                  `json:"refreshTokenExpiry" yaml:"refreshTokenExpiry,omitempty"`
+	DoNotGenerateClientSecret  string               `json:"doNotGenerateClientSecret" yaml:"doNotGenerateClientSecret,omitempty"`
+	GenerateRefreshToken       string               `json:"generateRefreshToken" yaml:"generateRefreshToken,omitempty"`
+	RenewRefreshTokenExpiry    int                  `json:"renewRefreshTokenExpiry" yaml:"renewRefreshTokenExpiry,omitempty"`
+	SignIDToken                string               `json:"signIdToken" yaml:"signIdToken,omitempty"`
+	SigningCertificate         string               `json:"signingCertificate" yaml:"signingCertificate,omitempty"`
+	ClientID                   string               `json:"clientId" yaml:"clientId,omitempty"`
+	ClientSecret               string               `json:"clientSecret" yaml:"clientSecret,omitempty"`
+	SendAllKnownUserAttributes string               `json:"sendAllKnownUserAttributes" yaml:"sendAllKnownUserAttributes,omitempty"`
+	JWKSURI                    string               `json:"jwksUri" yaml:"jwksUri,omitempty"`
+	ConsentType                string               `json:"consentType" yaml:"consentType,omitempty"`
+	RenewRefreshToken          string               `json:"renewRefreshToken" yaml:"renewRefreshToken,omitempty"`
+	IDTokenEncryptAlg          string               `json:"idTokenEncryptAlg" yaml:"idTokenEncryptAlg,omitempty"`
+	IDTokenEncryptEnc          string               `json:"idTokenEncryptEnc" yaml:"idTokenEncryptEnc,omitempty"`
+	IDTokenEncryptKey          string               `json:"idTokenEncryptKey" yaml:"idTokenEncryptKey,omitempty"`
+	AdditionalConfig           OIDCAdditionalConfig `json:"additionalConfig" yaml:"additionalConfig,omitempty"`
+}
+
+type OIDCAdditionalConfig struct {
+	Oidcv3                                 bool     `json:"oidcv3,omitempty" yaml:"oidcv3,omitempty"`
+	RequestObjectParametersOnly            string   `json:"requestObjectParametersOnly,omitempty" yaml:"requestObjectParametersOnly,omitempty"`
+	RequestObjectSigningAlg                string   `json:"requestObjectSigningAlg,omitempty" yaml:"requestObjectSigningAlg,omitempty"`
+	RequestObjectRequireExp                string   `json:"requestObjectRequireExp,omitempty" yaml:"requestObjectRequireExp,omitempty"`
+	CertificateBoundAccessTokens           string   `json:",certificateBoundAccessTokensomitempty" yaml:"certificateBoundAccessTokens,omitempty"`
+	DpopBoundAccessTokens                  string   `json:",dpopBoundAccessTokensomitempty" yaml:"dpopBoundAccessTokens,omitempty"`
+	ValidateDPoPProofJti                   string   `json:",validateDPoPProofJtiomitempty" yaml:"validateDPoPProofJti,omitempty"`
+	DpopProofSigningAlg                    string   `json:",dpopProofSigningAlgomitempty" yaml:"dpopProofSigningAlg,omitempty"`
+	AuthorizeRspSigningAlg                 string   `json:",authorizeRspSigningAlgomitempty" yaml:"authorizeRspSigningAlg,omitempty"`
+	AuthorizeRspEncryptionAlg              string   `json:",authorizeRspEncryptionAlgomitempty" yaml:"authorizeRspEncryptionAlg,omitempty"`
+	AuthorizeRspEncryptionEnc              string   `json:",authorizeRspEncryptionEncomitempty" yaml:"authorizeRspEncryptionEnc,omitempty"`
+	ResponseTypes                          []string `json:",responseTypesomitempty" yaml:"responseTypes,omitempty"`
+	ResponseModes                          []string `json:",responseModesomitempty" yaml:"responseModes,omitempty"`
+	ClientAuthMethod                       string   `json:",clientAuthMethodomitempty" yaml:"clientAuthMethod,omitempty"`
+	RequirePushAuthorize                   string   `json:",requirePushAuthorizeomitempty" yaml:"requirePushAuthorize,omitempty"`
+	RequestObjectMaxExpFromNbf             int64    `json:",requestObjectMaxExpFromNbfomitempty" yaml:"requestObjectMaxExpFromNbf,omitempty"`
+	ExchangeForSSOSessionOption            string   `json:",exchangeForSSOSessionOptionomitempty" yaml:"exchangeForSSOSessionOption,omitempty"`
+	SubjectTokenTypes                      []string `json:",subjectTokenTypesomitempty" yaml:"subjectTokenTypes,omitempty"`
+	ActorTokenTypes                        []string `json:",actorTokenTypesomitempty" yaml:"actorTokenTypes,omitempty"`
+	RequestedTokenTypes                    []string `json:",requestedTokenTypesomitempty" yaml:"requestedTokenTypes,omitempty"`
+	ActorTokenRequired                     bool     `json:",actorTokenRequiredomitempty" yaml:"actorTokenRequired,omitempty"`
+	LogoutOption                           string   `json:",logoutOptionomitempty" yaml:"logoutOption,omitempty"`
+	SessionRequired                        bool     `json:",sessionRequiredomitempty" yaml:"sessionRequired,omitempty"`
+	RequestUris                            []string `json:",requestUrisomitempty" yaml:"requestUris,omitempty"`
+	AllowedClientAssertionVerificationKeys []string `json:",allowedClientAssertionVerificationKeysomitempty" yaml:"allowedClientAssertionVerificationKeys,omitempty"`
 }
 
 type GrantTypes struct {
@@ -211,7 +244,7 @@ type WSFedProperties struct {
 	ProviderID               string          `json:"providerId" yaml:"providerId,omitempty"`
 	MultipleDomainsEnabled   string          `json:"multipleDomainsEnabled" yaml:"multipleDomainsEnabled,omitempty"`
 	ICIReservedSubjectNameID string          `json:"ici_reserved_subjectNameID" yaml:"ici_reserved_subjectNameID,omitempty"`
-	AdditionalProperties     []interface{}   `json:"additionalProperties" yaml:"additionalProperties"`
+	AdditionalProperties     []interface{}   `json:"additionalProperties" yaml:"additionalProperties,omitempty"`
 }
 
 type ActiveProfile struct {
@@ -226,10 +259,10 @@ type SigningSettings struct {
 
 type Provisioning struct {
 	Extension                Extension            `json:"extension" yaml:"extension,omitempty"`
-	AttributeMappings        []*AttributeMapping  `json:"attributeMappings" yaml:"attributeMappings,omitempty"`
+	AttributeMappings        []*AttributeMapping  `json:"attributeMappings" yaml:"attributeMappings"`
 	Policies                 ProvisioningPolicies `json:"policies" yaml:"policies,omitempty"`
-	SendNotifications        bool                 `json:"sendNotifications" yaml:"sendNotifications"`
-	ReverseAttributeMappings []*AttributeMapping  `json:"reverseAttributeMappings" yaml:"reverseAttributeMappings,omitempty"`
+	SendNotifications        bool                 `json:"sendNotifications" yaml:"sendNotifications,omitempty"`
+	ReverseAttributeMappings []*AttributeMapping  `json:"reverseAttributeMappings" yaml:"reverseAttributeMappings"`
 	Authentication           Authentication       `json:"authentication" yaml:"authentication,omitempty"`
 	ProvisioningState        string               `json:"provisioningState" yaml:"provisioningState,omitempty"`
 }
@@ -254,6 +287,7 @@ type ProvisioningPolicies struct {
 
 type AdoptionPolicy struct {
 	MatchingAttributes []*AttributeMapping `json:"matchingAttributes" yaml:"matchingAttributes,omitempty"`
+	RemediationPolicy  map[string]string   `json:"remediationPolicy,omitempty" yaml:"remediationPolicy,omitempty"`
 }
 
 type Authentication struct {
@@ -261,11 +295,11 @@ type Authentication struct {
 }
 
 type APIAccessClients struct {
-	AccessTokenLifetime int32    `json:"accessTokenLifetime" yaml:"accessTokenLifetime"`
-	AccessTokenType     string   `json:"accessTokenType" yaml:"accessTokenType"`
-	ClientName          string   `json:"clientName" yaml:"clientName"`
+	AccessTokenLifetime int32    `json:"accessTokenLifetime" yaml:"accessTokenLifetime,omitempty"`
+	AccessTokenType     string   `json:"accessTokenType" yaml:"accessTokenType,omitempty"`
+	ClientName          string   `json:"clientName" yaml:"clientName,omitempty"`
 	ClientID            string   `json:"clientId" yaml:"clientId,omitempty"`
-	Enabled             bool     `json:"enabled" yaml:"enabled"`
+	Enabled             bool     `json:"enabled" yaml:"enabled,omitempty"`
 	JWTSigningAlg       string   `json:"jwtSigningAlg" yaml:"jwtSigningAlg,omitempty"`
 	SignKeyLabel        string   `json:"signKeyLabel" yaml:"signKeyLabel,omitempty"`
 	RestrictScopes      bool     `json:"restrictScopes" yaml:"restrictScopes,omitempty"`
