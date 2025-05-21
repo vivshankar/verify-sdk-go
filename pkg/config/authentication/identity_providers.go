@@ -19,6 +19,7 @@ type IdentitySourceClient struct {
 
 type IdentitySource = openapi.IdentitySourceInstancesData
 type IdentitySourceList = openapi.IdentitySourceIntancesDataList
+type IdentitySourceInstancesPropertiesData = openapi.IdentitySourceInstancesPropertiesData
 
 type SignInOptions struct {
 	InstanceName string                   `json:"instanceName" yaml:"instanceName"`
