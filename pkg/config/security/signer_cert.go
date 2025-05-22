@@ -12,8 +12,6 @@ import (
 	"github.com/ibm-verify/verify-sdk-go/internal/openapi"
 	contextx "github.com/ibm-verify/verify-sdk-go/pkg/core/context"
 	errorsx "github.com/ibm-verify/verify-sdk-go/pkg/core/errors"
-	typesx "github.com/ibm-verify/verify-sdk-go/x/types"
-	"gopkg.in/yaml.v2"
 )
 
 type SignerCert struct {
@@ -69,15 +67,11 @@ func (c *SignerCertClient) CreateSignerCert(ctx context.Context, SignerCert *Sig
 		vc.Logger.Errorf("Failed to create Signer certificate; code=%d, body=%s", resp.StatusCode(), string(resp.Body))
 		return "", errorsx.G11NError("failed to create Signer certificate; code=%d, body=%s", resp.StatusCode(), string(resp.Body))
 	}
-	m := map[string]interface{}{}
-	resourceURI := ""
-	if err := yaml.Unmarshal(resp.Body, &m); err != nil {
-		vc.Logger.Warnf("unable to unmarshal the response body to get the 'id'")
-		resourceURI = resp.HTTPResponse.Header.Get("Location")
-	} else {
-		id := typesx.Map(m).SafeString("id", "")
-		resourceURI = fmt.Sprintf("%s/%s", resp.HTTPResponse.Request.URL.String(), id)
+	resourceURI := fmt.Sprintf("%s/%s", resp.HTTPResponse.Request.URL.String(), SignerCert.Label)
+	if location := resp.HTTPResponse.Header.Get("Location"); location != "" {
+		resourceURI = location
 	}
+
 	return resourceURI, nil
 }
 
