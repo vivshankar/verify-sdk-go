@@ -17,14 +17,13 @@ import (
 )
 
 type SignerCert struct {
-	NotBefore          string `yaml:"notbefore" json:"notbefore"`
+	Notbefore          string `yaml:"notbefore" json:"notbefore"`
 	Subject            string `yaml:"subject" json:"subject"`
-	NotAfter           string `yaml:"notafter" json:"notafter"`
+	Notafter           string `yaml:"notafter" json:"notafter"`
 	SerialNumber       string `yaml:"serial_number" json:"serial_number"`
 	Label              string `yaml:"label" json:"label"`
 	Version            int    `yaml:"version" json:"version"`
 	Issuer             string `yaml:"issuer" json:"issuer"`
-	IsDefault          bool   `yaml:"isDefault" json:"isDefault"`
 	KeySize            int    `yaml:"keysize,omitempty" json:"keysize,omitempty"`
 	SignatureAlgorithm string `yaml:"signature_algorithm,omitempty" json:"signature_algorithm,omitempty"`
 	Cert               string `yaml:"cert" json:"cert"`
@@ -82,15 +81,10 @@ func (c *SignerCertClient) CreateSignerCert(ctx context.Context, SignerCert *Sig
 	return resourceURI, nil
 }
 
-func (c *SignerCertClient) DeleteSignerCert(ctx context.Context, Label string) error {
+func (c *SignerCertClient) DeleteSignerCert(ctx context.Context, label string) error {
 	vc := contextx.GetVerifyContext(ctx)
 	if vc == nil {
 		return errorsx.G11NError("verify context is nil")
-	}
-	_, _, err := c.GetSignerCertLabel(ctx, Label)
-	if err != nil {
-		vc.Logger.Errorf("unable to get the Signer certificate label '%s'; err=%s", Label, err.Error())
-		return errorsx.G11NError("unable to get the Signer certificate label '%s'; err=%s", Label, err.Error())
 	}
 
 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
@@ -99,7 +93,7 @@ func (c *SignerCertClient) DeleteSignerCert(ctx context.Context, Label string) e
 		Token:       vc.Token,
 		ContentType: "application/json",
 	}
-	resp, err := client.DeleteSignerCertWithResponse(ctx, Label, params, openapi.DefaultRequestEditors(ctx, headers)...)
+	resp, err := client.DeleteSignerCertWithResponse(ctx, label, params, openapi.DefaultRequestEditors(ctx, headers)...)
 	if err != nil {
 		vc.Logger.Errorf("unable to delete the Signer certificate; err=%s", err.Error())
 		return errorsx.G11NError("unable to delete the Signer certificate; err=%s", err.Error())
@@ -157,48 +151,6 @@ func (c *SignerCertClient) GetSignerCerts(ctx context.Context, sort string, coun
 	return certList, resp.HTTPResponse.Request.URL.String(), nil
 }
 
-func (c *SignerCertClient) GetSignerCertLabel(ctx context.Context, Label string) (*SignerCert, string, error) {
-	vc := contextx.GetVerifyContext(ctx)
-	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
-	getCertsParams := &openapi.GetSignerCertsParams{}
-	headers := &openapi.Headers{
-		Token:  vc.Token,
-		Accept: "application/json",
-	}
-	resp, err := client.GetSignerCertsWithResponse(ctx, getCertsParams, openapi.DefaultRequestEditors(ctx, headers)...)
-	if err != nil {
-		vc.Logger.Errorf("unable to get Signer certificates for label validation; err=%s", err.Error())
-		return nil, "", errorsx.G11NError("unable to get Signer certificate with label %s; err=%s", Label, err.Error())
-	}
-
-	if resp.StatusCode() != http.StatusOK {
-		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, "unable to get Signer certificates"); err != nil {
-			vc.Logger.Errorf("unable to get Signer certificates; err=%s", err.Error())
-			return nil, "", err
-		}
-		vc.Logger.Errorf("unable to get Signer certificates; code=%d, body=%s", resp.StatusCode(), string(resp.Body))
-		return nil, "", errorsx.G11NError("unable to get Signer certificates")
-	}
-
-	var certs []SignerCert
-	if err := json.Unmarshal(resp.Body, &certs); err != nil {
-		var certList SignerCertListResponse
-		if err := json.Unmarshal(resp.Body, &certList); err != nil {
-			vc.Logger.Errorf("unable to parse Signer certificates response; err=%s, body=%s", err.Error(), string(resp.Body))
-			return nil, "", errorsx.G11NError("unable to parse Signer certificates response: %w", err)
-		}
-		certs = certList.SignerCerts
-	}
-
-	for _, cert := range certs {
-		if strings.EqualFold(cert.Label, Label) {
-			return &cert, resp.HTTPResponse.Request.URL.String(), nil
-		}
-	}
-	vc.Logger.Errorf("no Signer certificate found with label %s", Label)
-	return nil, "", errorsx.G11NError("no Signer certificate found with label %s", Label)
-}
-
 func (c *SignerCertClient) GetSignerCert(ctx context.Context, label string) (*SignerCert, string, error) {
 	vc := contextx.GetVerifyContext(ctx)
 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
@@ -244,9 +196,9 @@ func (c *SignerCertClient) GetSignerCert(ctx context.Context, label string) (*Si
 			for _, c := range certs {
 				if strings.EqualFold(c.Label, label) {
 					*signerCert = SignerCert{
-						NotBefore:          c.Notbefore,
+						Notbefore:          c.Notbefore,
 						Subject:            c.Subject,
-						NotAfter:           c.Notafter,
+						Notafter:           c.Notafter,
 						SerialNumber:       c.SerialNumber,
 						Label:              c.Label,
 						Version:            int(c.Version),

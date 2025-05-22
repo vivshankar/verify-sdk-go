@@ -16,9 +16,9 @@ import (
 )
 
 type PersonalCert struct {
-	NotBefore          string `yaml:"notbefore" json:"notbefore"`
+	Notbefore          string `yaml:"notbefore" json:"notbefore"`
 	Subject            string `yaml:"subject" json:"subject"`
-	NotAfter           string `yaml:"notafter" json:"notafter"`
+	Notafter           string `yaml:"notafter" json:"notafter"`
 	SerialNumber       string `yaml:"serial_number" json:"serial_number"`
 	Label              string `yaml:"label" json:"label"`
 	Version            int    `yaml:"version" json:"version"`
@@ -90,12 +90,6 @@ func (c *PersonalCertClient) UpdatePersonalCert(ctx context.Context, personalCer
 		return errorsx.G11NError("personal certificate object is nil")
 	}
 
-	_, _, err := c.GetPersonalCertLabel(ctx, personalCert.Label)
-	if err != nil {
-		vc.Logger.Errorf("unable to get the personal certificate label '%s'; err=%s", personalCert.Label, err.Error())
-		return errorsx.G11NError("unable to get the personal certificate label '%s'; err=%s", personalCert.Label, err.Error())
-	}
-
 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
 	headers := &openapi.Headers{
 		Accept:      "application/json",
@@ -127,15 +121,10 @@ func (c *PersonalCertClient) UpdatePersonalCert(ctx context.Context, personalCer
 	return nil
 }
 
-func (c *PersonalCertClient) DeletePersonalCert(ctx context.Context, Label string) error {
+func (c *PersonalCertClient) DeletePersonalCert(ctx context.Context, label string) error {
 	vc := contextx.GetVerifyContext(ctx)
 	if vc == nil {
 		return errorsx.G11NError("verify context is nil")
-	}
-	_, _, err := c.GetPersonalCertLabel(ctx, Label)
-	if err != nil {
-		vc.Logger.Errorf("unable to get the personal certificate label '%s'; err=%s", Label, err.Error())
-		return errorsx.G11NError("unable to get the personal certificate label '%s'; err=%s", Label, err.Error())
 	}
 
 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
@@ -144,7 +133,7 @@ func (c *PersonalCertClient) DeletePersonalCert(ctx context.Context, Label strin
 		Token:       vc.Token,
 		ContentType: "application/json",
 	}
-	resp, err := client.DeletePersonalCertWithResponse(ctx, Label, params, openapi.DefaultRequestEditors(ctx, headers)...)
+	resp, err := client.DeletePersonalCertWithResponse(ctx, label, params, openapi.DefaultRequestEditors(ctx, headers)...)
 	if err != nil {
 		vc.Logger.Errorf("unable to delete the personal certificate; err=%s", err.Error())
 		return errorsx.G11NError("unable to delete the personal certificate; err=%s", err.Error())
@@ -164,12 +153,6 @@ func (c *PersonalCertClient) DeletePersonalCert(ctx context.Context, Label strin
 
 func (c *PersonalCertClient) GetPersonalCert(ctx context.Context, label string) (*PersonalCert, string, error) {
 	vc := contextx.GetVerifyContext(ctx)
-	personalCert, uri, err := c.GetPersonalCertLabel(ctx, label)
-	if err != nil {
-		vc.Logger.Errorf("unable to get the personal certificate label; err=%s", err.Error())
-		return nil, "", err
-	}
-
 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
 	getCertParams := &openapi.GetPersonalCertParams{}
 	headers := &openapi.Headers{
@@ -181,7 +164,6 @@ func (c *PersonalCertClient) GetPersonalCert(ctx context.Context, label string) 
 		vc.Logger.Errorf("unable to get the personal certificate; err=%s", err.Error())
 		return nil, "", err
 	}
-
 	if resp.StatusCode() != http.StatusOK {
 		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, "unable to get personal certificate"); err != nil {
 			vc.Logger.Errorf("unable to get the personal certificate; err=%s", err.Error())
@@ -190,7 +172,6 @@ func (c *PersonalCertClient) GetPersonalCert(ctx context.Context, label string) 
 		vc.Logger.Errorf("unable to get the personal certificate; code=%d, body=%s", resp.StatusCode(), string(resp.Body))
 		return nil, "", errorsx.G11NError("unable to get the personal certificate")
 	}
-
 	var certResponse struct {
 		Cert string `json:"cert"`
 	}
@@ -198,9 +179,42 @@ func (c *PersonalCertClient) GetPersonalCert(ctx context.Context, label string) 
 		vc.Logger.Errorf("unable to parse personal certificate response; err=%s", err.Error())
 		return nil, "", errorsx.G11NError("unable to parse personal certificate response")
 	}
-	personalCert.Cert = certResponse.Cert
-
-	return personalCert, uri, nil
+	personalCert := &PersonalCert{
+		Label: label,
+		Cert:  certResponse.Cert,
+	}
+	if certsResp, err := client.GetPersonalCertsWithResponse(ctx, &openapi.GetPersonalCertsParams{}, openapi.DefaultRequestEditors(ctx, headers)...); err == nil && certsResp.StatusCode() == http.StatusOK {
+		var certs []openapi.PostPersonalCertificate
+		if err := json.Unmarshal(certsResp.Body, &certs); err == nil {
+			for _, c := range certs {
+				if strings.EqualFold(c.Label, label) {
+					isDefault := false
+					if c.IsDefault != nil {
+						isDefault = *c.IsDefault
+					}
+					var certMap []map[string]interface{}
+					if err := json.Unmarshal(certsResp.Body, &certMap); err == nil {
+						for _, m := range certMap {
+							if strings.EqualFold(m["label"].(string), label) {
+								signatureAlgorithm, _ := m["signature_algorithm"].(string)
+								*personalCert = PersonalCert{
+									Subject:            c.Subject,
+									Label:              c.Label,
+									KeySize:            int(c.Keysize),
+									SignatureAlgorithm: signatureAlgorithm,
+									Cert:               certResponse.Cert,
+									IsDefault:          isDefault,
+								}
+								break
+							}
+						}
+					}
+					break
+				}
+			}
+		}
+	}
+	return personalCert, resp.HTTPResponse.Request.URL.String(), nil
 }
 
 func (c *PersonalCertClient) GetPersonalCerts(ctx context.Context, sort string, count string) (*PersonalCertListResponse, string, error) {
@@ -241,46 +255,4 @@ func (c *PersonalCertClient) GetPersonalCerts(ctx context.Context, sort string, 
 	}
 
 	return certList, resp.HTTPResponse.Request.URL.String(), nil
-}
-
-func (c *PersonalCertClient) GetPersonalCertLabel(ctx context.Context, Label string) (*PersonalCert, string, error) {
-	vc := contextx.GetVerifyContext(ctx)
-	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
-	getCertsParams := &openapi.GetPersonalCertsParams{}
-	headers := &openapi.Headers{
-		Token:  vc.Token,
-		Accept: "application/json",
-	}
-	resp, err := client.GetPersonalCertsWithResponse(ctx, getCertsParams, openapi.DefaultRequestEditors(ctx, headers)...)
-	if err != nil {
-		vc.Logger.Errorf("unable to get personal certificates for label validation; err=%s", err.Error())
-		return nil, "", errorsx.G11NError("unable to get personal certificate with label %s; err=%s", Label, err.Error())
-	}
-
-	if resp.StatusCode() != http.StatusOK {
-		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, "unable to get personal certificates"); err != nil {
-			vc.Logger.Errorf("unable to get personal certificates; err=%s", err.Error())
-			return nil, "", err
-		}
-		vc.Logger.Errorf("unable to get personal certificates; code=%d, body=%s", resp.StatusCode(), string(resp.Body))
-		return nil, "", errorsx.G11NError("unable to get personal certificates")
-	}
-
-	var certs []PersonalCert
-	if err := json.Unmarshal(resp.Body, &certs); err != nil {
-		var certList PersonalCertListResponse
-		if err := json.Unmarshal(resp.Body, &certList); err != nil {
-			vc.Logger.Errorf("unable to parse personal certificates response; err=%s, body=%s", err.Error(), string(resp.Body))
-			return nil, "", errorsx.G11NError("unable to parse personal certificates response: %w", err)
-		}
-		certs = certList.PersonalCerts
-	}
-
-	for _, cert := range certs {
-		if strings.EqualFold(cert.Label, Label) {
-			return &cert, resp.HTTPResponse.Request.URL.String(), nil
-		}
-	}
-	vc.Logger.Errorf("no personal certificate found with label %s", Label)
-	return nil, "", errorsx.G11NError("no personal certificate found with label %s", Label)
 }
