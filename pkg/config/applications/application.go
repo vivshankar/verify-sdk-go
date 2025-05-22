@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"strconv"
 	"strings"
@@ -14,26 +15,19 @@ import (
 	errorsx "github.com/ibm-verify/verify-sdk-go/pkg/core/errors"
 )
 
-const (
-	apiApplications = "v1.0/applications"
-)
-
-type ApplicationListResponse struct {
-	Embedded   Embedded `json:"_embedded" yaml:"_embedded"`
-	TotalCount int      `json:"totalCount" yaml:"totalCount"`
-}
+type ApplicationListResponse = openapi.SearchAdminApplicationWithoutProvResponseBean
 
 type Embedded struct {
-	Applications []Application `json:"applications" yaml:"applications"`
+	Applications []*Application `json:"applications" yaml:"applications"`
 }
 
 type Application struct {
 	Name                   string                 `json:"name" yaml:"name"`
 	TemplateID             string                 `json:"templateId" yaml:"templateId"`
-	Links                  Links                  `json:"_links" yaml:"_links"`
+	Links                  Links                  `json:"_links" yaml:"_links,omitempty"`
 	Providers              Providers              `json:"providers" yaml:"providers"`
 	Provisioning           Provisioning           `json:"provisioning" yaml:"provisioning"`
-	AttributeMappings      []AttributeMapping     `json:"attributeMappings" yaml:"attributeMappings,omitempty"`
+	AttributeMappings      []*AttributeMapping    `json:"attributeMappings" yaml:"attributeMappings"`
 	ApplicationState       bool                   `json:"applicationState" yaml:"applicationState,omitempty"`
 	ApprovalRequired       bool                   `json:"approvalRequired" yaml:"approvalRequired,omitempty"`
 	SignonState            bool                   `json:"signonState" yaml:"signonState,omitempty"`
@@ -43,11 +37,11 @@ type Application struct {
 	VisibleOnLaunchpad     bool                   `json:"visibleOnLaunchpad" yaml:"visibleOnLaunchpad,omitempty"`
 	Customization          Customization          `json:"customization" yaml:"customization,omitempty"`
 	DevportalSettings      DevportalSettings      `json:"devportalSettings" yaml:"devportalSettings,omitempty"`
-	APIAccessClients       []APIAccessClients     `json:"apiAccessClients" yaml:"apiAccessClients,omitempty"`
+	APIAccessClients       []*APIAccessClient     `json:"apiAccessClients" yaml:"apiAccessClients"`
 	CustomIcon             string                 `json:"customIcon" yaml:"customIcon,omitempty"`
-	DefaultIcon            string                 `json:"defaultIcon" yaml:"defaultIcon,omitempty"`
 	AdaptiveAuthentication AdaptiveAuthentication `json:"adaptiveAuthentication" yaml:"adaptiveAuthentication,omitempty"`
 	Target                 map[string]bool        `json:"target" yaml:"target,omitempty"`
+	Owners                 []interface{}          `json:"owners,omitempty" yaml:"owners,omitempty"`
 }
 type Customization struct {
 	ThemeID string `json:"themeId" yaml:"themeId,omitempty"`
@@ -58,19 +52,19 @@ type AdaptiveAuthentication struct {
 	StorageLink string `json:"storageLink" yaml:"storageLink,omitempty"`
 }
 type DevportalSettings struct {
-	GrantTypes                 GrantTypes         `json:"grantTypes" yaml:"grantTypes,omitempty"`
-	AuthPolicy                 AuthPolicy         `json:"authPolicy" yaml:"authPolicy,omitempty"`
-	ExtendedProperties         map[string]string  `json:"extendedProperties" yaml:"extendedProperties,omitempty"`
-	IdentitySources            []string           `json:"identitySources" yaml:"identitySources,omitempty"`
-	SendAllKnownUserAttributes string             `json:"sendAllKnownUserAttributes" yaml:"sendAllKnownUserAttributes,omitempty"`
-	AttributeMappings          []AttributeMapping `json:"attributeMappings" yaml:"attributeMappings,omitempty"`
+	GrantTypes                 GrantTypes          `json:"grantTypes" yaml:"grantTypes,omitempty"`
+	AuthPolicy                 AuthPolicy          `json:"authPolicy" yaml:"authPolicy,omitempty"`
+	ExtendedProperties         map[string]string   `json:"extendedProperties" yaml:"extendedProperties,omitempty"`
+	IdentitySources            []string            `json:"identitySources" yaml:"identitySources,omitempty"`
+	SendAllKnownUserAttributes string              `json:"sendAllKnownUserAttributes" yaml:"sendAllKnownUserAttributes,omitempty"`
+	AttributeMappings          []*AttributeMapping `json:"attributeMappings" yaml:"attributeMappings,omitempty"`
 }
 type AuthPolicy struct {
-	ID               string           `json:"id" yaml:"id,omitempty"`
-	Name             string           `json:"name" yaml:"name,omitempty"`
-	GrantTypes       []GrantTypeEntry `json:"grantTypes" yaml:"grantTypes,omitempty"`
-	ErrorCode        string           `json:"errorCode" yaml:"errorCode,omitempty"`
-	ErrorDescription string           `json:"errorDescription" yaml:"errorDescription,omitempty"`
+	ID               string            `json:"id" yaml:"id,omitempty"`
+	Name             string            `json:"name" yaml:"name,omitempty"`
+	GrantTypes       []*GrantTypeEntry `json:"grantTypes" yaml:"grantTypes,omitempty"`
+	ErrorCode        string            `json:"errorCode" yaml:"errorCode,omitempty"`
+	ErrorDescription string            `json:"errorDescription" yaml:"errorDescription,omitempty"`
 }
 type GrantTypeEntry struct {
 	Name  string `json:"name" yaml:"name,omitempty"`
@@ -86,15 +80,15 @@ type Self struct {
 }
 
 type Providers struct {
-	SSO      SSO      `json:"sso" yaml:"sso"`
-	SAML     SAML     `json:"saml" yaml:"saml"`
-	Bookmark Bookmark `json:"bookmark" yaml:"bookmark"`
+	SSO      SSO      `json:"sso" yaml:"sso,omitempty"`
+	SAML     SAML     `json:"saml" yaml:"saml,omitempty"`
+	Bookmark Bookmark `json:"bookmark" yaml:"bookmark,omitempty"`
 	OIDC     OIDC     `json:"oidc" yaml:"oidc,omitempty"`
 	WSFed    WSFed    `json:"wsfed" yaml:"wsfed,omitempty"`
 }
 
 type SSO struct {
-	DomainName             string `json:"domainName" yaml:"domainName"`
+	DomainName             string `json:"domainName" yaml:"domainName,omitempty"`
 	UserOptions            string `json:"userOptions" yaml:"userOptions,omitempty"`
 	SPSSOURL               string `json:"spssoUrl" yaml:"spssoUrl,omitempty"`
 	TargetURL              string `json:"targetUrl" yaml:"targetUrl,omitempty"`
@@ -103,11 +97,11 @@ type SSO struct {
 
 type SAML struct {
 	JustInTimeProvisioning   string              `json:"justInTimeProvisioning" yaml:"justInTimeProvisioning,omitempty"`
-	Properties               SAMLProperties      `json:"properties" yaml:"properties"`
-	AssertionConsumerService []interface{}       `json:"assertionConsumerService" yaml:"assertionConsumerService"`
-	SingleLogoutService      []interface{}       `json:"singleLogoutService" yaml:"singleLogoutService"`
-	AdditionalProperties     []interface{}       `json:"additionalProperties" yaml:"additionalProperties"`
-	ManageNameIDService      ManageNameIDService `json:"manageNameIDService" yaml:"manageNameIDService"`
+	Properties               SAMLProperties      `json:"properties" yaml:"properties,omitempty"`
+	AssertionConsumerService []interface{}       `json:"assertionConsumerService" yaml:"assertionConsumerService,omitempty"`
+	SingleLogoutService      []interface{}       `json:"singleLogoutService" yaml:"singleLogoutService,omitempty"`
+	AdditionalProperties     []interface{}       `json:"additionalProperties" yaml:"additionalProperties,omitempty"`
+	ManageNameIDService      ManageNameIDService `json:"manageNameIDService" yaml:"manageNameIDService,omitempty"`
 }
 
 type SAMLProperties struct {
@@ -120,14 +114,17 @@ type SAMLProperties struct {
 	ICIReservedSubjectNameID         string `json:"ici_reserved_subjectNameID" yaml:"ici_reserved_subjectNameID,omitempty"`
 	IncludeAllAttributes             string `json:"includeAllAttributes" yaml:"includeAllAttributes,omitempty"`
 	DefaultNameIdFormat              string `json:"defaultNameIdFormat" yaml:"defaultNameIdFormat,omitempty"`
-	ProviderID                       string `json:"providerId" yaml:"providerId"`
-	AssertionConsumerServiceURL      string `json:"assertionConsumerServiceUrl" yaml:"assertionConsumerServiceUrl"`
+	ProviderID                       string `json:"providerId" yaml:"providerId,omitempty"`
+	AssertionConsumerServiceURL      string `json:"assertionConsumerServiceUrl" yaml:"assertionConsumerServiceUrl,omitempty"`
 	SignatureValidationKeyIdentifier string `json:"signatureValidationKeyIdentifier" yaml:"signatureValidationKeyIdentifier,omitempty"`
 	BlockEncryptionAlgorithm         string `json:"blockEncryptionAlgorithm" yaml:"blockEncryptionAlgorithm,omitempty"`
 	EncryptionKeyIdentifier          string `json:"encryptionKeyIdentifier" yaml:"encryptionKeyIdentifier,omitempty"`
 	UniqueID                         string `json:"uniqueID" yaml:"uniqueID,omitempty"`
 	SessionNotOnOrAfter              string `json:"sessionNotOnOrAfter" yaml:"sessionNotOnOrAfter,omitempty"`
 	SigningKeyIdentifier             string `json:"signingKeyIdentifier" yaml:"signingKeyIdentifier,omitempty"`
+	ValidateLogoutRequest            string `json:"validateLogoutRequest" yaml:"validateLogoutRequest,omitempty"`
+	ValidateLogoutResponse           string `json:"validateLogoutResponse" yaml:"validateLogoutResponse,omitempty"`
+	UseMetaData                      string `json:"useMetaData" yaml:"useMetaData,omitempty"`
 }
 
 type ManageNameIDService struct {
@@ -135,12 +132,12 @@ type ManageNameIDService struct {
 }
 
 type Bookmark struct {
-	BookmarkURL string `json:"bookmarkUrl" yaml:"bookmarkUrl"`
+	BookmarkURL string `json:"bookmarkUrl" yaml:"bookmarkUrl,omitempty"`
 }
 
 type OIDC struct {
 	Properties              OIDCProperties      `json:"properties" yaml:"properties,omitempty"`
-	GrantProperties         GrantProperties     `json:"grantProperties" yaml:"grantProperties"`
+	GrantProperties         GrantProperties     `json:"grantProperties" yaml:"grantProperties,omitempty"`
 	Token                   Token               `json:"token" yaml:"token,omitempty"`
 	JWTBearerProperties     JWTBearerProperties `json:"jwtBearerProperties" yaml:"jwtBearerProperties,omitempty"`
 	ApplicationURL          string              `json:"applicationUrl" yaml:"applicationUrl,omitempty"`
@@ -153,25 +150,54 @@ type OIDC struct {
 }
 
 type OIDCProperties struct {
-	GrantTypes                 GrantTypes    `json:"grantTypes" yaml:"grantTypes,omitempty"`
-	RedirectURIs               []interface{} `json:"redirectUris" yaml:"redirectUris,omitempty"`
-	IDTokenSigningAlg          string        `json:"idTokenSigningAlg" yaml:"idTokenSigningAlg,omitempty"`
-	AccessTokenExpiry          int           `json:"accessTokenExpiry" yaml:"accessTokenExpiry,omitempty"`
-	RefreshTokenExpiry         int           `json:"refreshTokenExpiry" yaml:"refreshTokenExpiry,omitempty"`
-	DoNotGenerateClientSecret  string        `json:"doNotGenerateClientSecret" yaml:"doNotGenerateClientSecret,omitempty"`
-	GenerateRefreshToken       string        `json:"generateRefreshToken" yaml:"generateRefreshToken,omitempty"`
-	RenewRefreshTokenExpiry    int           `json:"renewRefreshTokenExpiry" yaml:"renewRefreshTokenExpiry,omitempty"`
-	SignIDToken                string        `json:"signIdToken" yaml:"signIdToken,omitempty"`
-	SigningCertificate         string        `json:"signingCertificate" yaml:"signingCertificate,omitempty"`
-	ClientID                   string        `json:"clientId" yaml:"clientId,omitempty"`
-	ClientSecret               string        `json:"clientSecret" yaml:"clientSecret,omitempty"`
-	SendAllKnownUserAttributes string        `json:"sendAllKnownUserAttributes" yaml:"sendAllKnownUserAttributes,omitempty"`
-	JWKSURI                    string        `json:"jwksUri" yaml:"jwksUri,omitempty"`
-	ConsentType                string        `json:"consentType" yaml:"consentType,omitempty"`
-	RenewRefreshToken          string        `json:"renewRefreshToken" yaml:"renewRefreshToken,omitempty"`
-	IDTokenEncryptAlg          string        `json:"idTokenEncryptAlg" yaml:"idTokenEncryptAlg,omitempty"`
-	IDTokenEncryptEnc          string        `json:"idTokenEncryptEnc" yaml:"idTokenEncryptEnc,omitempty"`
-	IDTokenEncryptKey          string        `json:"idTokenEncryptKey" yaml:"idTokenEncryptKey,omitempty"`
+	GrantTypes                 GrantTypes           `json:"grantTypes" yaml:"grantTypes,omitempty"`
+	RedirectURIs               []interface{}        `json:"redirectUris" yaml:"redirectUris,omitempty"`
+	IDTokenSigningAlg          string               `json:"idTokenSigningAlg" yaml:"idTokenSigningAlg,omitempty"`
+	AccessTokenExpiry          int                  `json:"accessTokenExpiry" yaml:"accessTokenExpiry,omitempty"`
+	RefreshTokenExpiry         int                  `json:"refreshTokenExpiry" yaml:"refreshTokenExpiry,omitempty"`
+	DoNotGenerateClientSecret  string               `json:"doNotGenerateClientSecret" yaml:"doNotGenerateClientSecret,omitempty"`
+	GenerateRefreshToken       string               `json:"generateRefreshToken" yaml:"generateRefreshToken,omitempty"`
+	RenewRefreshTokenExpiry    int                  `json:"renewRefreshTokenExpiry" yaml:"renewRefreshTokenExpiry,omitempty"`
+	SignIDToken                string               `json:"signIdToken" yaml:"signIdToken,omitempty"`
+	SigningCertificate         string               `json:"signingCertificate" yaml:"signingCertificate,omitempty"`
+	ClientID                   string               `json:"clientId" yaml:"clientId,omitempty"`
+	ClientSecret               string               `json:"clientSecret" yaml:"clientSecret,omitempty"`
+	SendAllKnownUserAttributes string               `json:"sendAllKnownUserAttributes" yaml:"sendAllKnownUserAttributes,omitempty"`
+	JWKSURI                    string               `json:"jwksUri" yaml:"jwksUri,omitempty"`
+	ConsentType                string               `json:"consentType" yaml:"consentType,omitempty"`
+	RenewRefreshToken          string               `json:"renewRefreshToken" yaml:"renewRefreshToken,omitempty"`
+	IDTokenEncryptAlg          string               `json:"idTokenEncryptAlg" yaml:"idTokenEncryptAlg,omitempty"`
+	IDTokenEncryptEnc          string               `json:"idTokenEncryptEnc" yaml:"idTokenEncryptEnc,omitempty"`
+	IDTokenEncryptKey          string               `json:"idTokenEncryptKey" yaml:"idTokenEncryptKey,omitempty"`
+	AdditionalConfig           OIDCAdditionalConfig `json:"additionalConfig" yaml:"additionalConfig,omitempty"`
+}
+
+type OIDCAdditionalConfig struct {
+	Oidcv3                                 bool     `json:"oidcv3,omitempty" yaml:"oidcv3,omitempty"`
+	RequestObjectParametersOnly            string   `json:"requestObjectParametersOnly,omitempty" yaml:"requestObjectParametersOnly,omitempty"`
+	RequestObjectSigningAlg                string   `json:"requestObjectSigningAlg,omitempty" yaml:"requestObjectSigningAlg,omitempty"`
+	RequestObjectRequireExp                string   `json:"requestObjectRequireExp,omitempty" yaml:"requestObjectRequireExp,omitempty"`
+	CertificateBoundAccessTokens           string   `json:",certificateBoundAccessTokensomitempty" yaml:"certificateBoundAccessTokens,omitempty"`
+	DpopBoundAccessTokens                  string   `json:",dpopBoundAccessTokensomitempty" yaml:"dpopBoundAccessTokens,omitempty"`
+	ValidateDPoPProofJti                   string   `json:",validateDPoPProofJtiomitempty" yaml:"validateDPoPProofJti,omitempty"`
+	DpopProofSigningAlg                    string   `json:",dpopProofSigningAlgomitempty" yaml:"dpopProofSigningAlg,omitempty"`
+	AuthorizeRspSigningAlg                 string   `json:",authorizeRspSigningAlgomitempty" yaml:"authorizeRspSigningAlg,omitempty"`
+	AuthorizeRspEncryptionAlg              string   `json:",authorizeRspEncryptionAlgomitempty" yaml:"authorizeRspEncryptionAlg,omitempty"`
+	AuthorizeRspEncryptionEnc              string   `json:",authorizeRspEncryptionEncomitempty" yaml:"authorizeRspEncryptionEnc,omitempty"`
+	ResponseTypes                          []string `json:",responseTypesomitempty" yaml:"responseTypes,omitempty"`
+	ResponseModes                          []string `json:",responseModesomitempty" yaml:"responseModes,omitempty"`
+	ClientAuthMethod                       string   `json:",clientAuthMethodomitempty" yaml:"clientAuthMethod,omitempty"`
+	RequirePushAuthorize                   string   `json:",requirePushAuthorizeomitempty" yaml:"requirePushAuthorize,omitempty"`
+	RequestObjectMaxExpFromNbf             int64    `json:",requestObjectMaxExpFromNbfomitempty" yaml:"requestObjectMaxExpFromNbf,omitempty"`
+	ExchangeForSSOSessionOption            string   `json:",exchangeForSSOSessionOptionomitempty" yaml:"exchangeForSSOSessionOption,omitempty"`
+	SubjectTokenTypes                      []string `json:",subjectTokenTypesomitempty" yaml:"subjectTokenTypes,omitempty"`
+	ActorTokenTypes                        []string `json:",actorTokenTypesomitempty" yaml:"actorTokenTypes,omitempty"`
+	RequestedTokenTypes                    []string `json:",requestedTokenTypesomitempty" yaml:"requestedTokenTypes,omitempty"`
+	ActorTokenRequired                     bool     `json:",actorTokenRequiredomitempty" yaml:"actorTokenRequired,omitempty"`
+	LogoutOption                           string   `json:",logoutOptionomitempty" yaml:"logoutOption,omitempty"`
+	SessionRequired                        bool     `json:",sessionRequiredomitempty" yaml:"sessionRequired,omitempty"`
+	RequestUris                            []string `json:",requestUrisomitempty" yaml:"requestUris,omitempty"`
+	AllowedClientAssertionVerificationKeys []string `json:",allowedClientAssertionVerificationKeysomitempty" yaml:"allowedClientAssertionVerificationKeys,omitempty"`
 }
 
 type GrantTypes struct {
@@ -214,7 +240,7 @@ type WSFedProperties struct {
 	ProviderID               string          `json:"providerId" yaml:"providerId,omitempty"`
 	MultipleDomainsEnabled   string          `json:"multipleDomainsEnabled" yaml:"multipleDomainsEnabled,omitempty"`
 	ICIReservedSubjectNameID string          `json:"ici_reserved_subjectNameID" yaml:"ici_reserved_subjectNameID,omitempty"`
-	AdditionalProperties     []interface{}   `json:"additionalProperties" yaml:"additionalProperties"`
+	AdditionalProperties     []interface{}   `json:"additionalProperties" yaml:"additionalProperties,omitempty"`
 }
 
 type ActiveProfile struct {
@@ -229,10 +255,10 @@ type SigningSettings struct {
 
 type Provisioning struct {
 	Extension                Extension            `json:"extension" yaml:"extension,omitempty"`
-	AttributeMappings        []AttributeMapping   `json:"attributeMappings" yaml:"attributeMappings,omitempty"`
+	AttributeMappings        []*AttributeMapping  `json:"attributeMappings" yaml:"attributeMappings"`
 	Policies                 ProvisioningPolicies `json:"policies" yaml:"policies,omitempty"`
-	SendNotifications        bool                 `json:"sendNotifications" yaml:"sendNotifications"`
-	ReverseAttributeMappings []AttributeMapping   `json:"reverseAttributeMappings" yaml:"reverseAttributeMappings,omitempty"`
+	SendNotifications        bool                 `json:"sendNotifications" yaml:"sendNotifications,omitempty"`
+	ReverseAttributeMappings []*AttributeMapping  `json:"reverseAttributeMappings" yaml:"reverseAttributeMappings"`
 	Authentication           Authentication       `json:"authentication" yaml:"authentication,omitempty"`
 	ProvisioningState        string               `json:"provisioningState" yaml:"provisioningState,omitempty"`
 }
@@ -256,19 +282,20 @@ type ProvisioningPolicies struct {
 }
 
 type AdoptionPolicy struct {
-	MatchingAttributes []AttributeMapping `json:"matchingAttributes" yaml:"matchingAttributes,omitempty"`
+	MatchingAttributes []*AttributeMapping `json:"matchingAttributes" yaml:"matchingAttributes,omitempty"`
+	RemediationPolicy  map[string]string   `json:"remediationPolicy,omitempty" yaml:"remediationPolicy,omitempty"`
 }
 
 type Authentication struct {
 	Properties map[string]string `json:"properties" yaml:"properties,omitempty"`
 }
 
-type APIAccessClients struct {
-	AccessTokenLifetime int32    `json:"accessTokenLifetime" yaml:"accessTokenLifetime"`
-	AccessTokenType     string   `json:"accessTokenType" yaml:"accessTokenType"`
-	ClientName          string   `json:"clientName" yaml:"clientName"`
+type APIAccessClient struct {
+	AccessTokenLifetime int32    `json:"accessTokenLifetime" yaml:"accessTokenLifetime,omitempty"`
+	AccessTokenType     string   `json:"accessTokenType" yaml:"accessTokenType,omitempty"`
+	ClientName          string   `json:"clientName" yaml:"clientName,omitempty"`
 	ClientID            string   `json:"clientId" yaml:"clientId,omitempty"`
-	Enabled             bool     `json:"enabled" yaml:"enabled"`
+	Enabled             bool     `json:"enabled" yaml:"enabled,omitempty"`
 	JWTSigningAlg       string   `json:"jwtSigningAlg" yaml:"jwtSigningAlg,omitempty"`
 	SignKeyLabel        string   `json:"signKeyLabel" yaml:"signKeyLabel,omitempty"`
 	RestrictScopes      bool     `json:"restrictScopes" yaml:"restrictScopes,omitempty"`
@@ -298,7 +325,7 @@ func (c *ApplicationClient) CreateApplication(ctx context.Context, application *
 	}
 	body, err := json.Marshal(application)
 	if err != nil {
-		vc.Logger.Errorf("Unable to marshal API application data; err=%s", err.Error())
+		vc.Logger.Errorf("Unable to marshal application data; err=%s", err.Error())
 		return "", errorsx.G11NError("unable to marshal application data")
 	}
 
@@ -318,8 +345,8 @@ func (c *ApplicationClient) CreateApplication(ctx context.Context, application *
 	}
 
 	m := map[string]interface{}{}
-	if err := json.Unmarshal(body, &m); err != nil {
-		vc.Logger.Errorf("Failed to unmarshal API response; err=%s", err.Error())
+	if err := json.Unmarshal(resp.Body, &m); err != nil {
+		vc.Logger.Errorf("Failed to unmarshal application response; err=%s", err.Error())
 		return "", errorsx.G11NError("unable to parse response")
 	}
 
@@ -344,19 +371,13 @@ func (c *ApplicationClient) CreateApplication(ctx context.Context, application *
 	return resourceURI, nil
 }
 
-func (c *ApplicationClient) UpdateApplication(ctx context.Context, application *Application) error {
+func (c *ApplicationClient) UpdateApplication(ctx context.Context, applicationID string, application *Application) error {
 	vc := contextx.GetVerifyContext(ctx)
 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
 
 	if application == nil {
 		vc.Logger.Errorf("application object is nil")
 		return errorsx.G11NError("application object is nil")
-	}
-
-	applicationId, err := c.GetApplicationId(ctx, application.Name)
-	if err != nil {
-		vc.Logger.Errorf("unable to get the application ID for Application '%s'; err=%s", application.Name, err.Error())
-		return errorsx.G11NError("unable to get the application ID for Application '%s'; err=%s", application.Name, err.Error())
 	}
 
 	headers := &openapi.Headers{
@@ -371,7 +392,7 @@ func (c *ApplicationClient) UpdateApplication(ctx context.Context, application *
 		return errorsx.G11NError("unable to marshal the Application data")
 	}
 
-	resp, err := client.UpdateApplicationWithBodyWithResponse(ctx, applicationId, "*/*", bytes.NewBuffer(body), openapi.DefaultRequestEditors(ctx, headers)...)
+	resp, err := client.UpdateApplicationWithBodyWithResponse(ctx, applicationID, "*/*", bytes.NewBuffer(body), openapi.DefaultRequestEditors(ctx, headers)...)
 	if err != nil {
 		vc.Logger.Errorf("unable to update an Application; err=%s", err.Error())
 		return errorsx.G11NError("unable to update application")
@@ -389,97 +410,48 @@ func (c *ApplicationClient) UpdateApplication(ctx context.Context, application *
 	return nil
 }
 
-func (c *ApplicationClient) GetApplication(ctx context.Context, name string) (*Application, string, error) {
+func (c *ApplicationClient) GetApplicationByID(ctx context.Context, applicationID string) (*Application, string, error) {
 	vc := contextx.GetVerifyContext(ctx)
-
-	id, err := c.GetApplicationId(ctx, name)
 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
-	if err != nil {
-		vc.Logger.Errorf("unable to get the Application ID; err=%s", err.Error())
-		return nil, "", err
-	}
 
 	headers := &openapi.Headers{
 		Token:  vc.Token,
 		Accept: "application/json",
 	}
-	resp, err := client.GetApplicationWithResponse(ctx, id, openapi.DefaultRequestEditors(ctx, headers)...)
+	resp, err := client.GetApplication(ctx, applicationID, openapi.DefaultRequestEditors(ctx, headers)...)
 	if err != nil {
 		vc.Logger.Errorf("unable to get the Application; err=%s", err.Error())
 		return nil, "", err
 	}
 
-	if resp.StatusCode() != http.StatusOK {
-		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, "unable to get application"); err != nil {
-			vc.Logger.Errorf("unable to get the User; err=%s", err.Error())
+	buf, err := io.ReadAll(resp.Body)
+	defer func() { _ = resp.Body.Close() }()
+	if err != nil {
+		vc.Logger.Errorf("unable to read the attributes body; err=%v", err)
+		return nil, "", err
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		if err := errorsx.HandleCommonErrors(ctx, resp, "unable to get application"); err != nil {
+			vc.Logger.Errorf("unable to get the application; err=%s", err.Error())
 			return nil, "", err
 		}
 
-		vc.Logger.Errorf("unable to get the User; code=%d, body=%s", resp.StatusCode(), string(resp.Body))
-		return nil, "", errorsx.G11NError("unable to get the User")
+		data, _ := io.ReadAll(resp.Body)
+		vc.Logger.Errorf("unable to get the application; code=%d, body=%s", resp.StatusCode, string(data))
+		return nil, "", errorsx.G11NError("unable to get the application")
 	}
 
 	app := &Application{}
-	if err = json.Unmarshal(resp.Body, app); err != nil {
+	if err = json.Unmarshal(buf, app); err != nil {
 		vc.Logger.Errorf("unable to unmarshal response; err=%s", err.Error())
 		return nil, "", errorsx.G11NError("unable to get Application")
 	}
 
-	return app, resp.HTTPResponse.Request.URL.String(), nil
+	return app, resp.Request.URL.String(), nil
 }
 
-func (c *ApplicationClient) GetApplicationId(ctx context.Context, name string) (string, error) {
-	vc := contextx.GetVerifyContext(ctx)
-	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
-	filter := fmt.Sprintf(`"q=%s"`, name)
-	params := &openapi.SearchApplicationsParams{
-		Search: &filter,
-	}
-
-	headers := &openapi.Headers{
-		Token:  vc.Token,
-		Accept: "application/json",
-	}
-
-	resp, err := client.SearchApplicationsWithResponse(ctx, params, openapi.DefaultRequestEditors(ctx, headers)...)
-	if err != nil {
-		vc.Logger.Errorf("unable to get the Application with Name; err=%v", err)
-		return "", errorsx.G11NError("unable to get the Application with Name %s; err=%s", name, err.Error())
-	}
-
-	if resp.StatusCode() != http.StatusOK {
-		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, "unable to get Application111"); err != nil {
-			vc.Logger.Errorf("unable to get the Application with Name222 %s; err=%s", name, err.Error())
-			return "", errorsx.G11NError("unable to get the Application with Name333 %s; err=%s", name, err.Error())
-		}
-	}
-
-	var data ApplicationListResponse
-	if err := json.Unmarshal(resp.Body, &data); err != nil {
-		return "", errorsx.G11NError("failed to parse API response: %w", err)
-	}
-
-	if len(data.Embedded.Applications) == 0 {
-		return "", errorsx.G11NError("no application found with name %s", name)
-	}
-
-	for _, app := range data.Embedded.Applications {
-		if app.Name == name {
-			if app.Links.Self.Href == "" {
-				return "", errorsx.G11NError("no self link found for application %s", name)
-			}
-			id := app.Links.Self.Href
-			if idx := strings.LastIndex(id, "/"); idx != -1 {
-				id = id[idx+1:]
-			}
-			return id, nil
-		}
-	}
-
-	return "", errorsx.G11NError("no application found with exact name %s", name)
-}
-
-func (c *ApplicationClient) GetApplications(ctx context.Context, search string, sort string, page int, limit int) (*openapi.SearchAdminApplicationWithoutProvResponseBean, string, error) {
+func (c *ApplicationClient) GetApplications(ctx context.Context, search string, sort string, page int, limit int) (*ApplicationListResponse, string, error) {
 	vc := contextx.GetVerifyContext(ctx)
 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
 
@@ -521,7 +493,7 @@ func (c *ApplicationClient) GetApplications(ctx context.Context, search string, 
 
 	}
 
-	applicationsResponse := &openapi.SearchAdminApplicationWithoutProvResponseBean{}
+	applicationsResponse := &ApplicationListResponse{}
 	if err = json.Unmarshal(resp.Body, applicationsResponse); err != nil {
 		vc.Logger.Errorf("unable to unmarshal response; err=%s", err.Error())
 		return nil, "", errorsx.G11NError("unable to get the Applications")
@@ -530,25 +502,15 @@ func (c *ApplicationClient) GetApplications(ctx context.Context, search string, 
 	return applicationsResponse, resp.HTTPResponse.Request.URL.String(), nil
 }
 
-func (c *ApplicationClient) DeleteApplication(ctx context.Context, name string) error {
+func (c *ApplicationClient) DeleteApplicationByID(ctx context.Context, appliactionID string) error {
 	vc := contextx.GetVerifyContext(ctx)
-	id, err := c.GetApplicationId(ctx, name)
-	if err != nil {
-		vc.Logger.Errorf("unable to get the Application ID; err=%s", err.Error())
-		return err
-	}
 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
-	if err != nil {
-		vc.Logger.Errorf("unable to get the user ID; err=%s", err.Error())
-		return errorsx.G11NError("unable to get the user ID; err=%s", err.Error())
-	}
-
 	headers := &openapi.Headers{
 		Token:       vc.Token,
 		ContentType: "application/json",
 	}
 
-	resp, err := client.DeleteApplicationWithResponse(ctx, id, openapi.DefaultRequestEditors(ctx, headers)...)
+	resp, err := client.DeleteApplicationWithResponse(ctx, appliactionID, openapi.DefaultRequestEditors(ctx, headers)...)
 	if err != nil {
 		vc.Logger.Errorf("unable to delete the Application; err=%s", err.Error())
 		return errorsx.G11NError("unable to delete the Application; err=%s", err.Error())

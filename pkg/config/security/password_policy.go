@@ -18,9 +18,9 @@ import (
 // type PasswordPolicyListResponse = openapi.PasswordPoliciesResponseV3
 
 type PasswordPolicyListResponse struct {
-	TotalResults     int              `yaml:"totalResults" json:"totalResults"`
-	Schemas          []string         `yaml:"schemas" json:"schemas"`
-	PasswordPolicies []PasswordPolicy `yaml:"Resources" json:"Resources"`
+	TotalResults     int               `yaml:"totalResults" json:"totalResults"`
+	Schemas          []string          `yaml:"schemas" json:"schemas"`
+	PasswordPolicies []*PasswordPolicy `yaml:"Resources" json:"Resources"`
 }
 
 type PasswordPolicy struct {
@@ -70,22 +70,16 @@ func NewPasswordPolicyClient() *PasswordPolicyClient {
 	return &PasswordPolicyClient{}
 }
 
-func (c *PasswordPolicyClient) GetPasswordPolicy(ctx context.Context, id string) (*PasswordPolicy, string, error) {
+func (c *PasswordPolicyClient) GetPasswordPolicyByID(ctx context.Context, passwordPolicyID string) (*PasswordPolicy, string, error) {
 	vc := contextx.GetVerifyContext(ctx)
-	id, err := c.GetPasswordPolicyId(ctx, id)
 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
-
-	if err != nil {
-		vc.Logger.Errorf("unable to get the password policy ID; err=%s", err.Error())
-		return nil, "", err
-	}
 
 	headers := &openapi.Headers{
 		Token:  vc.Token,
 		Accept: "application/scim+json",
 	}
 
-	resp, err := client.GetPasswordPolicy0WithResponse(ctx, id, openapi.DefaultRequestEditors(ctx, headers)...)
+	resp, err := client.GetPasswordPolicy0WithResponse(ctx, passwordPolicyID, openapi.DefaultRequestEditors(ctx, headers)...)
 	if err != nil {
 		vc.Logger.Errorf("unable to get the password policy; err=%s", err.Error())
 		return nil, "", err
@@ -101,12 +95,12 @@ func (c *PasswordPolicyClient) GetPasswordPolicy(ctx context.Context, id string)
 		return nil, "", errorsx.G11NError("unable to get the password policy")
 	}
 
-	Passwordpolicy := &PasswordPolicy{}
-	if err = json.Unmarshal(resp.Body, Passwordpolicy); err != nil {
+	PasswordPolicy := &PasswordPolicy{}
+	if err = json.Unmarshal(resp.Body, PasswordPolicy); err != nil {
 		return nil, "", errorsx.G11NError("unable to get the Password Policy")
 	}
 
-	return Passwordpolicy, resp.HTTPResponse.Request.URL.String(), nil
+	return PasswordPolicy, resp.HTTPResponse.Request.URL.String(), nil
 }
 
 func (c *PasswordPolicyClient) CreatePasswordPolicy(ctx context.Context, PasswordPolicy *PasswordPolicy) (string, error) {
@@ -156,35 +150,23 @@ func (c *PasswordPolicyClient) CreatePasswordPolicy(ctx context.Context, Passwor
 
 }
 
-func (c *PasswordPolicyClient) UpdatePasswordPolicy(ctx context.Context, PasswordPolicy *PasswordPolicy) error {
+func (c *PasswordPolicyClient) UpdatePasswordPolicy(ctx context.Context, passwordPolicy *PasswordPolicy) error {
 
 	vc := contextx.GetVerifyContext(ctx)
 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
-
-	if PasswordPolicy == nil {
-		vc.Logger.Errorf("password policy object is nil")
-		return errorsx.G11NError("password policy object is nil")
-	}
-
-	id, err := c.GetPasswordPolicyId(ctx, PasswordPolicy.PolicyName)
-	if err != nil {
-		vc.Logger.Errorf("unable to get the policy ID for policy '%s'; err=%s", PasswordPolicy.PolicyName, err.Error())
-		return errorsx.G11NError("unable to get the policy ID for policy '%s'; err=%s", PasswordPolicy.PolicyName, err.Error())
-	}
-
 	headers := &openapi.Headers{
 		Accept:      "application/scim+json",
 		ContentType: "application/scim+json",
 		Token:       vc.Token,
 	}
 
-	body, err := json.Marshal(PasswordPolicy)
+	body, err := json.Marshal(passwordPolicy)
 	if err != nil {
 		vc.Logger.Errorf("unable to marshal the patch request; err=%v", err)
 		return errorsx.G11NError("unable to marshal the patch request; err=%v", err)
 	}
 
-	resp, err := client.PatchPasswordPolicyWithBodyWithResponse(ctx, id, "application/scim+json", bytes.NewBuffer(body), openapi.DefaultRequestEditors(ctx, headers)...)
+	resp, err := client.PatchPasswordPolicyWithBodyWithResponse(ctx, passwordPolicy.ID, "application/scim+json", bytes.NewBuffer(body), openapi.DefaultRequestEditors(ctx, headers)...)
 	if err != nil {
 		vc.Logger.Errorf("unable to update an password policy; err=%s", err.Error())
 		return errorsx.G11NError("unable to update password policy")
@@ -202,8 +184,7 @@ func (c *PasswordPolicyClient) UpdatePasswordPolicy(ctx context.Context, Passwor
 	return nil
 }
 
-func (c *PasswordPolicyClient) GetPasswordPolicies(ctx context.Context, sort string, count string) (
-	*PasswordPolicyListResponse, string, error) {
+func (c *PasswordPolicyClient) GetPasswordPolicies(ctx context.Context, sort string, count string) (*PasswordPolicyListResponse, string, error) {
 
 	vc := contextx.GetVerifyContext(ctx)
 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
@@ -239,28 +220,16 @@ func (c *PasswordPolicyClient) GetPasswordPolicies(ctx context.Context, sort str
 	return PasswordPoliciesResponse, resp.HTTPResponse.Request.URL.String(), nil
 }
 
-func (c *PasswordPolicyClient) DeletePasswordPolicy(ctx context.Context, policyName string) error {
+func (c *PasswordPolicyClient) DeletePasswordPolicyByID(ctx context.Context, passwordPolicyID string) error {
 	vc := contextx.GetVerifyContext(ctx)
-
-	id, err := c.GetPasswordPolicyId(ctx, policyName)
-
-	if err != nil {
-		vc.Logger.Errorf("unable to get the policy ID for policy '%s'; err=%s", policyName, err.Error())
-		return errorsx.G11NError("unable to get the policy ID for policy '%s'; err=%s", policyName, err.Error())
-	}
-
 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
-	if err != nil {
-		vc.Logger.Errorf("unable to get the password policy ID; err=%s", err.Error())
-		return errorsx.G11NError("unable to get the password policy ID; err=%s", err.Error())
-	}
 
 	headers := &openapi.Headers{
 		Token:       vc.Token,
 		ContentType: "application/json",
 	}
 
-	resp, err := client.DeletePasswordPolicyWithResponse(ctx, id, openapi.DefaultRequestEditors(ctx, headers)...)
+	resp, err := client.DeletePasswordPolicyWithResponse(ctx, passwordPolicyID, openapi.DefaultRequestEditors(ctx, headers)...)
 	if err != nil {
 		vc.Logger.Errorf("unable to delete the password policy; err=%s", err.Error())
 		return errorsx.G11NError("unable to delete the password policy; err=%s", err.Error())
@@ -278,7 +247,7 @@ func (c *PasswordPolicyClient) DeletePasswordPolicy(ctx context.Context, policyN
 	return nil
 }
 
-func (c *PasswordPolicyClient) GetPasswordPolicyId(ctx context.Context, PolicyName string) (string, error) {
+func (c *PasswordPolicyClient) GetPasswordPolicyID(ctx context.Context, PolicyName string) (string, error) {
 	vc := contextx.GetVerifyContext(ctx)
 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
 
