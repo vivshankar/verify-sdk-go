@@ -15,13 +15,13 @@ import (
 )
 
 type SignerCert struct {
-	Notbefore          string `yaml:"notbefore" json:"notbefore"`
-	Subject            string `yaml:"subject" json:"subject"`
-	Notafter           string `yaml:"notafter" json:"notafter"`
-	SerialNumber       string `yaml:"serial_number" json:"serial_number"`
+	Notbefore          string `yaml:"notbefore,omitempty" json:"notbefore,omitempty"`
+	Subject            string `yaml:"subject,omitempty" json:"subject,omitempty"`
+	Notafter           string `yaml:"notafter,omitempty" json:"notafter,omitempty"`
+	SerialNumber       string `yaml:"serial_number,omitempty" json:"serial_number,omitempty"`
 	Label              string `yaml:"label" json:"label"`
-	Version            int    `yaml:"version" json:"version"`
-	Issuer             string `yaml:"issuer" json:"issuer"`
+	Version            int    `yaml:"version,omitempty" json:"version,omitempty"`
+	Issuer             string `yaml:"issuer,omitempty" json:"issuer,omitempty"`
 	KeySize            int    `yaml:"keysize,omitempty" json:"keysize,omitempty"`
 	SignatureAlgorithm string `yaml:"signature_algorithm,omitempty" json:"signature_algorithm,omitempty"`
 	Cert               string `yaml:"cert" json:"cert"`

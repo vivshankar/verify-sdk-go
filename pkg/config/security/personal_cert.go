@@ -14,18 +14,19 @@ import (
 )
 
 type PersonalCert struct {
-	Notbefore          string `yaml:"notbefore" json:"notbefore"`
+	Notbefore          string `yaml:"notbefore,omitempty" json:"notbefore,omitempty"`
 	Subject            string `yaml:"subject" json:"subject"`
-	Notafter           string `yaml:"notafter" json:"notafter"`
-	SerialNumber       string `yaml:"serial_number" json:"serial_number"`
+	Notafter           string `yaml:"notafter,omitempty" json:"notafter,omitempty"`
+	SerialNumber       string `yaml:"serial_number,omitempty" json:"serial_number,omitempty"`
 	Label              string `yaml:"label" json:"label"`
-	Version            int    `yaml:"version" json:"version"`
-	Issuer             string `yaml:"issuer" json:"issuer"`
+	Version            int    `yaml:"version,omitempty" json:"version,omitempty"`
+	Issuer             string `yaml:"issuer,omitempty" json:"issuer,omitempty"`
 	IsDefault          bool   `yaml:"isDefault" json:"isDefault"`
 	KeySize            int    `yaml:"keysize,omitempty" json:"keysize,omitempty"`
-	SignatureAlgorithm string `yaml:"signature_algorithm,omitempty" json:"signature_algorithm,omitempty"`
+	SignatureAlgorithm string `yaml:"signature_algorithm" json:"signature_algorithm"`
+	Algorithm          string `yaml:"algorithm" json:"algorithm"`
 	Cert               string `yaml:"cert" json:"cert"`
-	Expire             int    `yaml:"expire,omitempty" json:"expire,omitempty"`
+	Expire             int    `yaml:"expire" json:"expire"`
 	Password           string `yaml:"password" json:"password"`
 }
 
