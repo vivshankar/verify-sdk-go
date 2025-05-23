@@ -238,3 +238,43 @@ func (c *AttributeClient) UpdateAttribute(ctx context.Context, attribute *Attrib
 
 	return nil
 }
+
+func (c *AttributeClient) DeleteAttributeByID(ctx context.Context, id string) error {
+	vc := contextx.GetVerifyContext(ctx)
+	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
+	if id == "" {
+		return errorsx.G11NError("'%s' is required", "id")
+	}
+	params := &openapi.DeleteAttributeParams{
+		Authorization: fmt.Sprintf("Bearer %s", vc.Token),
+	}
+	resp, err := client.DeleteAttributeWithResponse(ctx, id, params)
+	if err != nil {
+		vc.Logger.Errorf("unable to delete attribute; err=%s", err.Error())
+		return errorsx.G11NError("unable to delete attribute; err=%s", err.Error())
+	}
+	if e := resp.JSON400; e != nil {
+		err := e.ConvertToError()
+		vc.Logger.Errorf("bad request: err=%s", err.Error())
+		return err
+	}
+	if e := resp.JSON404; e != nil {
+		err := e.ConvertToError()
+		vc.Logger.Errorf("not found: err=%s", err.Error())
+		return err
+	}
+	if e := resp.JSON500; e != nil {
+		err := e.ConvertToError()
+		vc.Logger.Errorf("internal server error: err=%s", err.Error())
+		return err
+	}
+	if resp.StatusCode() != http.StatusNoContent {
+		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, "unable to delete attribute"); err != nil {
+			vc.Logger.Errorf("unable to delete attribute; err=%s", err.Error())
+			return err
+		}
+		vc.Logger.Errorf("unable to delete attribute; code=%d, body=%s", resp.StatusCode(), string(resp.Body))
+		return errorsx.G11NError("unable to delete attribute; code=%d", resp.StatusCode())
+	}
+	return nil
+}
