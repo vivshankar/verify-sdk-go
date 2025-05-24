@@ -12632,10 +12632,15 @@
                     "enabled",
                     "instanceName",
                     "properties",
-                    "sourceTypeId"
+                    "sourceTypeId",
+                    "id"
                 ],
                 "type": "object",
                 "properties": {
+                    "id": {
+                        "type": "string",
+                        "description": "This is the unique ID for this identity source."
+                    },
                     "sourceTypeId": {
                         "maximum": 17,
                         "minimum": 1,

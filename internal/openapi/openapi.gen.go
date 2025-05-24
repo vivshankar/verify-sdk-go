@@ -2137,6 +2137,9 @@ type IdentitySourceInstancesData struct {
 	// Enabled A Boolean flag that indicates whether this instance is enabled or disabled. Only enabled identity source instances are displayed on the login selection page.
 	Enabled bool `json:"enabled" yaml:"enabled"`
 
+	// ID This is the unique ID for this identity source.
+	ID string `json:"id" yaml:"id"`
+
 	// InstanceName The instance name to be displayed on login selection page.
 	InstanceName string `json:"instanceName" yaml:"instanceName"`
 
