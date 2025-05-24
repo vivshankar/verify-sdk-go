@@ -11,7 +11,6 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/ibm-verify/verify-sdk-go/internal/test_helper"
-	"github.com/ibm-verify/verify-sdk-go/pkg/auth"
 	"github.com/ibm-verify/verify-sdk-go/pkg/config/applications"
 	"gopkg.in/yaml.v3"
 
@@ -26,44 +25,28 @@ type ApplicationTestSuite struct {
 
 	ctx               context.Context
 	vctx              *contextx.VerifyContext
-	ApplicationName   string
 	client            *applications.ApplicationClient
 	applicationCreate *applications.Application
 	applicationPatch  *applications.Application
 }
 
 func (s *ApplicationTestSuite) SetupTest() {
+	var err error
 	// initialize the logger
 	contextID := uuid.NewString()
 	logger := logx.NewLoggerWithWriter(contextID, slog.LevelInfo, os.Stdout)
 	logger.AddNewline = true
 
 	// load common config
-	tenant, clientID, clientSecret := test_helper.LoadCommonConfig(s.T())
-
-	// get token
-	client := &auth.Client{
-		Tenant: tenant,
-		ClientAuth: &auth.ClientSecretPost{
-			ClientID:     clientID,
-			ClientSecret: clientSecret,
-		},
-	}
-
-	tokenResponse, err := client.TokenWithAPIClient(context.Background(), nil)
-	require.NoError(s.T(), err, "unable to get a token; err=%v", err)
+	tenant, accessToken := test_helper.LoadCommonConfig(s.T())
 
 	s.ctx, err = contextx.NewContextWithVerifyContext(context.Background(), logger)
 	require.NoError(s.T(), err, "unable to get a new context")
 	s.vctx = contextx.GetVerifyContext(s.ctx)
-	s.vctx.Token = tokenResponse.AccessToken
+	s.vctx.Token = accessToken
 	s.vctx.Tenant = tenant
 
-	// load specific config
-	s.ApplicationName = os.Getenv("APPLICATION_NAME")
-	require.NotEmpty(s.T(), s.ApplicationName, "invalid config: APPLICATION_NAME is missing")
 	// application details for creation
-
 	applicationCreateRawData := `
 name: TestApplication
 templateId: '669'
@@ -336,7 +319,7 @@ func (s *ApplicationTestSuite) TestApplication() {
 	var err error
 	// Create Application
 	resp, err := s.client.CreateApplication(s.ctx, s.applicationCreate)
-	require.NoError(s.T(), err, "unable to create Application %s; err=%v", s.ApplicationName, err)
+	require.NoError(s.T(), err, "unable to create Application ; err=%v", err)
 	// set the access policy ID
 	applicationID := strings.Split(resp, "/")[len(strings.Split(resp, "/"))-1]
 
