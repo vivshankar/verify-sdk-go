@@ -41,7 +41,7 @@ type Application struct {
 	CustomIcon             string                 `json:"customIcon" yaml:"customIcon,omitempty"`
 	AdaptiveAuthentication AdaptiveAuthentication `json:"adaptiveAuthentication" yaml:"adaptiveAuthentication,omitempty"`
 	Target                 map[string]bool        `json:"target" yaml:"target,omitempty"`
-	Owners                 []interface{}          `json:"owners,omitempty" yaml:"owners,omitempty"`
+	Owners                 []any                  `json:"owners,omitempty" yaml:"owners,omitempty"`
 }
 type Customization struct {
 	ThemeID string `json:"themeId" yaml:"themeId,omitempty"`
@@ -98,9 +98,9 @@ type SSO struct {
 type SAML struct {
 	JustInTimeProvisioning   string              `json:"justInTimeProvisioning" yaml:"justInTimeProvisioning,omitempty"`
 	Properties               SAMLProperties      `json:"properties" yaml:"properties,omitempty"`
-	AssertionConsumerService []interface{}       `json:"assertionConsumerService" yaml:"assertionConsumerService,omitempty"`
-	SingleLogoutService      []interface{}       `json:"singleLogoutService" yaml:"singleLogoutService,omitempty"`
-	AdditionalProperties     []interface{}       `json:"additionalProperties" yaml:"additionalProperties,omitempty"`
+	AssertionConsumerService []any               `json:"assertionConsumerService" yaml:"assertionConsumerService,omitempty"`
+	SingleLogoutService      []any               `json:"singleLogoutService" yaml:"singleLogoutService,omitempty"`
+	AdditionalProperties     []any               `json:"additionalProperties" yaml:"additionalProperties,omitempty"`
 	ManageNameIDService      ManageNameIDService `json:"manageNameIDService" yaml:"manageNameIDService,omitempty"`
 }
 
@@ -142,8 +142,8 @@ type OIDC struct {
 	JWTBearerProperties     JWTBearerProperties `json:"jwtBearerProperties" yaml:"jwtBearerProperties,omitempty"`
 	ApplicationURL          string              `json:"applicationUrl" yaml:"applicationUrl,omitempty"`
 	RestrictScopes          string              `json:"restrictScopes" yaml:"restrictScopes,omitempty"`
-	Scopes                  []interface{}       `json:"scopes" yaml:"scopes,omitempty"`
-	Entitlements            []interface{}       `json:"entitlements" yaml:"entitlements,omitempty"`
+	Scopes                  []any               `json:"scopes" yaml:"scopes,omitempty"`
+	Entitlements            []any               `json:"entitlements" yaml:"entitlements,omitempty"`
 	RestrictEntitlements    bool                `json:"restrictEntitlements" yaml:"restrictEntitlements,omitempty"`
 	ConsentAction           string              `json:"consentAction" yaml:"consentAction,omitempty"`
 	RequirePKCEVerification string              `json:"requirePkceVerification" yaml:"requirePkceVerification,omitempty"`
@@ -151,7 +151,7 @@ type OIDC struct {
 
 type OIDCProperties struct {
 	GrantTypes                 GrantTypes           `json:"grantTypes" yaml:"grantTypes,omitempty"`
-	RedirectURIs               []interface{}        `json:"redirectUris" yaml:"redirectUris,omitempty"`
+	RedirectURIs               []any                `json:"redirectUris" yaml:"redirectUris,omitempty"`
 	IDTokenSigningAlg          string               `json:"idTokenSigningAlg" yaml:"idTokenSigningAlg,omitempty"`
 	AccessTokenExpiry          int                  `json:"accessTokenExpiry" yaml:"accessTokenExpiry,omitempty"`
 	RefreshTokenExpiry         int                  `json:"refreshTokenExpiry" yaml:"refreshTokenExpiry,omitempty"`
@@ -216,9 +216,9 @@ type GrantProperties struct {
 }
 
 type Token struct {
-	AccessTokenType   string        `json:"accessTokenType" yaml:"accessTokenType"`
-	Audiences         []interface{} `json:"audiences" yaml:"audiences,omitempty"`
-	AttributeMappings []interface{} `json:"attributeMappings" yaml:"attributeMappings,omitempty"`
+	AccessTokenType   string `json:"accessTokenType" yaml:"accessTokenType"`
+	Audiences         []any  `json:"audiences" yaml:"audiences,omitempty"`
+	AttributeMappings []any  `json:"attributeMappings" yaml:"attributeMappings,omitempty"`
 }
 
 type JWTBearerProperties struct {
@@ -240,7 +240,7 @@ type WSFedProperties struct {
 	ProviderID               string          `json:"providerId" yaml:"providerId,omitempty"`
 	MultipleDomainsEnabled   string          `json:"multipleDomainsEnabled" yaml:"multipleDomainsEnabled,omitempty"`
 	ICIReservedSubjectNameID string          `json:"ici_reserved_subjectNameID" yaml:"ici_reserved_subjectNameID,omitempty"`
-	AdditionalProperties     []interface{}   `json:"additionalProperties" yaml:"additionalProperties,omitempty"`
+	AdditionalProperties     []any           `json:"additionalProperties" yaml:"additionalProperties,omitempty"`
 }
 
 type ActiveProfile struct {
@@ -248,9 +248,9 @@ type ActiveProfile struct {
 }
 
 type SigningSettings struct {
-	SignSAMLAssertion  string      `json:"signSamlAssertion" yaml:"signSamlAssertion,omitempty"`
-	KeyLabel           interface{} `json:"keyLabel" yaml:"keyLabel,omitempty"`
-	SignatureAlgorithm string      `json:"signatureAlgorithm" yaml:"signatureAlgorithm,omitempty"`
+	SignSAMLAssertion  string `json:"signSamlAssertion" yaml:"signSamlAssertion,omitempty"`
+	KeyLabel           any    `json:"keyLabel" yaml:"keyLabel,omitempty"`
+	SignatureAlgorithm string `json:"signatureAlgorithm" yaml:"signatureAlgorithm,omitempty"`
 }
 
 type Provisioning struct {
@@ -344,18 +344,18 @@ func (c *ApplicationClient) CreateApplication(ctx context.Context, application *
 		return "", errorsx.G11NError("failed to create application; code=%d, body=%s", resp.StatusCode(), string(resp.Body))
 	}
 
-	m := map[string]interface{}{}
+	m := map[string]any{}
 	if err := json.Unmarshal(resp.Body, &m); err != nil {
 		vc.Logger.Errorf("Failed to unmarshal application response; err=%s", err.Error())
 		return "", errorsx.G11NError("unable to parse response")
 	}
 
-	links, ok := m["_links"].(map[string]interface{})
+	links, ok := m["_links"].(map[string]any)
 	if !ok {
 		vc.Logger.Errorf("Response missing _links field; body=%s", string(body))
 		return "", errorsx.G11NError("missing _links field")
 	}
-	self, ok := links["self"].(map[string]interface{})
+	self, ok := links["self"].(map[string]any)
 	if !ok {
 		vc.Logger.Errorf("Response missing _links.self field; body=%s", string(body))
 		return "", errorsx.G11NError("missing _links.self field")

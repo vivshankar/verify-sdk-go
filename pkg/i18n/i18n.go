@@ -10,6 +10,6 @@ func Translate(text string) string {
 	return text
 }
 
-func TranslateWithArgs(text string, args ...interface{}) string {
+func TranslateWithArgs(text string, args ...any) string {
 	return fmt.Sprintf(Translate(text), args...)
 }

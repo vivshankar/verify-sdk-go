@@ -156,7 +156,7 @@ type OpenIDConfiguration struct {
 	BackChannelLogoutSessionSupported bool `json:"backchannel_logout_session_supported,omitempty"`
 
 	// Extra contains the properties that are in the discovered configuration that isn't well known.
-	Extra map[string]interface{} `json:"-"`
+	Extra map[string]any `json:"-"`
 }
 
 type MTLSEndpointAliases struct {

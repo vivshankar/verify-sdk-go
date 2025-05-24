@@ -41,7 +41,7 @@ func (m Map) SafeStringSlice(key string, def []string) []string {
 	return result
 }
 
-// SafeSlice converts a map entry to a interface{} array if possible
+// SafeSlice converts a map entry to a any array if possible
 func (m Map) SafeSlice(key string, def []any) []any {
 	if m == nil {
 		return def

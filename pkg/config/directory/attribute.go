@@ -173,7 +173,7 @@ func (c *AttributeClient) CreateAttribute(ctx context.Context, attribute *Attrib
 	}
 
 	// unmarshal the response body to get the ID
-	/*m := map[string]interface{}{}
+	/*m := map[string]any{}
 	resourceURI := ""
 	if err := json.Unmarshal(resp.Body, &m); err != nil {
 		vc.Logger.Warnf("unable to unmarshal the response body to get the 'id'")
