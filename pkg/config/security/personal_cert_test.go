@@ -8,7 +8,6 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/ibm-verify/verify-sdk-go/internal/test_helper"
-	"github.com/ibm-verify/verify-sdk-go/pkg/auth"
 	"github.com/ibm-verify/verify-sdk-go/pkg/config/security"
 	"gopkg.in/yaml.v3"
 
@@ -28,39 +27,28 @@ type PersonalCertTestSuite struct {
 }
 
 func (s *PersonalCertTestSuite) SetupTest() {
+	var err error
 	// Initialize the logger
 	contextID := uuid.NewString()
 	logger := logx.NewLoggerWithWriter(contextID, slog.LevelInfo, os.Stdout)
 	logger.AddNewline = true
 
 	// Load common config
-	tenant, clientID, clientSecret := test_helper.LoadCommonConfig(s.T())
-
-	// Get token
-	client := &auth.Client{
-		Tenant: tenant,
-		ClientAuth: &auth.ClientSecretPost{
-			ClientID:     clientID,
-			ClientSecret: clientSecret,
-		},
-	}
-	tokenResponse, err := client.TokenWithAPIClient(context.Background(), nil)
-	require.NoError(s.T(), err, "unable to get a token; err=%v", err)
+	tenant, accessToken := test_helper.LoadCommonConfig(s.T())
 
 	s.ctx, err = contextx.NewContextWithVerifyContext(context.Background(), logger)
 	require.NoError(s.T(), err, "unable to get a new context")
 
 	s.vctx = contextx.GetVerifyContext(s.ctx)
-	s.vctx.Token = tokenResponse.AccessToken
+	s.vctx.Token = accessToken
 	s.vctx.Tenant = tenant
 
 	// Load specific config
-	s.certLabel = os.Getenv("CERT_LABEL")
-	require.NotEmpty(s.T(), s.certLabel, "invalid config: CERT_LABEL is missing")
+	s.certLabel = "TestCert"
 
 	// Certificate details for creation (from provided YAML)
 	certCreateRawData := `
-label: testfilemanjusha41
+label: TestCert
 subject: "CN=IBM,OU=IBM,O=IBM,L=city,ST=state,C=country"
 expire: 3650
 keysize: 2048

@@ -9,7 +9,6 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/ibm-verify/verify-sdk-go/internal/test_helper"
-	"github.com/ibm-verify/verify-sdk-go/pkg/auth"
 	"github.com/ibm-verify/verify-sdk-go/pkg/config/authentication"
 	"gopkg.in/yaml.v3"
 
@@ -24,44 +23,28 @@ type IdentityProvidersTestSuite struct {
 
 	ctx                    context.Context
 	vctx                   *contextx.VerifyContext
-	identityProviderName   string
 	client                 *authentication.IdentitySourceClient
 	identityProviderCreate *authentication.IdentitySource
 	identityProviderPatch  *authentication.IdentitySource
 }
 
 func (s *IdentityProvidersTestSuite) SetupTest() {
+	var err error
 	// initialize the logger
 	contextID := uuid.NewString()
 	logger := logx.NewLoggerWithWriter(contextID, slog.LevelInfo, os.Stdout)
 	logger.AddNewline = true
 
 	// load common config
-	tenant, clientID, clientSecret := test_helper.LoadCommonConfig(s.T())
-
-	// get token
-	client := &auth.Client{
-		Tenant: tenant,
-		ClientAuth: &auth.ClientSecretPost{
-			ClientID:     clientID,
-			ClientSecret: clientSecret,
-		},
-	}
-
-	tokenResponse, err := client.TokenWithAPIClient(context.Background(), nil)
-	require.NoError(s.T(), err, "unable to get a token; err=%v", err)
+	tenant, accessToken := test_helper.LoadCommonConfig(s.T())
 
 	s.ctx, err = contextx.NewContextWithVerifyContext(context.Background(), logger)
 	require.NoError(s.T(), err, "unable to get a new context")
 	s.vctx = contextx.GetVerifyContext(s.ctx)
-	s.vctx.Token = tokenResponse.AccessToken
+	s.vctx.Token = accessToken
 	s.vctx.Tenant = tenant
 
-	// load specific config
-	s.identityProviderName = os.Getenv("IDENTITY_PROVIDER_NAME")
-	require.NotEmpty(s.T(), s.identityProviderName, "invalid config: IDENTITY_PROVIDER_NAME is missing")
 	// Identity Provider details for creation
-
 	identityProviderCreateRawData := `
 enabled: true
 instanceName: TestIdentityProvider
@@ -134,7 +117,7 @@ func (s *IdentityProvidersTestSuite) TestIdentityProviders() {
 	var err error
 	// Create Identity Provider
 	resp, err := s.client.CreateIdentitySource(s.ctx, s.identityProviderCreate)
-	require.NoError(s.T(), err, "unable to create Identity Provider %s; err=%v", s.identityProviderName, err)
+	require.NoError(s.T(), err, "unable to create Identity Provider; err=%v", err)
 	// set the access policy ID
 	identitySourceID := strings.Split(resp, "/")[len(strings.Split(resp, "/"))-1]
 
