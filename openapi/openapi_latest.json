@@ -3880,6 +3880,242 @@
                 "x-publicAPI": "true"
             }
         },
+        "/v1.0/applications": {
+            "get": {
+                "tags": [
+                    "Application Access"
+                ],
+                "summary": "Gets the list of all applications that were onboarded  by tenant administrator. A maximum of 500 applications are returned. Use pagination to fetch the next set of applications.",
+                "description": "Entitlements required:  manageAppAccessAdmin  (Manage application lifecycle). Under the provisioning section the attributeMappings, reverseAttributeMappings and extension sections will always be an empty object.",
+                "operationId": "searchApplications",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Ordinality of the page to fetch. Required for paginated queries.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Total number of applications to return in each page. Cannot be greater than count. Required for paginated queries.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Search query to return matching applications e.g search=\"q={searchString}\". The query returns list of application which has {searchString} as a sub-string in application name. Examples: 1. If a tenant has Applications with name App1, App12, App123 and Query is search=\"q=pp12\" then the applications returned will be App12 & App123. If search=\"q=pp1\", then all the applications which contains App1 in it will be returned i.e. App1, App12, App123.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "sort",
+                        "in": "query",
+                        "description": "Attributes to sort results on, supported values are 'name' and 'entityid'. Prepend the attribute with '+' or '-' sign for ascending and descending sorted order respectively. If not specified, sorted in ascending order on entityid. The entity id corresponds to application id.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Request is Successful.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SearchAdminApplicationWithoutProvResponseBean"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponseBean"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "User not Authorised.",
+                        "content": {}
+                    }
+                },
+                "x-publicAPI": "true"
+            },
+            "post": {
+                "tags": [
+                    "Application Access"
+                ],
+                "summary": "Creates an instance of an application for a tenant. ",
+                "description": "Entitlements required:  manageAppAccessAdmin  (Manage application lifecycle). If Application is enabled for Account Lifecycle or Account Sync, ensure the credentials specified for target endpoint are correct. This can be verified by performing Test Connection in Account Lifecycle section of Application settings.",
+                "operationId": "createApplication",
+                "requestBody": {
+                    "description": "Created Application object",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ApplicationRequestBean"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "Request is Successful.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PostApplicationResponseBean"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "User not Authorised.",
+                        "content": {}
+                    }
+                },
+                "x-publicAPI": "true",
+                "x-codegen-request-body-name": "body"
+            }
+        },
+        "/v1.0/applications/{applicationId}": {
+            "get": {
+                "tags": [
+                    "Application Access"
+                ],
+                "summary": "Gets the details of an application.",
+                "description": "Entitlements required:  manageAppAccessAdmin  (Manage application lifecycle)",
+                "operationId": "getApplication",
+                "parameters": [
+                    {
+                        "name": "applicationId",
+                        "in": "path",
+                        "description": "The application ID for which details are being requested.",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Request is Successful.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApplicationDetailsResponseBean"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "User not Authorised.",
+                        "content": {}
+                    },
+                    "404": {
+                        "description": "Invalid Application ID.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponseBean"
+                                }
+                            }
+                        }
+                    }
+                },
+                "x-publicAPI": "true"
+            },
+            "put": {
+                "tags": [
+                    "Application Access"
+                ],
+                "summary": "Updates an application.",
+                "description": "Rest interface to update the specified application. Entitlements required: manageAppAccessAdmin  (Manage application lifecycle)",
+                "operationId": "updateApplication",
+                "parameters": [
+                    {
+                        "name": "applicationId",
+                        "in": "path",
+                        "description": "ID of the application to be updated.",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Updated Application object",
+                    "content": {
+                        "*/*": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ApplicationRequestBean"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Request is successful.",
+                        "content": {}
+                    },
+                    "401": {
+                        "description": "User not Authorised.",
+                        "content": {}
+                    },
+                    "404": {
+                        "description": "Invalid Application ID.",
+                        "content": {}
+                    }
+                },
+                "x-publicAPI": "true",
+                "x-codegen-request-body-name": "body"
+            },
+            "delete": {
+                "tags": [
+                    "Application Access"
+                ],
+                "summary": "Deletes the application that is specified by the application ID.",
+                "description": "Entitlements required:  manageAppAccessAdmin  (Manage application lifecycle)",
+                "operationId": "deleteApplication",
+                "parameters": [
+                    {
+                        "name": "applicationId",
+                        "in": "path",
+                        "description": "The application ID for which deletion requested.",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Deletion is Successful.",
+                        "content": {}
+                    },
+                    "401": {
+                        "description": "User not Authorised.",
+                        "content": {}
+                    },
+                    "404": {
+                        "description": "Invalid App Id.",
+                        "content": {}
+                    }
+                },
+                "x-publicAPI": "true"
+            }
+        },
         "/v5.0/policyvault/accesspolicy": {
             "get": {
                 "tags": [
@@ -6866,7 +7102,7 @@
                         "description": "Unique identifier representing the type of SaaS application"
                     },
                     "applicationState": {
-                        "type": "string",
+                        "type": "boolean",
                         "description": "Boolean flag to indicate whether end user can use SSO with the application"
                     },
                     "description": {
@@ -6882,11 +7118,11 @@
                         "description": "Name of the SaaS application"
                     },
                     "visibleOnLaunchpad": {
-                        "type": "string",
+                        "type": "boolean",
                         "description": "Boolean flag representing  whether application is visible for end user to request access"
                     },
                     "approvalRequired": {
-                        "type": "string",
+                        "type": "boolean",
                         "description": "Boolean flag representing  whether approval request will be sent when end user request access "
                     },
                     "applicationRefId": {
