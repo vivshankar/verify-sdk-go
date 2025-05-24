@@ -5182,6 +5182,581 @@
                 },
                 "x-publicAPI": "true"
             }
+        },
+        "/v1.0/personalcert": {
+            "get": {
+                "tags": [
+                    "Certificates"
+                ],
+                "summary": "Gets the list of personal certificates.",
+                "description": "Retrieves the list of personal certificates for this tenant.<br><br>Entitlements required: readCerts.",
+                "operationId": "getPersonalCerts",
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Authorization Header",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Query",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Certificate_0"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorBean1_0"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No resource found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorBean1_0"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorBean1_0"
+                                }
+                            }
+                        }
+                    }
+                },
+                "x-publicAPI": "true"
+            },
+            "post": {
+                "tags": [
+                    "Certificates"
+                ],
+                "summary": "Import or generate a personal certificate.",
+                "description": "Imports or generates a personal certificate for this tenant. The imported or generated personal certificate will be added to the tenant's keystore. <br><br>For more details on the required parameters for importing or generating a personal certificate,  check the model that is described in the payload. <br><br>Entitlements required: manageCerts.",
+                "operationId": "postPersonalCert",
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Authorization Header",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Import payload",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PostPersonalCertificate"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "content": {}
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorBean1_0"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorBean1_0"
+                                }
+                            }
+                        }
+                    }
+                },
+                "x-publicAPI": "true",
+                "x-codegen-request-body-name": "payload"
+            }
+        },
+        "/v1.0/personalcert/{label}": {
+            "get": {
+                "tags": [
+                    "Certificates"
+                ],
+                "summary": "Get a single personal certificate with the specified label.",
+                "description": "Retrieves the personal certificate with the specified label for this tenant.<br><br>Entitlements required: readCerts.",
+                "operationId": "getPersonalCert",
+                "parameters": [
+                    {
+                        "name": "label",
+                        "in": "path",
+                        "description": "certificate label",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Authorization Header",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Query",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SingleCertificate"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorBean1_0"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No resource found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorBean1_0"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorBean1_0"
+                                }
+                            }
+                        }
+                    }
+                },
+                "x-publicAPI": "true"
+            },
+            "put": {
+                "tags": [
+                    "Certificates"
+                ],
+                "summary": "Update a personal certificate.",
+                "description": "Update a personal certificate with the specified label for this tenant.<br>Currently it only allows changing the default personal certificate.<br>Entitlements required: manageCerts.",
+                "operationId": "updatePersonalCert",
+                "parameters": [
+                    {
+                        "name": "label",
+                        "in": "path",
+                        "description": "certificate label",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Authorization Header",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Import payload",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PersonalCertificate"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "204": {
+                        "description": "No content",
+                        "content": {}
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorBean1_0"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorBean1_0"
+                                }
+                            }
+                        }
+                    }
+                },
+                "x-publicAPI": "true",
+                "x-codegen-request-body-name": "payload"
+            },
+            "delete": {
+                "tags": [
+                    "Certificates"
+                ],
+                "summary": "Delete a personal certificate.",
+                "description": "Delete a personal certificate with the specified label for this tenant.<br><br>Entitlements required: manageCerts.",
+                "operationId": "deletePersonalCert",
+                "parameters": [
+                    {
+                        "name": "label",
+                        "in": "path",
+                        "description": "certificate label",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Authorization Header",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No content",
+                        "content": {}
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorBean1_0"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorBean1_0"
+                                }
+                            }
+                        }
+                    }
+                },
+                "x-publicAPI": "true"
+            }
+        },
+        "/v1.0/signercert": {
+            "get": {
+                "tags": [
+                    "Certificates"
+                ],
+                "summary": "Gets the list of signer certificates.",
+                "description": "Retrieves the list of signer certificates for this tenant.<br><br>Entitlements required: readCerts.",
+                "operationId": "getSignerCerts",
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Authorization Header",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Query",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Certificate_0"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorBean1_0"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No resource found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorBean1_0"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorBean1_0"
+                                }
+                            }
+                        }
+                    }
+                },
+                "x-publicAPI": "true"
+            },
+            "post": {
+                "tags": [
+                    "Certificates"
+                ],
+                "summary": "Imports a signer certificate.",
+                "description": "Imports a signer certificate for this tenant.<br><br>Entitlements required: manageCerts.",
+                "operationId": "importSignerCert",
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Authorization Header",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Import payload",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SignerCertificate"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "content": {}
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorBean1_0"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorBean1_0"
+                                }
+                            }
+                        }
+                    }
+                },
+                "x-publicAPI": "true",
+                "x-codegen-request-body-name": "payload"
+            }
+        },
+        "/v1.0/signercert/{label}": {
+            "get": {
+                "tags": [
+                    "Certificates"
+                ],
+                "summary": "Gets the signer certificate with the given label.",
+                "description": "Retrieves the signer certificate with the specified label for this tenant.<br><br>Entitlements required: readCerts.",
+                "operationId": "getSignerCert",
+                "parameters": [
+                    {
+                        "name": "label",
+                        "in": "path",
+                        "description": "certificate label",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Authorization Header",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Query",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Certificate_0"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorBean1_0"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No resource found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorBean1_0"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorBean1_0"
+                                }
+                            }
+                        }
+                    }
+                },
+                "x-publicAPI": "true"
+            },
+            "delete": {
+                "tags": [
+                    "Certificates"
+                ],
+                "summary": "Delete a signer certificate.",
+                "description": "Delete a signer certificate for this tenant.<br><br>Entitlements required: manageCerts.",
+                "operationId": "deleteSignerCert",
+                "parameters": [
+                    {
+                        "name": "label",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Authorization Header",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No content",
+                        "content": {}
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorBean1_0"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorBean1_0"
+                                }
+                            }
+                        }
+                    }
+                },
+                "x-publicAPI": "true"
+            }
         }
     },
     "components": {

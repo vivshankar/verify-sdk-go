@@ -444,6 +444,13 @@ const (
 	PolicyMetadataStateIDLE   PolicyMetadataState = "IDLE"
 )
 
+// Defines values for PostPersonalCertificateKeysize.
+const (
+	PostPersonalCertificateKeysizeN1024 PostPersonalCertificateKeysize = 1024
+	PostPersonalCertificateKeysizeN2048 PostPersonalCertificateKeysize = 2048
+	PostPersonalCertificateKeysizeN4096 PostPersonalCertificateKeysize = 4096
+)
+
 // Defines values for ServletContextDefaultSessionTrackingModes.
 const (
 	ServletContextDefaultSessionTrackingModesCOOKIE ServletContextDefaultSessionTrackingModes = "COOKIE"
@@ -1540,6 +1547,36 @@ type CampaignConfigurationOutputSignOff string
 // CampaignConfigurationOutputType Campaign type
 type CampaignConfigurationOutputType string
 
+// Certificate0 defines model for Certificate_0.
+type Certificate0 struct {
+	// Issuer The name of the entity that issued the certificate.
+	Issuer string `json:"issuer" yaml:"issuer"`
+
+	// Keysize The key size or key bit length of the certificate.
+	Keysize int32 `json:"keysize" yaml:"keysize"`
+
+	// Label The alias (friendly name) of the certificate to import.
+	Label string `json:"label" yaml:"label"`
+
+	// Notafter The time and date after which the certificate is no longer valid.
+	Notafter string `json:"notafter" yaml:"notafter"`
+
+	// Notbefore The earliest date and time on which the certificate is valid.
+	Notbefore string `json:"notbefore" yaml:"notbefore"`
+
+	// SerialNumber The serial number used to uniquely identify the certificate within the issuer's system.
+	SerialNumber string `json:"serial_number" yaml:"serial_number"`
+
+	// SignatureAlgorithm The algorithm used to sign the public key certificate.
+	SignatureAlgorithm string `json:"signature_algorithm" yaml:"signature_algorithm"`
+
+	// Subject The person or entity to whom the certificate is being issued. This field can also include the certificate recipient's organization (O), organization unit (OU), locality (L), state or province (ST), and country/region (C).
+	Subject string `json:"subject" yaml:"subject"`
+
+	// Version The version number of the certificate format.
+	Version int32 `json:"version" yaml:"version"`
+}
+
 // ClassLoader defines model for ClassLoader.
 type ClassLoader struct {
 	Parent *ClassLoader `json:"parent,omitempty" yaml:"parent,omitempty"`
@@ -1820,6 +1857,15 @@ type ErrorBean struct {
 
 	// MessageID The message key identifier
 	MessageID string `json:"messageId" yaml:"messageId"`
+}
+
+// ErrorBean10 defines model for ErrorBean1_0.
+type ErrorBean10 struct {
+	// MessageDescription The Locale specific descriptive message.
+	MessageDescription *string `json:"messageDescription,omitempty" yaml:"messageDescription,omitempty"`
+
+	// MessageID The message key identifier.
+	MessageID *string `json:"messageId,omitempty" yaml:"messageId,omitempty"`
 }
 
 // ErrorResponse defines model for ErrorResponse.
@@ -3011,6 +3057,12 @@ type PatchSingleAttributeReqModelDatatype string
 // PatchSingleAttributeReqModelSourceType The type of the attribute source from which the attribute value is derived
 type PatchSingleAttributeReqModelSourceType string
 
+// PersonalCertificate defines model for PersonalCertificate.
+type PersonalCertificate struct {
+	// IsDefault Flag to specify whether the specified certificate should be the default one. There can only be one default certificate per tenant, so if this flag is set to true, it'll overwrite the previous existing default cert. Use this flag with caution as changing a default certificate may have an impact on the existing applications set-up for single sign-on.
+	IsDefault bool `json:"isDefault" yaml:"isDefault"`
+}
+
 // PhoneNumber defines model for PhoneNumber.
 type PhoneNumber struct {
 	// Type A label that indicates the attribute's function; for example, "work" or "home".
@@ -3189,6 +3241,36 @@ type PostEval struct {
 	// ID A valid attribute function. This will tranform the attribute mapping. Only one of 'id' or 'custom' can be set on an attribute mapping.
 	ID string `json:"id" yaml:"id"`
 }
+
+// PostPersonalCertificate defines model for PostPersonalCertificate.
+type PostPersonalCertificate struct {
+	// Algorithm The algorithm to use to generate the self signed certificate. Default is "SHA256WithRSA". Only required for generating a personal certificate.
+	Algorithm string `json:"algorithm" yaml:"algorithm"`
+
+	// Cert Base64 encoded bytes of a valid .p12 file. The example shown has been truncated for readability. Only required for importing a personal certificate. For generating a personal certificate, do not provide any value for this parameter.
+	Cert string `json:"cert" yaml:"cert"`
+
+	// Expire The validity period, in days, for the new certificate. Default value is 3650 Only required for generating a personal certificate.
+	Expire int32 `json:"expire" yaml:"expire"`
+
+	// IsDefault Flag to specify whether the certificate to be imported or generated should be the default one. There can only be one default certificate per tenant, so if this flag is set to true, the certificate overwrites the previous existing default cert. Use this flag with caution. Changing a default certificate may have an impact on the existing applications set up for single sign-on. If not specified, this flag defaults to false. Optional for both importing or generating a personal certificate.
+	IsDefault *bool `json:"isDefault,omitempty" yaml:"isDefault,omitempty"`
+
+	// Keysize The size of the new key pair to be created. Valid values are 1024, 2048 or 4096. Default value is 2048. Only required for generating a personal certificate.
+	Keysize PostPersonalCertificateKeysize `json:"keysize" yaml:"keysize"`
+
+	// Label The alias or friendly name that is used to uniquely identify the personal certificate. Required for generating a personal certificate. Optional for importing a personal certificate. Overrides the alias provided in the certificate if provided.
+	Label string `json:"label" yaml:"label"`
+
+	// Password Password to unlock the .p12 file. Only required for importing a personal certificate.
+	Password string `json:"password" yaml:"password"`
+
+	// Subject Distinguished name. The person or entity to whom the certificate is being issued. This field can also include the certificate recipient's organization (O), organization unit (OU), locality (L), state or province (ST), and country/region (C). Only required for generating a personal certificate.
+	Subject string `json:"subject" yaml:"subject"`
+}
+
+// PostPersonalCertificateKeysize The size of the new key pair to be created. Valid values are 1024, 2048 or 4096. Default value is 2048. Only required for generating a personal certificate.
+type PostPersonalCertificateKeysize int32
 
 // PrintWriter defines model for PrintWriter.
 type PrintWriter = map[string]interface{}
@@ -3580,6 +3662,21 @@ type SessionCookieConfig struct {
 	Name     *string `json:"name,omitempty" yaml:"name,omitempty"`
 	Path     *string `json:"path,omitempty" yaml:"path,omitempty"`
 	Secure   *bool   `json:"secure,omitempty" yaml:"secure,omitempty"`
+}
+
+// SignerCertificate defines model for SignerCertificate.
+type SignerCertificate struct {
+	// Cert The Base64 encoded bytes of the public key of the certificate to be imported. This can be obtained by opening the certificate file in any text editor
+	Cert string `json:"cert" yaml:"cert"`
+
+	// Label The alias or friendly name of the certificate to be imported.
+	Label string `json:"label" yaml:"label"`
+}
+
+// SingleCertificate defines model for SingleCertificate.
+type SingleCertificate struct {
+	// Cert The Base64 encoded bytes of the public key of the certificate. The example shown has been truncated for readability.
+	Cert string `json:"cert" yaml:"cert"`
 }
 
 // SingleLogoutServiceBean defines model for SingleLogoutServiceBean.
@@ -4151,6 +4248,60 @@ type UpdateThemeTemplateMultipartBody struct {
 	File openapi_types.File `json:"file" yaml:"file"`
 }
 
+// GetPersonalCertsParams defines parameters for GetPersonalCerts.
+type GetPersonalCertsParams struct {
+	// Authorization Authorization Header
+	Authorization string `json:"Authorization" yaml:"Authorization"`
+}
+
+// PostPersonalCertParams defines parameters for PostPersonalCert.
+type PostPersonalCertParams struct {
+	// Authorization Authorization Header
+	Authorization string `json:"Authorization" yaml:"Authorization"`
+}
+
+// DeletePersonalCertParams defines parameters for DeletePersonalCert.
+type DeletePersonalCertParams struct {
+	// Authorization Authorization Header
+	Authorization string `json:"Authorization" yaml:"Authorization"`
+}
+
+// GetPersonalCertParams defines parameters for GetPersonalCert.
+type GetPersonalCertParams struct {
+	// Authorization Authorization Header
+	Authorization string `json:"Authorization" yaml:"Authorization"`
+}
+
+// UpdatePersonalCertParams defines parameters for UpdatePersonalCert.
+type UpdatePersonalCertParams struct {
+	// Authorization Authorization Header
+	Authorization string `json:"Authorization" yaml:"Authorization"`
+}
+
+// GetSignerCertsParams defines parameters for GetSignerCerts.
+type GetSignerCertsParams struct {
+	// Authorization Authorization Header
+	Authorization string `json:"Authorization" yaml:"Authorization"`
+}
+
+// ImportSignerCertParams defines parameters for ImportSignerCert.
+type ImportSignerCertParams struct {
+	// Authorization Authorization Header
+	Authorization string `json:"Authorization" yaml:"Authorization"`
+}
+
+// DeleteSignerCertParams defines parameters for DeleteSignerCert.
+type DeleteSignerCertParams struct {
+	// Authorization Authorization Header
+	Authorization string `json:"Authorization" yaml:"Authorization"`
+}
+
+// GetSignerCertParams defines parameters for GetSignerCert.
+type GetSignerCertParams struct {
+	// Authorization Authorization Header
+	Authorization string `json:"Authorization" yaml:"Authorization"`
+}
+
 // GetGroupsParams defines parameters for GetGroups.
 type GetGroupsParams struct {
 	// Filter The SCIM compliant search filter.  For example, displayName eq "admin". The filter should be no longer than 4096 characters in length.
@@ -4397,6 +4548,15 @@ type UpdateThemeTemplatesMultipartRequestBody UpdateThemeTemplatesMultipartBody
 
 // UpdateThemeTemplateMultipartRequestBody defines body for UpdateThemeTemplate for multipart/form-data ContentType.
 type UpdateThemeTemplateMultipartRequestBody UpdateThemeTemplateMultipartBody
+
+// PostPersonalCertJSONRequestBody defines body for PostPersonalCert for application/json ContentType.
+type PostPersonalCertJSONRequestBody = PostPersonalCertificate
+
+// UpdatePersonalCertJSONRequestBody defines body for UpdatePersonalCert for application/json ContentType.
+type UpdatePersonalCertJSONRequestBody = PersonalCertificate
+
+// ImportSignerCertJSONRequestBody defines body for ImportSignerCert for application/json ContentType.
+type ImportSignerCertJSONRequestBody = SignerCertificate
 
 // CreateGroupApplicationScimPlusJSONRequestBody defines body for CreateGroup for application/scim+json ContentType.
 type CreateGroupApplicationScimPlusJSONRequestBody = GroupV2
@@ -4702,6 +4862,39 @@ type ClientInterface interface {
 
 	// UpdateThemeTemplateWithBody request with any body
 	UpdateThemeTemplateWithBody(ctx context.Context, themeID string, templatePath string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetPersonalCerts request
+	GetPersonalCerts(ctx context.Context, params *GetPersonalCertsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// PostPersonalCertWithBody request with any body
+	PostPersonalCertWithBody(ctx context.Context, params *PostPersonalCertParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	PostPersonalCert(ctx context.Context, params *PostPersonalCertParams, body PostPersonalCertJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeletePersonalCert request
+	DeletePersonalCert(ctx context.Context, label string, params *DeletePersonalCertParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetPersonalCert request
+	GetPersonalCert(ctx context.Context, label string, params *GetPersonalCertParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdatePersonalCertWithBody request with any body
+	UpdatePersonalCertWithBody(ctx context.Context, label string, params *UpdatePersonalCertParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	UpdatePersonalCert(ctx context.Context, label string, params *UpdatePersonalCertParams, body UpdatePersonalCertJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetSignerCerts request
+	GetSignerCerts(ctx context.Context, params *GetSignerCertsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ImportSignerCertWithBody request with any body
+	ImportSignerCertWithBody(ctx context.Context, params *ImportSignerCertParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	ImportSignerCert(ctx context.Context, params *ImportSignerCertParams, body ImportSignerCertJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteSignerCert request
+	DeleteSignerCert(ctx context.Context, label string, params *DeleteSignerCertParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetSignerCert request
+	GetSignerCert(ctx context.Context, label string, params *GetSignerCertParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetGroups request
 	GetGroups(ctx context.Context, params *GetGroupsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -5272,6 +5465,150 @@ func (c *Client) GetTemplate0(ctx context.Context, themeID string, templatePath 
 
 func (c *Client) UpdateThemeTemplateWithBody(ctx context.Context, themeID string, templatePath string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewUpdateThemeTemplateRequestWithBody(c.Server, themeID, templatePath, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetPersonalCerts(ctx context.Context, params *GetPersonalCertsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetPersonalCertsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) PostPersonalCertWithBody(ctx context.Context, params *PostPersonalCertParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPostPersonalCertRequestWithBody(c.Server, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) PostPersonalCert(ctx context.Context, params *PostPersonalCertParams, body PostPersonalCertJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPostPersonalCertRequest(c.Server, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeletePersonalCert(ctx context.Context, label string, params *DeletePersonalCertParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeletePersonalCertRequest(c.Server, label, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetPersonalCert(ctx context.Context, label string, params *GetPersonalCertParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetPersonalCertRequest(c.Server, label, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdatePersonalCertWithBody(ctx context.Context, label string, params *UpdatePersonalCertParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdatePersonalCertRequestWithBody(c.Server, label, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdatePersonalCert(ctx context.Context, label string, params *UpdatePersonalCertParams, body UpdatePersonalCertJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdatePersonalCertRequest(c.Server, label, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetSignerCerts(ctx context.Context, params *GetSignerCertsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetSignerCertsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ImportSignerCertWithBody(ctx context.Context, params *ImportSignerCertParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewImportSignerCertRequestWithBody(c.Server, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ImportSignerCert(ctx context.Context, params *ImportSignerCertParams, body ImportSignerCertJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewImportSignerCertRequest(c.Server, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeleteSignerCert(ctx context.Context, label string, params *DeleteSignerCertParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteSignerCertRequest(c.Server, label, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetSignerCert(ctx context.Context, label string, params *GetSignerCertParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetSignerCertRequest(c.Server, label, params)
 	if err != nil {
 		return nil, err
 	}
@@ -7315,6 +7652,440 @@ func NewUpdateThemeTemplateRequestWithBody(server string, themeID string, templa
 	}
 
 	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewGetPersonalCertsRequest generates requests for GetPersonalCerts
+func NewGetPersonalCertsRequest(server string, params *GetPersonalCertsParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1.0/personalcert")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		var headerParam0 string
+
+		headerParam0, err = runtime.StyleParamWithLocation("simple", false, "Authorization", runtime.ParamLocationHeader, params.Authorization)
+		if err != nil {
+			return nil, err
+		}
+
+		req.Header.Set("Authorization", headerParam0)
+
+	}
+
+	return req, nil
+}
+
+// NewPostPersonalCertRequest calls the generic PostPersonalCert builder with application/json body
+func NewPostPersonalCertRequest(server string, params *PostPersonalCertParams, body PostPersonalCertJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewPostPersonalCertRequestWithBody(server, params, "application/json", bodyReader)
+}
+
+// NewPostPersonalCertRequestWithBody generates requests for PostPersonalCert with any type of body
+func NewPostPersonalCertRequestWithBody(server string, params *PostPersonalCertParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1.0/personalcert")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		var headerParam0 string
+
+		headerParam0, err = runtime.StyleParamWithLocation("simple", false, "Authorization", runtime.ParamLocationHeader, params.Authorization)
+		if err != nil {
+			return nil, err
+		}
+
+		req.Header.Set("Authorization", headerParam0)
+
+	}
+
+	return req, nil
+}
+
+// NewDeletePersonalCertRequest generates requests for DeletePersonalCert
+func NewDeletePersonalCertRequest(server string, label string, params *DeletePersonalCertParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "label", runtime.ParamLocationPath, label)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1.0/personalcert/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		var headerParam0 string
+
+		headerParam0, err = runtime.StyleParamWithLocation("simple", false, "Authorization", runtime.ParamLocationHeader, params.Authorization)
+		if err != nil {
+			return nil, err
+		}
+
+		req.Header.Set("Authorization", headerParam0)
+
+	}
+
+	return req, nil
+}
+
+// NewGetPersonalCertRequest generates requests for GetPersonalCert
+func NewGetPersonalCertRequest(server string, label string, params *GetPersonalCertParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "label", runtime.ParamLocationPath, label)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1.0/personalcert/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		var headerParam0 string
+
+		headerParam0, err = runtime.StyleParamWithLocation("simple", false, "Authorization", runtime.ParamLocationHeader, params.Authorization)
+		if err != nil {
+			return nil, err
+		}
+
+		req.Header.Set("Authorization", headerParam0)
+
+	}
+
+	return req, nil
+}
+
+// NewUpdatePersonalCertRequest calls the generic UpdatePersonalCert builder with application/json body
+func NewUpdatePersonalCertRequest(server string, label string, params *UpdatePersonalCertParams, body UpdatePersonalCertJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdatePersonalCertRequestWithBody(server, label, params, "application/json", bodyReader)
+}
+
+// NewUpdatePersonalCertRequestWithBody generates requests for UpdatePersonalCert with any type of body
+func NewUpdatePersonalCertRequestWithBody(server string, label string, params *UpdatePersonalCertParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "label", runtime.ParamLocationPath, label)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1.0/personalcert/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PUT", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		var headerParam0 string
+
+		headerParam0, err = runtime.StyleParamWithLocation("simple", false, "Authorization", runtime.ParamLocationHeader, params.Authorization)
+		if err != nil {
+			return nil, err
+		}
+
+		req.Header.Set("Authorization", headerParam0)
+
+	}
+
+	return req, nil
+}
+
+// NewGetSignerCertsRequest generates requests for GetSignerCerts
+func NewGetSignerCertsRequest(server string, params *GetSignerCertsParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1.0/signercert")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		var headerParam0 string
+
+		headerParam0, err = runtime.StyleParamWithLocation("simple", false, "Authorization", runtime.ParamLocationHeader, params.Authorization)
+		if err != nil {
+			return nil, err
+		}
+
+		req.Header.Set("Authorization", headerParam0)
+
+	}
+
+	return req, nil
+}
+
+// NewImportSignerCertRequest calls the generic ImportSignerCert builder with application/json body
+func NewImportSignerCertRequest(server string, params *ImportSignerCertParams, body ImportSignerCertJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewImportSignerCertRequestWithBody(server, params, "application/json", bodyReader)
+}
+
+// NewImportSignerCertRequestWithBody generates requests for ImportSignerCert with any type of body
+func NewImportSignerCertRequestWithBody(server string, params *ImportSignerCertParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1.0/signercert")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		var headerParam0 string
+
+		headerParam0, err = runtime.StyleParamWithLocation("simple", false, "Authorization", runtime.ParamLocationHeader, params.Authorization)
+		if err != nil {
+			return nil, err
+		}
+
+		req.Header.Set("Authorization", headerParam0)
+
+	}
+
+	return req, nil
+}
+
+// NewDeleteSignerCertRequest generates requests for DeleteSignerCert
+func NewDeleteSignerCertRequest(server string, label string, params *DeleteSignerCertParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "label", runtime.ParamLocationPath, label)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1.0/signercert/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		var headerParam0 string
+
+		headerParam0, err = runtime.StyleParamWithLocation("simple", false, "Authorization", runtime.ParamLocationHeader, params.Authorization)
+		if err != nil {
+			return nil, err
+		}
+
+		req.Header.Set("Authorization", headerParam0)
+
+	}
+
+	return req, nil
+}
+
+// NewGetSignerCertRequest generates requests for GetSignerCert
+func NewGetSignerCertRequest(server string, label string, params *GetSignerCertParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "label", runtime.ParamLocationPath, label)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1.0/signercert/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		var headerParam0 string
+
+		headerParam0, err = runtime.StyleParamWithLocation("simple", false, "Authorization", runtime.ParamLocationHeader, params.Authorization)
+		if err != nil {
+			return nil, err
+		}
+
+		req.Header.Set("Authorization", headerParam0)
+
+	}
 
 	return req, nil
 }
@@ -9388,6 +10159,39 @@ type ClientWithResponsesInterface interface {
 	// UpdateThemeTemplateWithBodyWithResponse request with any body
 	UpdateThemeTemplateWithBodyWithResponse(ctx context.Context, themeID string, templatePath string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateThemeTemplateObject, error)
 
+	// GetPersonalCertsWithResponse request
+	GetPersonalCertsWithResponse(ctx context.Context, params *GetPersonalCertsParams, reqEditors ...RequestEditorFn) (*GetPersonalCertsObject, error)
+
+	// PostPersonalCertWithBodyWithResponse request with any body
+	PostPersonalCertWithBodyWithResponse(ctx context.Context, params *PostPersonalCertParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PostPersonalCertObject, error)
+
+	PostPersonalCertWithResponse(ctx context.Context, params *PostPersonalCertParams, body PostPersonalCertJSONRequestBody, reqEditors ...RequestEditorFn) (*PostPersonalCertObject, error)
+
+	// DeletePersonalCertWithResponse request
+	DeletePersonalCertWithResponse(ctx context.Context, label string, params *DeletePersonalCertParams, reqEditors ...RequestEditorFn) (*DeletePersonalCertObject, error)
+
+	// GetPersonalCertWithResponse request
+	GetPersonalCertWithResponse(ctx context.Context, label string, params *GetPersonalCertParams, reqEditors ...RequestEditorFn) (*GetPersonalCertObject, error)
+
+	// UpdatePersonalCertWithBodyWithResponse request with any body
+	UpdatePersonalCertWithBodyWithResponse(ctx context.Context, label string, params *UpdatePersonalCertParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdatePersonalCertObject, error)
+
+	UpdatePersonalCertWithResponse(ctx context.Context, label string, params *UpdatePersonalCertParams, body UpdatePersonalCertJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdatePersonalCertObject, error)
+
+	// GetSignerCertsWithResponse request
+	GetSignerCertsWithResponse(ctx context.Context, params *GetSignerCertsParams, reqEditors ...RequestEditorFn) (*GetSignerCertsObject, error)
+
+	// ImportSignerCertWithBodyWithResponse request with any body
+	ImportSignerCertWithBodyWithResponse(ctx context.Context, params *ImportSignerCertParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ImportSignerCertObject, error)
+
+	ImportSignerCertWithResponse(ctx context.Context, params *ImportSignerCertParams, body ImportSignerCertJSONRequestBody, reqEditors ...RequestEditorFn) (*ImportSignerCertObject, error)
+
+	// DeleteSignerCertWithResponse request
+	DeleteSignerCertWithResponse(ctx context.Context, label string, params *DeleteSignerCertParams, reqEditors ...RequestEditorFn) (*DeleteSignerCertObject, error)
+
+	// GetSignerCertWithResponse request
+	GetSignerCertWithResponse(ctx context.Context, label string, params *GetSignerCertParams, reqEditors ...RequestEditorFn) (*GetSignerCertObject, error)
+
 	// GetGroupsWithResponse request
 	GetGroupsWithResponse(ctx context.Context, params *GetGroupsParams, reqEditors ...RequestEditorFn) (*GetGroupsObject, error)
 
@@ -10246,6 +11050,211 @@ func (r UpdateThemeTemplateObject) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r UpdateThemeTemplateObject) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetPersonalCertsObject struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *[]Certificate0
+	JSON400      *ErrorBean10
+	JSON404      *ErrorBean10
+	JSON500      *ErrorBean10
+}
+
+// Status returns HTTPResponse.Status
+func (r GetPersonalCertsObject) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetPersonalCertsObject) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type PostPersonalCertObject struct {
+	Body         []byte
+	HTTPResponse *http.Response
+}
+
+// Status returns HTTPResponse.Status
+func (r PostPersonalCertObject) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r PostPersonalCertObject) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type DeletePersonalCertObject struct {
+	Body         []byte
+	HTTPResponse *http.Response
+}
+
+// Status returns HTTPResponse.Status
+func (r DeletePersonalCertObject) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeletePersonalCertObject) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetPersonalCertObject struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *SingleCertificate
+	JSON400      *ErrorBean10
+	JSON404      *ErrorBean10
+	JSON500      *ErrorBean10
+}
+
+// Status returns HTTPResponse.Status
+func (r GetPersonalCertObject) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetPersonalCertObject) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UpdatePersonalCertObject struct {
+	Body         []byte
+	HTTPResponse *http.Response
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdatePersonalCertObject) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdatePersonalCertObject) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetSignerCertsObject struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *[]Certificate0
+	JSON400      *ErrorBean10
+	JSON404      *ErrorBean10
+	JSON500      *ErrorBean10
+}
+
+// Status returns HTTPResponse.Status
+func (r GetSignerCertsObject) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetSignerCertsObject) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ImportSignerCertObject struct {
+	Body         []byte
+	HTTPResponse *http.Response
+}
+
+// Status returns HTTPResponse.Status
+func (r ImportSignerCertObject) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ImportSignerCertObject) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type DeleteSignerCertObject struct {
+	Body         []byte
+	HTTPResponse *http.Response
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteSignerCertObject) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteSignerCertObject) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetSignerCertObject struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *[]Certificate0
+	JSON400      *ErrorBean10
+	JSON404      *ErrorBean10
+	JSON500      *ErrorBean10
+}
+
+// Status returns HTTPResponse.Status
+func (r GetSignerCertObject) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetSignerCertObject) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -11287,6 +12296,111 @@ func (c *ClientWithResponses) UpdateThemeTemplateWithBodyWithResponse(ctx contex
 		return nil, err
 	}
 	return ParseUpdateThemeTemplateObject(rsp)
+}
+
+// GetPersonalCertsWithResponse request returning *GetPersonalCertsObject
+func (c *ClientWithResponses) GetPersonalCertsWithResponse(ctx context.Context, params *GetPersonalCertsParams, reqEditors ...RequestEditorFn) (*GetPersonalCertsObject, error) {
+	rsp, err := c.GetPersonalCerts(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetPersonalCertsObject(rsp)
+}
+
+// PostPersonalCertWithBodyWithResponse request with arbitrary body returning *PostPersonalCertObject
+func (c *ClientWithResponses) PostPersonalCertWithBodyWithResponse(ctx context.Context, params *PostPersonalCertParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PostPersonalCertObject, error) {
+	rsp, err := c.PostPersonalCertWithBody(ctx, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePostPersonalCertObject(rsp)
+}
+
+func (c *ClientWithResponses) PostPersonalCertWithResponse(ctx context.Context, params *PostPersonalCertParams, body PostPersonalCertJSONRequestBody, reqEditors ...RequestEditorFn) (*PostPersonalCertObject, error) {
+	rsp, err := c.PostPersonalCert(ctx, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePostPersonalCertObject(rsp)
+}
+
+// DeletePersonalCertWithResponse request returning *DeletePersonalCertObject
+func (c *ClientWithResponses) DeletePersonalCertWithResponse(ctx context.Context, label string, params *DeletePersonalCertParams, reqEditors ...RequestEditorFn) (*DeletePersonalCertObject, error) {
+	rsp, err := c.DeletePersonalCert(ctx, label, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeletePersonalCertObject(rsp)
+}
+
+// GetPersonalCertWithResponse request returning *GetPersonalCertObject
+func (c *ClientWithResponses) GetPersonalCertWithResponse(ctx context.Context, label string, params *GetPersonalCertParams, reqEditors ...RequestEditorFn) (*GetPersonalCertObject, error) {
+	rsp, err := c.GetPersonalCert(ctx, label, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetPersonalCertObject(rsp)
+}
+
+// UpdatePersonalCertWithBodyWithResponse request with arbitrary body returning *UpdatePersonalCertObject
+func (c *ClientWithResponses) UpdatePersonalCertWithBodyWithResponse(ctx context.Context, label string, params *UpdatePersonalCertParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdatePersonalCertObject, error) {
+	rsp, err := c.UpdatePersonalCertWithBody(ctx, label, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdatePersonalCertObject(rsp)
+}
+
+func (c *ClientWithResponses) UpdatePersonalCertWithResponse(ctx context.Context, label string, params *UpdatePersonalCertParams, body UpdatePersonalCertJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdatePersonalCertObject, error) {
+	rsp, err := c.UpdatePersonalCert(ctx, label, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdatePersonalCertObject(rsp)
+}
+
+// GetSignerCertsWithResponse request returning *GetSignerCertsObject
+func (c *ClientWithResponses) GetSignerCertsWithResponse(ctx context.Context, params *GetSignerCertsParams, reqEditors ...RequestEditorFn) (*GetSignerCertsObject, error) {
+	rsp, err := c.GetSignerCerts(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetSignerCertsObject(rsp)
+}
+
+// ImportSignerCertWithBodyWithResponse request with arbitrary body returning *ImportSignerCertObject
+func (c *ClientWithResponses) ImportSignerCertWithBodyWithResponse(ctx context.Context, params *ImportSignerCertParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ImportSignerCertObject, error) {
+	rsp, err := c.ImportSignerCertWithBody(ctx, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseImportSignerCertObject(rsp)
+}
+
+func (c *ClientWithResponses) ImportSignerCertWithResponse(ctx context.Context, params *ImportSignerCertParams, body ImportSignerCertJSONRequestBody, reqEditors ...RequestEditorFn) (*ImportSignerCertObject, error) {
+	rsp, err := c.ImportSignerCert(ctx, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseImportSignerCertObject(rsp)
+}
+
+// DeleteSignerCertWithResponse request returning *DeleteSignerCertObject
+func (c *ClientWithResponses) DeleteSignerCertWithResponse(ctx context.Context, label string, params *DeleteSignerCertParams, reqEditors ...RequestEditorFn) (*DeleteSignerCertObject, error) {
+	rsp, err := c.DeleteSignerCert(ctx, label, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteSignerCertObject(rsp)
+}
+
+// GetSignerCertWithResponse request returning *GetSignerCertObject
+func (c *ClientWithResponses) GetSignerCertWithResponse(ctx context.Context, label string, params *GetSignerCertParams, reqEditors ...RequestEditorFn) (*GetSignerCertObject, error) {
+	rsp, err := c.GetSignerCert(ctx, label, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetSignerCertObject(rsp)
 }
 
 // GetGroupsWithResponse request returning *GetGroupsObject
@@ -12770,6 +13884,274 @@ func ParseUpdateThemeTemplateObject(rsp *http.Response) (*UpdateThemeTemplateObj
 	response := &UpdateThemeTemplateObject{
 		Body:         bodyBytes,
 		HTTPResponse: rsp,
+	}
+
+	return response, nil
+}
+
+// ParseGetPersonalCertsObject parses an HTTP response from a GetPersonalCertsWithResponse call
+func ParseGetPersonalCertsObject(rsp *http.Response) (*GetPersonalCertsObject, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetPersonalCertsObject{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest []Certificate0
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest ErrorBean10
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest ErrorBean10
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ErrorBean10
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParsePostPersonalCertObject parses an HTTP response from a PostPersonalCertWithResponse call
+func ParsePostPersonalCertObject(rsp *http.Response) (*PostPersonalCertObject, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &PostPersonalCertObject{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	return response, nil
+}
+
+// ParseDeletePersonalCertObject parses an HTTP response from a DeletePersonalCertWithResponse call
+func ParseDeletePersonalCertObject(rsp *http.Response) (*DeletePersonalCertObject, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeletePersonalCertObject{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	return response, nil
+}
+
+// ParseGetPersonalCertObject parses an HTTP response from a GetPersonalCertWithResponse call
+func ParseGetPersonalCertObject(rsp *http.Response) (*GetPersonalCertObject, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetPersonalCertObject{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest SingleCertificate
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest ErrorBean10
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest ErrorBean10
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ErrorBean10
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdatePersonalCertObject parses an HTTP response from a UpdatePersonalCertWithResponse call
+func ParseUpdatePersonalCertObject(rsp *http.Response) (*UpdatePersonalCertObject, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdatePersonalCertObject{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	return response, nil
+}
+
+// ParseGetSignerCertsObject parses an HTTP response from a GetSignerCertsWithResponse call
+func ParseGetSignerCertsObject(rsp *http.Response) (*GetSignerCertsObject, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetSignerCertsObject{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest []Certificate0
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest ErrorBean10
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest ErrorBean10
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ErrorBean10
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseImportSignerCertObject parses an HTTP response from a ImportSignerCertWithResponse call
+func ParseImportSignerCertObject(rsp *http.Response) (*ImportSignerCertObject, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ImportSignerCertObject{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	return response, nil
+}
+
+// ParseDeleteSignerCertObject parses an HTTP response from a DeleteSignerCertWithResponse call
+func ParseDeleteSignerCertObject(rsp *http.Response) (*DeleteSignerCertObject, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteSignerCertObject{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	return response, nil
+}
+
+// ParseGetSignerCertObject parses an HTTP response from a GetSignerCertWithResponse call
+func ParseGetSignerCertObject(rsp *http.Response) (*GetSignerCertObject, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetSignerCertObject{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest []Certificate0
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest ErrorBean10
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest ErrorBean10
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ErrorBean10
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
 	}
 
 	return response, nil
