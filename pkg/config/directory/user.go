@@ -64,7 +64,7 @@ func (c *UserClient) CreateUser(ctx context.Context, user *User) (string, error)
 		return "", errorsx.G11NError("unable to create the user; code=%d, body=%s", resp.StatusCode(), string(resp.Body))
 	}
 
-	m := map[string]interface{}{}
+	m := map[string]any{}
 	if err := json.Unmarshal(resp.Body, &m); err != nil {
 		return "", errorsx.G11NError("failed to parse response")
 	}
@@ -257,17 +257,17 @@ func (c *UserClient) GetUserId(ctx context.Context, name string) (string, error)
 		}
 	}
 
-	var data map[string]interface{}
+	var data map[string]any
 	if err := json.Unmarshal(response.Body, &data); err != nil {
 		return "", errorsx.G11NError("failed to parse response: %w", err)
 	}
 
-	resources, ok := data["Resources"].([]interface{})
+	resources, ok := data["Resources"].([]any)
 	if !ok || len(resources) == 0 {
 		return "", errorsx.G11NError("no user found with userName %s", name)
 	}
 
-	firstResource, ok := resources[0].(map[string]interface{})
+	firstResource, ok := resources[0].(map[string]any)
 	if !ok {
 		return "", errorsx.G11NError("invalid resource format")
 	}

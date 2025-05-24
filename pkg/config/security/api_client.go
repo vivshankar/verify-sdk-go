@@ -314,20 +314,20 @@ func (c *APIClient) getAPIClientId(ctx context.Context, clientName string) (stri
 
 	}
 
-	var data map[string]interface{}
+	var data map[string]any
 	if err := json.Unmarshal(response.Body, &data); err != nil {
 		vc.Logger.Errorf("failed to parse API response; err=%s", err.Error())
 		return "", errorsx.G11NError("failed to parse API response: %w", err)
 	}
 
-	apiClients, ok := data["apiClients"].([]interface{})
+	apiClients, ok := data["apiClients"].([]any)
 	if !ok || len(apiClients) == 0 {
 		vc.Logger.Infof("no API client found with clientName %s", clientName)
 		return "", errorsx.G11NError("no API client found with clientName %s", clientName)
 	}
 
 	for _, resource := range apiClients {
-		client, ok := resource.(map[string]interface{})
+		client, ok := resource.(map[string]any)
 		if !ok {
 			vc.Logger.Errorf("invalid client format in API response")
 			return "", errorsx.G11NError("invalid client format in API response")

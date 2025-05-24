@@ -31,7 +31,7 @@ func main() {
 	byteValue, _ := ioutil.ReadAll(jsonFile)
 
 	// unmarshal into a map
-	var m map[string]interface{}
+	var m map[string]any
 	err = json.Unmarshal(byteValue, &m)
 	if err != nil {
 		fmt.Println(err)

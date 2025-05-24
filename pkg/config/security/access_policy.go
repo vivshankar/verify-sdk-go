@@ -135,7 +135,7 @@ func (c *PolicyClient) CreateAccessPolicy(ctx context.Context, accessPolicy *Pol
 		return "", fmt.Errorf("unable to create the accessPolicy; code=%d, body=%s", response.StatusCode(), string(response.Body))
 	}
 
-	m := map[string]interface{}{}
+	m := map[string]any{}
 	if err := json.Unmarshal(response.Body, &m); err != nil {
 		return "", fmt.Errorf("failed to parse response: %v", err)
 	}
@@ -299,17 +299,17 @@ func (c *PolicyClient) GetAccessPolicyID(ctx context.Context, name string) (stri
 		}
 	}
 
-	var data map[string]interface{}
+	var data map[string]any
 	if err := json.Unmarshal(response.Body, &data); err != nil {
 		return "", fmt.Errorf("failed to parse response: %w", err)
 	}
 
-	policies, ok := data["policies"].([]interface{})
+	policies, ok := data["policies"].([]any)
 	if !ok || len(policies) == 0 {
 		return "", fmt.Errorf("no accessPolicy found with accessPolicyName %s", name)
 	}
 
-	firstResource, ok := policies[0].(map[string]interface{})
+	firstResource, ok := policies[0].(map[string]any)
 	if !ok {
 		return "", fmt.Errorf("invalid resource format")
 	}

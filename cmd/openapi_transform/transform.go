@@ -26,7 +26,7 @@ func main() {
 	byteValue, _ := io.ReadAll(jsonFile)
 
 	// unmarshal into a map
-	var m map[string]interface{}
+	var m map[string]any
 	err = json.Unmarshal(byteValue, &m)
 	if err != nil {
 		fmt.Println(err)
@@ -60,13 +60,13 @@ func addNoPointerParameter(m map[string]any) {
 
 	for _, v := range m {
 		switch t := v.(type) {
-		case []interface{}:
+		case []any:
 			for _, val := range t {
 				if mval, ok := val.(map[string]any); ok {
 					addNoPointerParameter(mval)
 				}
 			}
-		case map[string]interface{}:
+		case map[string]any:
 			addNoPointerParameter(t)
 		}
 	}
