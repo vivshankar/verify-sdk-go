@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/ibm-verify/verify-sdk-go/internal/openapi"
@@ -191,71 +190,16 @@ func (c *IdentitySourceClient) UpdateIdentitySource(ctx context.Context, identit
 	return nil
 }
 
-func (c *IdentitySourceClient) GetIdentitySourceID(ctx context.Context, name string) (string, error) {
-	vc := contextx.GetVerifyContext(ctx)
-	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
-	search := fmt.Sprintf(`instanceName = "%s"`, name)
-	params := &openapi.GetInstancesV2Params{
-		Search: &search,
-	}
-
-	headers := &openapi.Headers{
-		Token:  vc.Token,
-		Accept: "application/json",
-	}
-	resp, _ := client.GetInstancesV2WithResponse(ctx, params, openapi.DefaultRequestEditors(ctx, headers)...)
-	if resp.StatusCode() != http.StatusOK {
-		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, "unable to get IdentitySource"); err != nil {
-			vc.Logger.Errorf("unable to get the IdentitySource with identitySourceName %s; err=%s", name, err.Error())
-			return "", errorsx.G11NError("unable to get the IdentitySource with identitySourceName %s; err=%s", name, err.Error())
-		}
-	}
-
-	var data map[string]interface{}
-	if err := json.Unmarshal(resp.Body, &data); err != nil {
-		return "", errorsx.G11NError("failed to parse response: %w", err)
-	}
-
-	resources, ok := data["identitySources"].([]interface{})
-	if !ok || len(resources) == 0 {
-		return "", errorsx.G11NError("no identitySource found with identitySourceName %s", name)
-	}
-
-	firstResource, ok := resources[0].(map[string]interface{})
-	if !ok {
-		return "", errorsx.G11NError("invalid resource format")
-	}
-
-	// Extract "id" field
-	id, ok := firstResource["id"].(string)
-	if !ok {
-		return "", errorsx.G11NError("ID not found or invalid type")
-	}
-
-	return id, nil
-}
-
 func (c *IdentitySourceClient) UpdateSignInOptions(ctx context.Context, identitySource *IdentitySource) error {
 	vc := contextx.GetVerifyContext(ctx)
-	if identitySource.InstanceName == "" {
-		vc.Logger.Errorf("instanceName cannot be empty")
-		return errorsx.G11NError("instanceName cannot be empty")
+	if identitySource.ID == "" {
+		vc.Logger.Errorf("'id' cannot be empty")
+		return errorsx.G11NError("'id' cannot be empty")
 	}
-	ID, err := c.GetIdentitySourceID(ctx, identitySource.InstanceName)
-	if err != nil {
-		vc.Logger.Errorf("unable to get the identitySource ID; err=%s", err.Error())
-		return errorsx.G11NError("unable to get the identitySource ID; err=%s", err.Error())
-	}
-	identitySourceNew, _, err := c.GetIdentitySourceByID(ctx, ID)
-	if err != nil {
-		vc.Logger.Errorf("unable to get the IdentitySource with instanceName %s; err=%s", identitySource.InstanceName, err.Error())
-		return errorsx.G11NError("unable to get the IdentitySource with instanceName %s; err=%s", identitySource.InstanceName, err.Error())
-	}
-	identitySourceNew.Properties = identitySource.Properties
 
-	if err := c.UpdateIdentitySource(ctx, ID, identitySourceNew); err != nil {
-		vc.Logger.Errorf("unable to update the IdentitySource with instanceName %s; err=%s", identitySource.InstanceName, err.Error())
-		return errorsx.G11NError("unable to update the IdentitySource with instanceName %s; err=%s", identitySource.InstanceName, err.Error())
+	if err := c.UpdateIdentitySource(ctx, identitySource.ID, identitySource); err != nil {
+		vc.Logger.Errorf("unable to update the IdentitySource with 'id' %s; err=%s", identitySource.ID, err.Error())
+		return errorsx.G11NError("unable to update the IdentitySource with 'id' %s; err=%s", identitySource.ID, err.Error())
 	}
 
 	return nil
