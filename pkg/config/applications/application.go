@@ -177,27 +177,27 @@ type OIDCAdditionalConfig struct {
 	RequestObjectParametersOnly            string   `json:"requestObjectParametersOnly,omitempty" yaml:"requestObjectParametersOnly,omitempty"`
 	RequestObjectSigningAlg                string   `json:"requestObjectSigningAlg,omitempty" yaml:"requestObjectSigningAlg,omitempty"`
 	RequestObjectRequireExp                string   `json:"requestObjectRequireExp,omitempty" yaml:"requestObjectRequireExp,omitempty"`
-	CertificateBoundAccessTokens           string   `json:",certificateBoundAccessTokensomitempty" yaml:"certificateBoundAccessTokens,omitempty"`
-	DpopBoundAccessTokens                  string   `json:",dpopBoundAccessTokensomitempty" yaml:"dpopBoundAccessTokens,omitempty"`
-	ValidateDPoPProofJti                   string   `json:",validateDPoPProofJtiomitempty" yaml:"validateDPoPProofJti,omitempty"`
-	DpopProofSigningAlg                    string   `json:",dpopProofSigningAlgomitempty" yaml:"dpopProofSigningAlg,omitempty"`
-	AuthorizeRspSigningAlg                 string   `json:",authorizeRspSigningAlgomitempty" yaml:"authorizeRspSigningAlg,omitempty"`
-	AuthorizeRspEncryptionAlg              string   `json:",authorizeRspEncryptionAlgomitempty" yaml:"authorizeRspEncryptionAlg,omitempty"`
-	AuthorizeRspEncryptionEnc              string   `json:",authorizeRspEncryptionEncomitempty" yaml:"authorizeRspEncryptionEnc,omitempty"`
-	ResponseTypes                          []string `json:",responseTypesomitempty" yaml:"responseTypes,omitempty"`
-	ResponseModes                          []string `json:",responseModesomitempty" yaml:"responseModes,omitempty"`
-	ClientAuthMethod                       string   `json:",clientAuthMethodomitempty" yaml:"clientAuthMethod,omitempty"`
-	RequirePushAuthorize                   string   `json:",requirePushAuthorizeomitempty" yaml:"requirePushAuthorize,omitempty"`
-	RequestObjectMaxExpFromNbf             int64    `json:",requestObjectMaxExpFromNbfomitempty" yaml:"requestObjectMaxExpFromNbf,omitempty"`
-	ExchangeForSSOSessionOption            string   `json:",exchangeForSSOSessionOptionomitempty" yaml:"exchangeForSSOSessionOption,omitempty"`
-	SubjectTokenTypes                      []string `json:",subjectTokenTypesomitempty" yaml:"subjectTokenTypes,omitempty"`
-	ActorTokenTypes                        []string `json:",actorTokenTypesomitempty" yaml:"actorTokenTypes,omitempty"`
-	RequestedTokenTypes                    []string `json:",requestedTokenTypesomitempty" yaml:"requestedTokenTypes,omitempty"`
-	ActorTokenRequired                     bool     `json:",actorTokenRequiredomitempty" yaml:"actorTokenRequired,omitempty"`
-	LogoutOption                           string   `json:",logoutOptionomitempty" yaml:"logoutOption,omitempty"`
-	SessionRequired                        bool     `json:",sessionRequiredomitempty" yaml:"sessionRequired,omitempty"`
-	RequestUris                            []string `json:",requestUrisomitempty" yaml:"requestUris,omitempty"`
-	AllowedClientAssertionVerificationKeys []string `json:",allowedClientAssertionVerificationKeysomitempty" yaml:"allowedClientAssertionVerificationKeys,omitempty"`
+	CertificateBoundAccessTokens           string   `json:"certificateBoundAccessTokens,omitempty" yaml:"certificateBoundAccessTokens,omitempty"`
+	DpopBoundAccessTokens                  string   `json:"dpopBoundAccessTokens,omitempty" yaml:"dpopBoundAccessTokens,omitempty"`
+	ValidateDPoPProofJti                   string   `json:"validateDPoPProofJti,omitempty" yaml:"validateDPoPProofJti,omitempty"`
+	DpopProofSigningAlg                    string   `json:"dpopProofSigningAlg,omitempty" yaml:"dpopProofSigningAlg,omitempty"`
+	AuthorizeRspSigningAlg                 string   `json:"authorizeRspSigningAlg,omitempty" yaml:"authorizeRspSigningAlg,omitempty"`
+	AuthorizeRspEncryptionAlg              string   `json:"authorizeRspEncryptionAlg,omitempty" yaml:"authorizeRspEncryptionAlg,omitempty"`
+	AuthorizeRspEncryptionEnc              string   `json:"authorizeRspEncryptionEnc,omitempty" yaml:"authorizeRspEncryptionEnc,omitempty"`
+	ResponseTypes                          []string `json:"responseTypes,omitempty" yaml:"responseTypes,omitempty"`
+	ResponseModes                          []string `json:"responseModes,omitempty" yaml:"responseModes,omitempty"`
+	ClientAuthMethod                       string   `json:"clientAuthMethod,omitempty" yaml:"clientAuthMethod,omitempty"`
+	RequirePushAuthorize                   string   `json:"requirePushAuthorize,omitempty" yaml:"requirePushAuthorize,omitempty"`
+	RequestObjectMaxExpFromNbf             int64    `json:"requestObjectMaxExpFromNbf,omitempty" yaml:"requestObjectMaxExpFromNbf,omitempty"`
+	ExchangeForSSOSessionOption            string   `json:"exchangeForSSOSessionOption,omitempty" yaml:"exchangeForSSOSessionOption,omitempty"`
+	SubjectTokenTypes                      []string `json:"subjectTokenTypes,omitempty" yaml:"subjectTokenTypes,omitempty"`
+	ActorTokenTypes                        []string `json:"actorTokenTypes,omitempty" yaml:"actorTokenTypes,omitempty"`
+	RequestedTokenTypes                    []string `json:"requestedTokenTypes,omitempty" yaml:"requestedTokenTypes,omitempty"`
+	ActorTokenRequired                     bool     `json:"actorTokenRequired,omitempty" yaml:"actorTokenRequired,omitempty"`
+	LogoutOption                           string   `json:"logoutOption,omitempty" yaml:"logoutOption,omitempty"`
+	SessionRequired                        bool     `json:"sessionRequired,omitempty" yaml:"sessionRequired,omitempty"`
+	RequestUris                            []string `json:"requestUris,omitempty" yaml:"requestUris,omitempty"`
+	AllowedClientAssertionVerificationKeys []string `json:"allowedClientAssertionVerificationKeys,omitempty" yaml:"allowedClientAssertionVerificationKeys,omitempty"`
 }
 
 type GrantTypes struct {
