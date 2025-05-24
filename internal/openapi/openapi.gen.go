@@ -179,6 +179,16 @@ const (
 	ClientAuthenticationClientAssertionTypeUrnIetfParamsOauthClientAssertionTypeJwtBearer ClientAuthenticationClientAssertionType = "urn:ietf:params:oauth:client-assertion-type:jwt-bearer"
 )
 
+// Defines values for CreateOnpremAgentConfigurationPurpose.
+const (
+	CreateOnpremAgentConfigurationPurposeAUTHN         CreateOnpremAgentConfigurationPurpose = "AUTHN"
+	CreateOnpremAgentConfigurationPurposeCERTIFICATION CreateOnpremAgentConfigurationPurpose = "CERTIFICATION"
+	CreateOnpremAgentConfigurationPurposeEXTAUTHN      CreateOnpremAgentConfigurationPurpose = "EXTAUTHN"
+	CreateOnpremAgentConfigurationPurposeEXTERNAL      CreateOnpremAgentConfigurationPurpose = "EXTERNAL"
+	CreateOnpremAgentConfigurationPurposeLDAPAUTH      CreateOnpremAgentConfigurationPurpose = "LDAPAUTH"
+	CreateOnpremAgentConfigurationPurposePROV          CreateOnpremAgentConfigurationPurpose = "PROV"
+)
+
 // Defines values for DatabaseMetaDataRowIDLifetime.
 const (
 	DatabaseMetaDataRowIDLifetimeROWIDUNSUPPORTED      DatabaseMetaDataRowIDLifetime = "ROWID_UNSUPPORTED"
@@ -311,6 +321,16 @@ const (
 const (
 	OIDCTokenBeanAccessTokenTypeDefault OIDCTokenBeanAccessTokenType = "default"
 	OIDCTokenBeanAccessTokenTypeJwt     OIDCTokenBeanAccessTokenType = "jwt"
+)
+
+// Defines values for OnpremAgentConfigurationPurpose.
+const (
+	OnpremAgentConfigurationPurposeAUTHN         OnpremAgentConfigurationPurpose = "AUTHN"
+	OnpremAgentConfigurationPurposeCERTIFICATION OnpremAgentConfigurationPurpose = "CERTIFICATION"
+	OnpremAgentConfigurationPurposeEXTAUTHN      OnpremAgentConfigurationPurpose = "EXTAUTHN"
+	OnpremAgentConfigurationPurposeEXTERNAL      OnpremAgentConfigurationPurpose = "EXTERNAL"
+	OnpremAgentConfigurationPurposeLDAPAUTH      OnpremAgentConfigurationPurpose = "LDAPAUTH"
+	OnpremAgentConfigurationPurposePROV          OnpremAgentConfigurationPurpose = "PROV"
 )
 
 // Defines values for PatchOperationOp.
@@ -1176,6 +1196,15 @@ type AuthenticationPolicyBean struct {
 // AuthenticationPolicyBeanName represents name of the Authentication Policy
 type AuthenticationPolicyBeanName string
 
+// BadRequest The message response to the request.
+type BadRequest struct {
+	// MessageDescription A requester locale-specific descriptive message
+	MessageDescription string `json:"messageDescription" yaml:"messageDescription"`
+
+	// MessageID The message key identifier
+	MessageID string `json:"messageId" yaml:"messageId"`
+}
+
 // BadRequest0 defines model for BadRequest_0.
 type BadRequest0 struct {
 	// MessageDescription A requester locale-specific descriptive message.
@@ -1582,6 +1611,36 @@ type CreateConflict struct {
 	MessageID string `json:"messageId" yaml:"messageId"`
 }
 
+// CreateOnpremAgentConfiguration The creation data of an agent configuration.
+type CreateOnpremAgentConfiguration struct {
+	// AuthnCacheTimeout Time in minutes to cache authentications. Default is no caching
+	AuthnCacheTimeout *int32 `json:"authnCacheTimeout,omitempty" yaml:"authnCacheTimeout,omitempty"`
+
+	// CertLabel The certificate label used to encrypt modules data, default certificate used if not supplied
+	CertLabel *string `json:"certLabel,omitempty" yaml:"certLabel,omitempty"`
+
+	// Description The description of the agent configuration
+	Description string `json:"description" yaml:"description"`
+
+	// Heartbeat How often the agent should emit a heartbeat
+	Heartbeat int32 `json:"heartbeat" yaml:"heartbeat"`
+
+	// Modules The associated modules with the agent configuration
+	Modules []map[string]map[string]interface{} `json:"modules" yaml:"modules"`
+
+	// Name The name of the agent configuration
+	Name string `json:"name" yaml:"name"`
+
+	// Purpose The purpose of the agent configuration
+	Purpose *CreateOnpremAgentConfigurationPurpose `json:"purpose,omitempty" yaml:"purpose,omitempty"`
+
+	// References The entities referenced by this configuration.
+	References *[]OnpremAgentConfigReference `json:"references,omitempty" yaml:"references,omitempty"`
+}
+
+// CreateOnpremAgentConfigurationPurpose The purpose of the agent configuration
+type CreateOnpremAgentConfigurationPurpose string
+
 // CustomAttribute defines model for CustomAttribute.
 type CustomAttribute struct {
 	// Name The SCIM name of the custom attribute.  The SCIM name for a custom schema attribute is defined for the tenant by using the POST /Schema/attributes API.
@@ -1831,6 +1890,15 @@ type FilterRegistration struct {
 	Name                *string            `json:"name,omitempty" yaml:"name,omitempty"`
 	ServletNameMappings *[]string          `json:"servletNameMappings,omitempty" yaml:"servletNameMappings,omitempty"`
 	URLPatternMappings  *[]string          `json:"urlPatternMappings,omitempty" yaml:"urlPatternMappings,omitempty"`
+}
+
+// Forbidden The message response to the request.
+type Forbidden struct {
+	// MessageDescription A requester locale-specific descriptive message
+	MessageDescription string `json:"messageDescription" yaml:"messageDescription"`
+
+	// MessageID The message key identifier
+	MessageID string `json:"messageId" yaml:"messageId"`
 }
 
 // Forbidden0 defines model for Forbidden_0.
@@ -2454,6 +2522,24 @@ type Name struct {
 	MiddleName *string `json:"middleName,omitempty" yaml:"middleName,omitempty"`
 }
 
+// NotAcceptable The message response to the request.
+type NotAcceptable struct {
+	// MessageDescription A requester locale-specific descriptive message.
+	MessageDescription string `json:"messageDescription" yaml:"messageDescription"`
+
+	// MessageID The message key identifier
+	MessageID string `json:"messageId" yaml:"messageId"`
+}
+
+// NotFound The message response to the request.
+type NotFound struct {
+	// MessageDescription A requester locale-specific descriptive message
+	MessageDescription string `json:"messageDescription" yaml:"messageDescription"`
+
+	// MessageID The message key identifier
+	MessageID string `json:"messageId" yaml:"messageId"`
+}
+
 // NotFound0 defines model for NotFound_0.
 type NotFound0 struct {
 	// MessageDescription A requester locale-specific descriptive message.
@@ -2615,6 +2701,54 @@ type OIDCTokenBean struct {
 
 // OIDCTokenBeanAccessTokenType Type of token
 type OIDCTokenBeanAccessTokenType string
+
+// OnpremAgentConfigReference The entity reference details.
+type OnpremAgentConfigReference struct {
+	// ID The unique identifier of the resource that the agent configuration is referencing
+	ID string `json:"id" yaml:"id"`
+
+	// Ref The type of reference that the agent configuration is referencing
+	Ref string `json:"ref" yaml:"ref"`
+
+	// Type The type of resource that the agent configuration is referencing
+	Type string `json:"type" yaml:"type"`
+}
+
+// OnpremAgentConfiguration The agent configuration.
+type OnpremAgentConfiguration struct {
+	// APIClients The list of api clients which are permitted to access this configuration
+	APIClients []string `json:"apiClients" yaml:"apiClients"`
+
+	// AuthnCacheTimeout Time in minutes to cache authentications. Default is no caching
+	AuthnCacheTimeout *int32 `json:"authnCacheTimeout,omitempty" yaml:"authnCacheTimeout,omitempty"`
+
+	// CertLabel The certificate label used to encrypt modules data, default certificate used if not supplied
+	CertLabel *string `json:"certLabel,omitempty" yaml:"certLabel,omitempty"`
+
+	// Description The description of the agent configuration
+	Description string `json:"description" yaml:"description"`
+
+	// Heartbeat How often the agent should emit a heartbeat
+	Heartbeat int32 `json:"heartbeat" yaml:"heartbeat"`
+
+	// ID The unique identifier of the agent configuration
+	ID *string `json:"id,omitempty" yaml:"id,omitempty"`
+
+	// Modules The associated modules with the agent configuration
+	Modules []map[string]map[string]interface{} `json:"modules" yaml:"modules"`
+
+	// Name The name of the agent configuration
+	Name string `json:"name" yaml:"name"`
+
+	// Purpose The purpose of the agent configuration
+	Purpose *OnpremAgentConfigurationPurpose `json:"purpose,omitempty" yaml:"purpose,omitempty"`
+
+	// References The entities referenced by this configuration.
+	References *[]OnpremAgentConfigReference `json:"references,omitempty" yaml:"references,omitempty"`
+}
+
+// OnpremAgentConfigurationPurpose The purpose of the agent configuration
+type OnpremAgentConfigurationPurpose string
 
 // OperationStatusSummary defines model for OperationStatusSummary.
 type OperationStatusSummary struct {
@@ -3699,6 +3833,15 @@ type TransformObject struct {
 	StatusCode *int64 `json:"statusCode,omitempty" yaml:"statusCode,omitempty"`
 }
 
+// Unauthorized The message response to the request.
+type Unauthorized struct {
+	// MessageDescription A requester locale-specific descriptive message
+	MessageDescription string `json:"messageDescription" yaml:"messageDescription"`
+
+	// MessageID The message key identifier
+	MessageID string `json:"messageId" yaml:"messageId"`
+}
+
 // Unauthorized1 The message response to the given request
 type Unauthorized1 struct {
 	// MessageDescription Requester locale specific descriptive message.
@@ -3862,6 +4005,24 @@ type WsFedSigningSettingsBean struct {
 	KeyLabel           *string `json:"keyLabel,omitempty" yaml:"keyLabel,omitempty"`
 	SignSamlAssertion  *string `json:"signSamlAssertion,omitempty" yaml:"signSamlAssertion,omitempty"`
 	SignatureAlgorithm *string `json:"signatureAlgorithm,omitempty" yaml:"signatureAlgorithm,omitempty"`
+}
+
+// ListOnpremAgentsParams defines parameters for ListOnpremAgents.
+type ListOnpremAgentsParams struct {
+	// Pagination Controls the results that are returned in a page.<br><br>You can use the following query parameters:<br><br><b>count</b> - Optional. Use to define the total number of results that are returned from the data store. The maximum allowed value is 1000. If excluded will be set to limit.<br><br><b>page</b> - Use to identify the requested page, or the offset.<br><br><b>limit</b> - Use to define the total number of results that are returned per page. The maximum allowed value is 1000.<br><br>A maximum of 200 results are returned if no pagination query parameters are passed.<br><br><b>Note</b>: The pagination parameter value must be HTML encoded. Use the prefix "pagination=" in the query parameter.<br><br><b>Example</b>: Paginate on count=10&page=1&limit=5<br>pagination=count%3D10%26page%3D1%26limit%3D5
+	Pagination *string `form:"pagination,omitempty" json:"pagination,omitempty"`
+
+	// Search Returns results based on the search criteria.<br><br>Valid operators for Strings are = , != and contains. Use double quotation marks for the search values.<br>Valid operators for Booleans are = and !=<br>Valid operators for Numbers are >=, >, &lt;=, &lt;, = and !=<br><br><b>Note</b>: The search parameter value must be HTML encoded. Use the prefix "search=" in the query parameter.<br><br><b>Example</b>: Search on id contains "fd45"&enabled=true<br>search=id%20contains%20%22fd45%22%26enabled%3Dtrue
+	Search *string `form:"search,omitempty" json:"search,omitempty"`
+
+	// Filter Displays results based on the filter criteria.<br><br>Filter values to be inclusive or exclusive only. It cannot be combined.<br><br>Use a comma (,) to separate multiple filter parameters.<br><br><b>Note</b>: The filter parameter value must be HTML encoded. Use the prefix "filter=" in the query parameter.<br><br><b>Examples</b><br>Filter to return only id : filter=id<br>Filter to exclude id and enabled : filter=%21id,enabled
+	Filter *string `form:"filter,omitempty" json:"filter,omitempty"`
+}
+
+// GetOnpremAgentParams defines parameters for GetOnpremAgent.
+type GetOnpremAgentParams struct {
+	// Filter Displays results based on the filter criteria.<br><br>Filter values to be inclusive or exclusive only. It cannot be combined.<br><br>Use a comma (,) to separate multiple filter parameters.<br><br><b>Note</b>: The filter parameter value must be HTML encoded. Use the prefix "filter=" in the query parameter.<br><br><b>Examples</b><br>Filter to return only id : filter=id<br>Filter to exclude id and enabled : filter=%21id,enabled
+	Filter *string `form:"filter,omitempty" json:"filter,omitempty"`
 }
 
 // PostOauth2TokenParams defines parameters for PostOauth2Token.
@@ -4207,6 +4368,12 @@ type ListAccessPoliciesParams struct {
 	Filter *string `form:"filter,omitempty" json:"filter,omitempty"`
 }
 
+// CreateOnpremAgentJSONRequestBody defines body for CreateOnpremAgent for application/json ContentType.
+type CreateOnpremAgentJSONRequestBody = CreateOnpremAgentConfiguration
+
+// UpdateOnpremAgentJSONRequestBody defines body for UpdateOnpremAgent for application/json ContentType.
+type UpdateOnpremAgentJSONRequestBody = OnpremAgentConfiguration
+
 // PostOauth2TokenFormdataRequestBody defines body for PostOauth2Token for application/x-www-form-urlencoded ContentType.
 type PostOauth2TokenFormdataRequestBody = TokenRequest
 
@@ -4426,6 +4593,25 @@ func WithRequestEditorFn(fn RequestEditorFn) ClientOption {
 
 // The interface specification for the client above.
 type ClientInterface interface {
+	// ListOnpremAgents request
+	ListOnpremAgents(ctx context.Context, params *ListOnpremAgentsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateOnpremAgentWithBody request with any body
+	CreateOnpremAgentWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	CreateOnpremAgent(ctx context.Context, body CreateOnpremAgentJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteOnpremAgent request
+	DeleteOnpremAgent(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetOnpremAgent request
+	GetOnpremAgent(ctx context.Context, id string, params *GetOnpremAgentParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateOnpremAgentWithBody request with any body
+	UpdateOnpremAgentWithBody(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	UpdateOnpremAgent(ctx context.Context, id string, body UpdateOnpremAgentJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// PostOauth2TokenWithBody request with any body
 	PostOauth2TokenWithBody(ctx context.Context, params *PostOauth2TokenParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -4626,6 +4812,90 @@ type ClientInterface interface {
 	UpdateAccessPolicyWithBody(ctx context.Context, policyID int64, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	UpdateAccessPolicy(ctx context.Context, policyID int64, body UpdateAccessPolicyJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+}
+
+func (c *Client) ListOnpremAgents(ctx context.Context, params *ListOnpremAgentsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListOnpremAgentsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateOnpremAgentWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateOnpremAgentRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateOnpremAgent(ctx context.Context, body CreateOnpremAgentJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateOnpremAgentRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeleteOnpremAgent(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteOnpremAgentRequest(c.Server, id)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetOnpremAgent(ctx context.Context, id string, params *GetOnpremAgentParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetOnpremAgentRequest(c.Server, id, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateOnpremAgentWithBody(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateOnpremAgentRequestWithBody(c.Server, id, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateOnpremAgent(ctx context.Context, id string, body UpdateOnpremAgentJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateOnpremAgentRequest(c.Server, id, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
 }
 
 func (c *Client) PostOauth2TokenWithBody(ctx context.Context, params *PostOauth2TokenParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
@@ -5502,6 +5772,264 @@ func (c *Client) UpdateAccessPolicy(ctx context.Context, policyID int64, body Up
 		return nil, err
 	}
 	return c.Client.Do(req)
+}
+
+// NewListOnpremAgentsRequest generates requests for ListOnpremAgents
+func NewListOnpremAgentsRequest(server string, params *ListOnpremAgentsParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/config/v1.0/onpremagents")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.Pagination != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "pagination", runtime.ParamLocationQuery, *params.Pagination); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Search != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "search", runtime.ParamLocationQuery, *params.Search); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Filter != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "filter", runtime.ParamLocationQuery, *params.Filter); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewCreateOnpremAgentRequest calls the generic CreateOnpremAgent builder with application/json body
+func NewCreateOnpremAgentRequest(server string, body CreateOnpremAgentJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreateOnpremAgentRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewCreateOnpremAgentRequestWithBody generates requests for CreateOnpremAgent with any type of body
+func NewCreateOnpremAgentRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/config/v1.0/onpremagents")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewDeleteOnpremAgentRequest generates requests for DeleteOnpremAgent
+func NewDeleteOnpremAgentRequest(server string, id string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "id", runtime.ParamLocationPath, id)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/config/v1.0/onpremagents/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetOnpremAgentRequest generates requests for GetOnpremAgent
+func NewGetOnpremAgentRequest(server string, id string, params *GetOnpremAgentParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "id", runtime.ParamLocationPath, id)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/config/v1.0/onpremagents/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.Filter != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "filter", runtime.ParamLocationQuery, *params.Filter); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUpdateOnpremAgentRequest calls the generic UpdateOnpremAgent builder with application/json body
+func NewUpdateOnpremAgentRequest(server string, id string, body UpdateOnpremAgentJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateOnpremAgentRequestWithBody(server, id, "application/json", bodyReader)
+}
+
+// NewUpdateOnpremAgentRequestWithBody generates requests for UpdateOnpremAgent with any type of body
+func NewUpdateOnpremAgentRequestWithBody(server string, id string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "id", runtime.ParamLocationPath, id)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/config/v1.0/onpremagents/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PUT", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
 }
 
 // NewPostOauth2TokenRequestWithFormdataBody calls the generic PostOauth2Token builder with application/x-www-form-urlencoded body
@@ -8750,6 +9278,25 @@ func WithBaseURL(baseURL string) ClientOption {
 
 // ClientWithResponsesInterface is the interface specification for the client with responses above.
 type ClientWithResponsesInterface interface {
+	// ListOnpremAgentsWithResponse request
+	ListOnpremAgentsWithResponse(ctx context.Context, params *ListOnpremAgentsParams, reqEditors ...RequestEditorFn) (*ListOnpremAgentsObject, error)
+
+	// CreateOnpremAgentWithBodyWithResponse request with any body
+	CreateOnpremAgentWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateOnpremAgentObject, error)
+
+	CreateOnpremAgentWithResponse(ctx context.Context, body CreateOnpremAgentJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateOnpremAgentObject, error)
+
+	// DeleteOnpremAgentWithResponse request
+	DeleteOnpremAgentWithResponse(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*DeleteOnpremAgentObject, error)
+
+	// GetOnpremAgentWithResponse request
+	GetOnpremAgentWithResponse(ctx context.Context, id string, params *GetOnpremAgentParams, reqEditors ...RequestEditorFn) (*GetOnpremAgentObject, error)
+
+	// UpdateOnpremAgentWithBodyWithResponse request with any body
+	UpdateOnpremAgentWithBodyWithResponse(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateOnpremAgentObject, error)
+
+	UpdateOnpremAgentWithResponse(ctx context.Context, id string, body UpdateOnpremAgentJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateOnpremAgentObject, error)
+
 	// PostOauth2TokenWithBodyWithResponse request with any body
 	PostOauth2TokenWithBodyWithResponse(ctx context.Context, params *PostOauth2TokenParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PostOauth2TokenObject, error)
 
@@ -8950,6 +9497,135 @@ type ClientWithResponsesInterface interface {
 	UpdateAccessPolicyWithBodyWithResponse(ctx context.Context, policyID int64, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateAccessPolicyObject, error)
 
 	UpdateAccessPolicyWithResponse(ctx context.Context, policyID int64, body UpdateAccessPolicyJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateAccessPolicyObject, error)
+}
+
+type ListOnpremAgentsObject struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *OnpremAgentConfiguration
+	JSON400      *BadRequest
+	JSON401      *Unauthorized
+	JSON403      *Forbidden
+	JSON404      *NotFound
+}
+
+// Status returns HTTPResponse.Status
+func (r ListOnpremAgentsObject) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListOnpremAgentsObject) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type CreateOnpremAgentObject struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON201      *OnpremAgentConfiguration
+	JSON400      *BadRequest
+	JSON401      *Unauthorized
+	JSON403      *Forbidden
+	JSON404      *NotFound
+	JSON406      *NotAcceptable
+}
+
+// Status returns HTTPResponse.Status
+func (r CreateOnpremAgentObject) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreateOnpremAgentObject) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type DeleteOnpremAgentObject struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON401      *Unauthorized
+	JSON403      *Forbidden
+	JSON404      *NotFound
+	JSON406      *NotAcceptable
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteOnpremAgentObject) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteOnpremAgentObject) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetOnpremAgentObject struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *OnpremAgentConfiguration
+	JSON400      *BadRequest
+	JSON401      *Unauthorized
+	JSON403      *Forbidden
+	JSON404      *NotFound
+}
+
+// Status returns HTTPResponse.Status
+func (r GetOnpremAgentObject) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetOnpremAgentObject) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UpdateOnpremAgentObject struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON400      *BadRequest
+	JSON401      *Unauthorized
+	JSON403      *Forbidden
+	JSON404      *NotFound
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateOnpremAgentObject) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateOnpremAgentObject) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
 }
 
 type PostOauth2TokenObject struct {
@@ -10269,6 +10945,67 @@ func (r UpdateAccessPolicyObject) StatusCode() int {
 	return 0
 }
 
+// ListOnpremAgentsWithResponse request returning *ListOnpremAgentsObject
+func (c *ClientWithResponses) ListOnpremAgentsWithResponse(ctx context.Context, params *ListOnpremAgentsParams, reqEditors ...RequestEditorFn) (*ListOnpremAgentsObject, error) {
+	rsp, err := c.ListOnpremAgents(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListOnpremAgentsObject(rsp)
+}
+
+// CreateOnpremAgentWithBodyWithResponse request with arbitrary body returning *CreateOnpremAgentObject
+func (c *ClientWithResponses) CreateOnpremAgentWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateOnpremAgentObject, error) {
+	rsp, err := c.CreateOnpremAgentWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateOnpremAgentObject(rsp)
+}
+
+func (c *ClientWithResponses) CreateOnpremAgentWithResponse(ctx context.Context, body CreateOnpremAgentJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateOnpremAgentObject, error) {
+	rsp, err := c.CreateOnpremAgent(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateOnpremAgentObject(rsp)
+}
+
+// DeleteOnpremAgentWithResponse request returning *DeleteOnpremAgentObject
+func (c *ClientWithResponses) DeleteOnpremAgentWithResponse(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*DeleteOnpremAgentObject, error) {
+	rsp, err := c.DeleteOnpremAgent(ctx, id, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteOnpremAgentObject(rsp)
+}
+
+// GetOnpremAgentWithResponse request returning *GetOnpremAgentObject
+func (c *ClientWithResponses) GetOnpremAgentWithResponse(ctx context.Context, id string, params *GetOnpremAgentParams, reqEditors ...RequestEditorFn) (*GetOnpremAgentObject, error) {
+	rsp, err := c.GetOnpremAgent(ctx, id, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetOnpremAgentObject(rsp)
+}
+
+// UpdateOnpremAgentWithBodyWithResponse request with arbitrary body returning *UpdateOnpremAgentObject
+func (c *ClientWithResponses) UpdateOnpremAgentWithBodyWithResponse(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateOnpremAgentObject, error) {
+	rsp, err := c.UpdateOnpremAgentWithBody(ctx, id, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateOnpremAgentObject(rsp)
+}
+
+func (c *ClientWithResponses) UpdateOnpremAgentWithResponse(ctx context.Context, id string, body UpdateOnpremAgentJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateOnpremAgentObject, error) {
+	rsp, err := c.UpdateOnpremAgent(ctx, id, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateOnpremAgentObject(rsp)
+}
+
 // PostOauth2TokenWithBodyWithResponse request with arbitrary body returning *PostOauth2TokenObject
 func (c *ClientWithResponses) PostOauth2TokenWithBodyWithResponse(ctx context.Context, params *PostOauth2TokenParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PostOauth2TokenObject, error) {
 	rsp, err := c.PostOauth2TokenWithBody(ctx, params, contentType, body, reqEditors...)
@@ -10906,6 +11643,269 @@ func (c *ClientWithResponses) UpdateAccessPolicyWithResponse(ctx context.Context
 		return nil, err
 	}
 	return ParseUpdateAccessPolicyObject(rsp)
+}
+
+// ParseListOnpremAgentsObject parses an HTTP response from a ListOnpremAgentsWithResponse call
+func ParseListOnpremAgentsObject(rsp *http.Response) (*ListOnpremAgentsObject, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListOnpremAgentsObject{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest OnpremAgentConfiguration
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Forbidden
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreateOnpremAgentObject parses an HTTP response from a CreateOnpremAgentWithResponse call
+func ParseCreateOnpremAgentObject(rsp *http.Response) (*CreateOnpremAgentObject, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreateOnpremAgentObject{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
+		var dest OnpremAgentConfiguration
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON201 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Forbidden
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 406:
+		var dest NotAcceptable
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON406 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteOnpremAgentObject parses an HTTP response from a DeleteOnpremAgentWithResponse call
+func ParseDeleteOnpremAgentObject(rsp *http.Response) (*DeleteOnpremAgentObject, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteOnpremAgentObject{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Forbidden
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 406:
+		var dest NotAcceptable
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON406 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetOnpremAgentObject parses an HTTP response from a GetOnpremAgentWithResponse call
+func ParseGetOnpremAgentObject(rsp *http.Response) (*GetOnpremAgentObject, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetOnpremAgentObject{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest OnpremAgentConfiguration
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Forbidden
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdateOnpremAgentObject parses an HTTP response from a UpdateOnpremAgentWithResponse call
+func ParseUpdateOnpremAgentObject(rsp *http.Response) (*UpdateOnpremAgentObject, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateOnpremAgentObject{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Unauthorized
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Forbidden
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFound
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	}
+
+	return response, nil
 }
 
 // ParsePostOauth2TokenObject parses an HTTP response from a PostOauth2TokenWithResponse call
