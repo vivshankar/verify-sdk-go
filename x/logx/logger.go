@@ -12,28 +12,28 @@ type Logger struct {
 	AddNewline bool
 }
 
-func (l *Logger) Errorf(str string, args ...interface{}) {
+func (l *Logger) Errorf(str string, args ...any) {
 	if l.AddNewline {
 		str = str + "\n"
 	}
 	l.Error(fmt.Sprintf(str, args...))
 }
 
-func (l *Logger) Infof(str string, args ...interface{}) {
+func (l *Logger) Infof(str string, args ...any) {
 	if l.AddNewline {
 		str = str + "\n"
 	}
 	l.Info(fmt.Sprintf(str, args...))
 }
 
-func (l *Logger) Warnf(str string, args ...interface{}) {
+func (l *Logger) Warnf(str string, args ...any) {
 	if l.AddNewline {
 		str = str + "\n"
 	}
 	l.Warn(fmt.Sprintf(str, args...))
 }
 
-func (l *Logger) Debugf(str string, args ...interface{}) {
+func (l *Logger) Debugf(str string, args ...any) {
 	if l.AddNewline {
 		str = str + "\n"
 	}

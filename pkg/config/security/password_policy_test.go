@@ -9,7 +9,6 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/ibm-verify/verify-sdk-go/internal/test_helper"
-	"github.com/ibm-verify/verify-sdk-go/pkg/auth"
 	"github.com/ibm-verify/verify-sdk-go/pkg/config/security"
 	"gopkg.in/yaml.v3"
 
@@ -24,44 +23,28 @@ type PasswordPolicyTestSuite struct {
 
 	ctx                  context.Context
 	vctx                 *contextx.VerifyContext
-	PasswordPolicyName   string
 	client               *security.PasswordPolicyClient
 	passwordPolicyCreate security.PasswordPolicy
 	passwordPolicyPatch  security.PasswordPolicy
 }
 
 func (s *PasswordPolicyTestSuite) SetupTest() {
+	var err error
 	// initialize the logger
 	contextID := uuid.NewString()
 	logger := logx.NewLoggerWithWriter(contextID, slog.LevelInfo, os.Stdout)
 	logger.AddNewline = true
 
 	// load common config
-	tenant, clientID, clientSecret := test_helper.LoadCommonConfig(s.T())
-
-	// get token
-	client := &auth.Client{
-		Tenant: tenant,
-		ClientAuth: &auth.ClientSecretPost{
-			ClientID:     clientID,
-			ClientSecret: clientSecret,
-		},
-	}
-
-	tokenResponse, err := client.TokenWithAPIClient(context.Background(), nil)
-	require.NoError(s.T(), err, "unable to get a token; err=%v", err)
+	tenant, accessToken := test_helper.LoadCommonConfig(s.T())
 
 	s.ctx, err = contextx.NewContextWithVerifyContext(context.Background(), logger)
 	require.NoError(s.T(), err, "unable to get a new context")
 	s.vctx = contextx.GetVerifyContext(s.ctx)
-	s.vctx.Token = tokenResponse.AccessToken
+	s.vctx.Token = accessToken
 	s.vctx.Tenant = tenant
 
-	// load specific config
-	s.PasswordPolicyName = os.Getenv("PASSWORD_POLICY_NAME")
-	require.NotEmpty(s.T(), s.PasswordPolicyName, "invalid config: PASSWORD_POLICY_NAME is missing")
 	// Password Policy details for creation
-
 	passwordPolicyCreateRawData := `
 passwordSecurity:
   pwdExpireWarning: 0
@@ -124,7 +107,7 @@ func (s *PasswordPolicyTestSuite) TestPasswordPolicy() {
 	var err error
 	// Create Password Policy
 	resp, err := s.client.CreatePasswordPolicy(s.ctx, &s.passwordPolicyCreate)
-	require.NoError(s.T(), err, "unable to create Password Policy %s; err=%v", s.PasswordPolicyName, err)
+	require.NoError(s.T(), err, "unable to create Password Policy; err=%v", err)
 	// set the Password Policy ID
 	passwordPolicyID := strings.Split(resp, "/")[len(strings.Split(resp, "/"))-1]
 

@@ -8,7 +8,6 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/ibm-verify/verify-sdk-go/internal/test_helper"
-	"github.com/ibm-verify/verify-sdk-go/pkg/auth"
 	"github.com/ibm-verify/verify-sdk-go/pkg/config/directory"
 	"gopkg.in/yaml.v3"
 
@@ -30,37 +29,25 @@ type GroupTestSuite struct {
 }
 
 func (s *GroupTestSuite) SetupTest() {
+	var err error
 	// initialize the logger
 	contextID := uuid.NewString()
 	logger := logx.NewLoggerWithWriter(contextID, slog.LevelInfo, os.Stdout)
 	logger.AddNewline = true
 
 	// load common config
-	tenant, clientID, clientSecret := test_helper.LoadCommonConfig(s.T())
-
-	// get token
-	client := &auth.Client{
-		Tenant: tenant,
-		ClientAuth: &auth.ClientSecretPost{
-			ClientID:     clientID,
-			ClientSecret: clientSecret,
-		},
-	}
-
-	tokenResponse, err := client.TokenWithAPIClient(context.Background(), nil)
-	require.NoError(s.T(), err, "unable to get a token; err=%v", err)
+	tenant, accessToken := test_helper.LoadCommonConfig(s.T())
 
 	s.ctx, err = contextx.NewContextWithVerifyContext(context.Background(), logger)
 	require.NoError(s.T(), err, "unable to get a new context")
 	s.vctx = contextx.GetVerifyContext(s.ctx)
-	s.vctx.Token = tokenResponse.AccessToken
+	s.vctx.Token = accessToken
 	s.vctx.Tenant = tenant
 
 	// load specific config
-	s.groupName = os.Getenv("GROUP_NAME")
-	require.NotEmpty(s.T(), s.groupName, "invalid config: GROUP_NAME is missing")
-	// group details for creation
+	s.groupName = "Admins"
 
+	// group details for creation
 	groupCreateRawData := `
 displayName: Admins
 members:

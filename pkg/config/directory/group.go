@@ -193,7 +193,7 @@ func (c *GroupClient) CreateGroup(ctx context.Context, group *Group) (string, er
 		return "", errorsx.G11NError("failed to create group; code=%d, body=%s", resp.StatusCode(), string(resp.Body))
 	}
 
-	m := map[string]interface{}{}
+	m := map[string]any{}
 	if err := json.Unmarshal(resp.Body, &m); err != nil {
 		return "", errorsx.G11NError("failed to parse response")
 	}
@@ -246,16 +246,16 @@ func (c *GroupClient) UpdateGroup(ctx context.Context, groupName string, operati
 
 	for i, op := range *operations {
 		if op.Op == "add" && op.Path == "members" {
-			if values, ok := (*op.Value).([]interface{}); ok {
+			if values, ok := (*op.Value).([]any); ok {
 				for j, v := range values {
-					if member, ok := v.(map[string]interface{}); ok {
+					if member, ok := v.(map[string]any); ok {
 						if username, exists := member["value"].(string); exists {
 							userID, err := userClient.GetUserId(ctx, username)
 							if err != nil {
 								vc.Logger.Errorf("unable to get user ID for username %s; err=%s", username, err.Error())
 								return errorsx.G11NError("unable to get user ID for username %s; err=%s", username, err.Error())
 							}
-							(*(*operations)[i].Value).([]interface{})[j].(map[string]interface{})["value"] = userID
+							(*(*operations)[i].Value).([]any)[j].(map[string]any)["value"] = userID
 						}
 					}
 				}
@@ -326,17 +326,17 @@ func (c *GroupClient) GetGroupId(ctx context.Context, name string) (string, erro
 		}
 	}
 
-	var data map[string]interface{}
+	var data map[string]any
 	if err := json.Unmarshal(resp.Body, &data); err != nil {
 		return "", errorsx.G11NError("failed to parse response: %w", err)
 	}
 
-	resources, ok := data["Resources"].([]interface{})
+	resources, ok := data["Resources"].([]any)
 	if !ok || len(resources) == 0 {
 		return "", errorsx.G11NError("no group found with group name %s", name)
 	}
 
-	firstResource, ok := resources[0].(map[string]interface{})
+	firstResource, ok := resources[0].(map[string]any)
 	if !ok {
 		return "", errorsx.G11NError("invalid resource format")
 	}

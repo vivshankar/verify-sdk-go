@@ -28,7 +28,7 @@ type ListThemesResponse struct {
 	Themes []*Theme `json:"themeRegistrations" yaml:"themeRegistrations"`
 }
 
-func NewThemeWithMap(m map[string]interface{}) *Theme {
+func NewThemeWithMap(m map[string]any) *Theme {
 	tm := typesx.Map(m)
 	return &Theme{
 		ThemeID:     tm.SafeString("id", ""),
@@ -247,7 +247,7 @@ func (c *ThemeClient) UpdateFile(ctx context.Context, themeID string, path strin
 	return nil
 }
 
-func (c *ThemeClient) UpdateTheme(ctx context.Context, themeID string, data []byte, metadata map[string]interface{}) error {
+func (c *ThemeClient) UpdateTheme(ctx context.Context, themeID string, data []byte, metadata map[string]any) error {
 	vc := contextx.GetVerifyContext(ctx)
 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
 

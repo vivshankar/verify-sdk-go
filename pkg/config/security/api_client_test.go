@@ -4,11 +4,11 @@ import (
 	"context"
 	"log/slog"
 	"os"
+	"strings"
 	"testing"
 
 	"github.com/google/uuid"
 	"github.com/ibm-verify/verify-sdk-go/internal/test_helper"
-	"github.com/ibm-verify/verify-sdk-go/pkg/auth"
 	"github.com/ibm-verify/verify-sdk-go/pkg/config/security"
 	"gopkg.in/yaml.v3"
 
@@ -23,43 +23,27 @@ type APIClientTestSuite struct {
 
 	ctx                    context.Context
 	vctx                   *contextx.VerifyContext
-	APIClientName          string
 	client                 *security.APIClient
 	apiClientCreateOrPatch security.APIClientConfig
 }
 
 func (s *APIClientTestSuite) SetupTest() {
+	var err error
 	// initialize the logger
 	contextID := uuid.NewString()
 	logger := logx.NewLoggerWithWriter(contextID, slog.LevelInfo, os.Stdout)
 	logger.AddNewline = true
 
 	// load common config
-	tenant, clientID, clientSecret := test_helper.LoadCommonConfig(s.T())
-
-	// get token
-	client := &auth.Client{
-		Tenant: tenant,
-		ClientAuth: &auth.ClientSecretPost{
-			ClientID:     clientID,
-			ClientSecret: clientSecret,
-		},
-	}
-
-	tokenResponse, err := client.TokenWithAPIClient(context.Background(), nil)
-	require.NoError(s.T(), err, "unable to get a token; err=%v", err)
+	tenant, accessToken := test_helper.LoadCommonConfig(s.T())
 
 	s.ctx, err = contextx.NewContextWithVerifyContext(context.Background(), logger)
 	require.NoError(s.T(), err, "unable to get a new context")
 	s.vctx = contextx.GetVerifyContext(s.ctx)
-	s.vctx.Token = tokenResponse.AccessToken
+	s.vctx.Token = accessToken
 	s.vctx.Tenant = tenant
 
-	// load specific config
-	s.APIClientName = os.Getenv("API_CLIENT_NAME")
-	require.NotEmpty(s.T(), s.APIClientName, "invalid config: API_CLIENT_NAME is missing")
 	// api client details for creation
-
 	apiClientCreateRawData := `
 clientName: TestClientSabuj
 description: custom TestClientSabuj descriptionn
@@ -121,12 +105,14 @@ idTokenSigningAlg: none
 func (s *APIClientTestSuite) TestAPIClient() {
 	var err error
 	// Create API Client
-	_, err = s.client.CreateAPIClient(s.ctx, &s.apiClientCreateOrPatch)
-	require.NoError(s.T(), err, "unable to create API Client %s; err=%v", s.APIClientName, err)
+	resp, err := s.client.CreateAPIClient(s.ctx, &s.apiClientCreateOrPatch)
+	require.NoError(s.T(), err, "unable to create API Client; err=%v", err)
+	// set the API Client ID
+	apiCleintID := strings.Split(resp, "/")[len(strings.Split(resp, "/"))-1]
 
 	// Get API Client details
-	_, _, err = s.client.GetAPIClientByName(s.ctx, s.APIClientName)
-	require.NoError(s.T(), err, "unable to get API Client %s; err=%v", s.APIClientName, err)
+	_, _, err = s.client.GetAPIClientByID(s.ctx, apiCleintID)
+	require.NoError(s.T(), err, "unable to get API Client; err=%v", err)
 
 	// Get API Client list
 	_, _, err = s.client.GetAPIClients(s.ctx, "", "", 0, 0)
@@ -134,11 +120,11 @@ func (s *APIClientTestSuite) TestAPIClient() {
 
 	// Update API Client
 	err = s.client.UpdateAPIClient(s.ctx, &s.apiClientCreateOrPatch)
-	require.NoError(s.T(), err, "unable to update API Client %s; err=%v", s.APIClientName, err)
+	require.NoError(s.T(), err, "unable to update API Client; err=%v", err)
 
 	// Delete API Client
-	err = s.client.DeleteAPIClientById(s.ctx, s.APIClientName)
-	require.NoError(s.T(), err, "unable to delete API Client %s; err=%v", s.APIClientName, err)
+	err = s.client.DeleteAPIClientById(s.ctx, apiCleintID)
+	require.NoError(s.T(), err, "unable to delete API Client; err=%v", err)
 }
 
 func TestAPIClientTestSuite(t *testing.T) {

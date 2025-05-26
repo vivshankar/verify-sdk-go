@@ -64,7 +64,7 @@ func (c *PrivateKeyJWT) GetParameters() (url.Values, error) {
 		expires = 30 * time.Minute
 	}
 
-	claims := map[string]interface{}{
+	claims := map[string]any{
 		"iss": c.ClientID,
 		"sub": c.ClientID,
 		"aud": []string{
@@ -76,7 +76,7 @@ func (c *PrivateKeyJWT) GetParameters() (url.Values, error) {
 		"jti": uuid.NewString(),
 	}
 
-	h := map[jose.HeaderKey]interface{}{
+	h := map[jose.HeaderKey]any{
 		jose.HeaderKey("alg"): c.PrivateKeyJWK.Algorithm,
 		jose.HeaderKey("typ"): "JWT",
 	}
