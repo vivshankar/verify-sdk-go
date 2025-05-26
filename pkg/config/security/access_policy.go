@@ -24,24 +24,24 @@ type PolicyListResponse struct {
 
 // Policy structure
 type Policy struct {
-	ID                    int              `json:"id" yaml:"id"`
+	ID                    int              `json:"id,omitempty" yaml:"id,omitempty"`
 	Name                  string           `json:"name" yaml:"name"`
 	Description           string           `json:"description" yaml:"description"`
 	Rules                 []*Rule          `json:"rules" yaml:"rules"`
 	Meta                  AccessPolicyMeta `json:"meta" yaml:"meta"`
 	Validations           Validations      `json:"validations" yaml:"validations"`
-	RequiredSubscriptions []string         `json:"requiredSubscriptions" yaml:"requiredSubscriptions"`
+	RequiredSubscriptions []string         `json:"requiredSubscription,omitempty" yaml:"requiredSubscriptions,omitempty"`
 }
 
 // Rule structure
 type Rule struct {
 	ID          string       `json:"id,omitempty" yaml:"id,omitempty"`
-	Name        string       `json:"name" yaml:"name"`
-	Description string       `json:"description" yaml:"description"`
-	AlwaysRun   bool         `json:"alwaysRun" yaml:"alwaysRun"`
-	FirstFactor bool         `json:"firstFactor" yaml:"firstFactor"`
-	Conditions  []*Condition `json:"conditions" yaml:"conditions"`
-	Result      Result       `json:"result" yaml:"result"`
+	Name        string       `json:"name,omitempty" yaml:"name,omitempty"`
+	Description string       `json:"description,omitempty" yaml:"description,omitempty"`
+	AlwaysRun   bool         `json:"alwaysRun,omitempty" yaml:"alwaysRun,omitempty"`
+	FirstFactor bool         `json:"firstFactor,omitempty" yaml:"firstFactor,omitempty"`
+	Conditions  []*Condition `json:"conditions,omitempty" yaml:"conditions,omitempty"`
+	Result      Result       `json:"result,omitempty" yaml:"result,omitempty"`
 }
 
 // Condition represents a policy condition
@@ -75,21 +75,21 @@ type ServerSideAction struct {
 
 // Meta structure
 type AccessPolicyMeta struct {
-	State               string   `json:"state" yaml:"state"`
-	Schema              string   `json:"schema" yaml:"schema"`
-	Revision            int      `json:"revision" yaml:"revision"`
-	Label               string   `json:"label" yaml:"label"`
-	Predefined          bool     `json:"predefined" yaml:"predefined"`
-	Created             int64    `json:"created" yaml:"created"`
-	CreatedBy           string   `json:"createdBy" yaml:"createdBy"`
-	LastActive          int64    `json:"lastActive" yaml:"lastActive"`
-	Modified            int64    `json:"modified" yaml:"modified"`
-	ModifiedBy          string   `json:"modifiedBy" yaml:"modifiedBy"`
-	Scope               []string `json:"scope" yaml:"scope"`
-	EnforcementType     string   `json:"enforcementType" yaml:"enforcementType"`
+	State               string   `json:"state,omitempty" yaml:"state,omitempty"`
+	Schema              string   `json:"schema,omitempty" yaml:"schema,omitempty"`
+	Revision            int      `json:"revision,omitempty" yaml:"revision,omitempty"`
+	Label               string   `json:"label,omitempty" yaml:"label,omitempty"`
+	Predefined          bool     `json:"predefined,omitempty" yaml:"predefined,omitempty"`
+	Created             int64    `json:"created,omitempty" yaml:"created,omitempty"`
+	CreatedBy           string   `json:"createdBy,omitempty" yaml:"createdBy,omitempty"`
+	LastActive          int64    `json:"lastActive,omitempty" yaml:"lastActive,omitempty"`
+	Modified            int64    `json:"modified,omitempty" yaml:"modified,omitempty"`
+	ModifiedBy          string   `json:"modifiedBy,omitempty" yaml:"modifiedBy,omitempty"`
+	Scope               []string `json:"scope,omitempty" yaml:"scope,omitempty"`
+	EnforcementType     string   `json:"enforcementType,omitempty" yaml:"enforcementType,omitempty"`
 	ReferencedBy        []string `json:"referencedBy,omitempty" yaml:"referencedBy,omitempty"`
 	References          []string `json:"references,omitempty" yaml:"references,omitempty"`
-	TenantDefaultPolicy bool     `json:"tenantDefaultPolicy" yaml:"tenantDefaultPolicy"`
+	TenantDefaultPolicy bool     `json:"tenantDefaultPolicy,omitempty" yaml:"tenantDefaultPolicy,omitempty"`
 }
 
 // Validations structure

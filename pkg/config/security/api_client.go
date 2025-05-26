@@ -19,6 +19,10 @@ type APIClient struct {
 
 type APIClientListResponse = openapi.APIClientConfigPaginatedResponseContainer
 type APIClientConfig = openapi.APIClientConfig
+type APIClientConfigIPFilterOp = openapi.APIClientConfigIPFilterOp
+type APIClientOverrideSettings = openapi.APIClientOverrideSettings
+type APIClientScopes = openapi.APIClientScopes
+type APIClientAdditionalConfig = openapi.APIClientAdditionalConfig
 
 func NewAPIClient() *APIClient {
 	return &APIClient{}
