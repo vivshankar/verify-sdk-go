@@ -38,8 +38,8 @@ type Rule struct {
 	ID          string       `json:"id,omitempty" yaml:"id,omitempty"`
 	Name        string       `json:"name,omitempty" yaml:"name,omitempty"`
 	Description string       `json:"description,omitempty" yaml:"description,omitempty"`
-	AlwaysRun   bool         `json:"alwaysRun,omitempty" yaml:"alwaysRun,omitempty"`
-	FirstFactor bool         `json:"firstFactor,omitempty" yaml:"firstFactor,omitempty"`
+	AlwaysRun   bool         `json:"alwaysRun" yaml:"alwaysRun"`
+	FirstFactor bool         `json:"firstFactor" yaml:"firstFactor"`
 	Conditions  []*Condition `json:"conditions,omitempty" yaml:"conditions,omitempty"`
 	Result      Result       `json:"result,omitempty" yaml:"result,omitempty"`
 }
@@ -79,7 +79,7 @@ type AccessPolicyMeta struct {
 	Schema              string   `json:"schema,omitempty" yaml:"schema,omitempty"`
 	Revision            int      `json:"revision,omitempty" yaml:"revision,omitempty"`
 	Label               string   `json:"label,omitempty" yaml:"label,omitempty"`
-	Predefined          bool     `json:"predefined,omitempty" yaml:"predefined,omitempty"`
+	Predefined          bool     `json:"predefined" yaml:"predefined"`
 	Created             int64    `json:"created,omitempty" yaml:"created,omitempty"`
 	CreatedBy           string   `json:"createdBy,omitempty" yaml:"createdBy,omitempty"`
 	LastActive          int64    `json:"lastActive,omitempty" yaml:"lastActive,omitempty"`
@@ -89,7 +89,7 @@ type AccessPolicyMeta struct {
 	EnforcementType     string   `json:"enforcementType,omitempty" yaml:"enforcementType,omitempty"`
 	ReferencedBy        []string `json:"referencedBy,omitempty" yaml:"referencedBy,omitempty"`
 	References          []string `json:"references,omitempty" yaml:"references,omitempty"`
-	TenantDefaultPolicy bool     `json:"tenantDefaultPolicy,omitempty" yaml:"tenantDefaultPolicy,omitempty"`
+	TenantDefaultPolicy bool     `json:"tenantDefaultPolicy" yaml:"tenantDefaultPolicy"`
 }
 
 // Validations structure
@@ -320,4 +320,31 @@ func (c *PolicyClient) GetAccessPolicyID(ctx context.Context, name string) (stri
 		return "", fmt.Errorf("ID not found or invalid type")
 	}
 	return fmt.Sprintf("%d", int(id)), nil
+}
+
+func AccessPolicyExample() *Policy {
+	var accessPolicy *Policy = &Policy{}
+	// add rule
+	accessPolicy.Rules = []*Rule{
+		{
+			AlwaysRun:   false,
+			FirstFactor: false,
+			Result: Result{
+				Action:       " ",
+				AuthnMethods: []string{" "},
+			},
+		},
+	}
+	// add meta
+	accessPolicy.Meta = AccessPolicyMeta{
+		State:               " ",
+		Schema:              "urn:access:policy:5.0:schema",
+		Revision:            1,
+		Label:               " ",
+		Predefined:          false,
+		Scope:               []string{" "},
+		EnforcementType:     "",
+		TenantDefaultPolicy: false,
+	}
+	return accessPolicy
 }

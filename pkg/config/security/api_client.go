@@ -19,10 +19,6 @@ type APIClient struct {
 
 type APIClientListResponse = openapi.APIClientConfigPaginatedResponseContainer
 type APIClientConfig = openapi.APIClientConfig
-type APIClientConfigIPFilterOp = openapi.APIClientConfigIPFilterOp
-type APIClientOverrideSettings = openapi.APIClientOverrideSettings
-type APIClientScopes = openapi.APIClientScopes
-type APIClientAdditionalConfig = openapi.APIClientAdditionalConfig
 
 func NewAPIClient() *APIClient {
 	return &APIClient{}
@@ -356,4 +352,31 @@ func (c *APIClient) getAPIClientId(ctx context.Context, clientName string) (stri
 
 	vc.Logger.Infof("no exact match found for clientName %s", clientName)
 	return "", errorsx.G11NError("no API client found with exact clientName %s", clientName)
+}
+
+func APIClientExample() *APIClientConfig {
+	var apiClient *APIClientConfig = &APIClientConfig{}
+	dummyBool := true
+	dummyStr := " "
+	dummyMap := map[string]interface{}{" ": " "}
+	dummyIPFilterOp := openapi.APIClientConfigIPFilterOp(" ")
+	apiClient.Entitlements = []string{" "}
+	apiClient.Enabled = &dummyBool
+	apiClient.Description = &dummyStr
+	apiClient.IPFilterOp = &dummyIPFilterOp
+	apiClient.IPFilters = &[]string{" "}
+	apiClient.JwkURI = &dummyStr
+	apiClient.AdditionalProperties = &dummyMap
+	apiClient.OverrideSettings = &openapi.APIClientOverrideSettings{
+		RestrictScopes: &dummyBool,
+		Scopes: &[]openapi.APIClientScopes{
+			{Name: &dummyStr, Description: &dummyStr},
+		},
+	}
+	apiClient.AdditionalConfig = &openapi.APIClientAdditionalConfig{
+		ClientAuthMethod:                       &dummyStr,
+		ValidateClientAssertionJti:             &dummyBool,
+		AllowedClientAssertionVerificationKeys: &[]string{" "},
+	}
+	return apiClient
 }

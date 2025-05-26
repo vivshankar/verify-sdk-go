@@ -16,9 +16,13 @@ type IdentitySourceClient struct {
 	Client *http.Client
 }
 
+type SignInOptions struct {
+	InstanceName string                   `json:"instanceName" yaml:"instanceName"`
+	Properties   []map[string]interface{} `json:"properties" yaml:"properties"`
+}
+
 type IdentitySource = openapi.IdentitySourceInstancesData
 type IdentitySourceList = openapi.IdentitySourceIntancesDataList
-type IdentitySourceInstancesPropertiesData = openapi.IdentitySourceInstancesPropertiesData
 
 func NewIdentitySourceClient() *IdentitySourceClient {
 	return &IdentitySourceClient{}
@@ -203,4 +207,50 @@ func (c *IdentitySourceClient) UpdateSignInOptions(ctx context.Context, identity
 	}
 
 	return nil
+}
+
+func IdentitySourceExample() *IdentitySource {
+	var identitySource *IdentitySource = &IdentitySource{}
+	identitySource.Properties = append(identitySource.Properties, openapi.IdentitySourceInstancesPropertiesData{Key: "", Value: "", Sensitive: false})
+	return identitySource
+}
+
+// This function helps in boilerplate generation to update Sign in options
+func SignInOptionsExample() *SignInOptions {
+	var signInOptions = &SignInOptions{
+		InstanceName: "",
+		Properties: []map[string]interface{}{
+			{
+				"key":       "show_admin_user",
+				"value":     "false",
+				"sensitive": false,
+			},
+			{
+				"key":       "show_admin_user_qr",
+				"value":     "false",
+				"sensitive": false,
+			},
+			{
+				"key":       "show_admin_user_fido",
+				"value":     "false",
+				"sensitive": false,
+			},
+			{
+				"key":       "show_end_user",
+				"value":     "false",
+				"sensitive": false,
+			},
+			{
+				"key":       "show_end_user_qr",
+				"value":     "false",
+				"sensitive": false,
+			},
+			{
+				"key":       "show_end_user_fido",
+				"value":     "false",
+				"sensitive": false,
+			},
+		},
+	}
+	return signInOptions
 }
