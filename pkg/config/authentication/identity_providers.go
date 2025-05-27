@@ -4,7 +4,9 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
+	"net/url"
 
 	"github.com/ibm-verify/verify-sdk-go/internal/openapi"
 
@@ -16,9 +18,13 @@ type IdentitySourceClient struct {
 	Client *http.Client
 }
 
+type SignInOptions struct {
+	InstanceName string                   `json:"instanceName" yaml:"instanceName"`
+	Properties   []map[string]interface{} `json:"properties" yaml:"properties"`
+}
+
 type IdentitySource = openapi.IdentitySourceInstancesData
 type IdentitySourceList = openapi.IdentitySourceIntancesDataList
-type IdentitySourceInstancesPropertiesData = openapi.IdentitySourceInstancesPropertiesData
 
 func NewIdentitySourceClient() *IdentitySourceClient {
 	return &IdentitySourceClient{}
@@ -90,8 +96,7 @@ func (c *IdentitySourceClient) GetIdentitySourceByID(ctx context.Context, identi
 	return IdentitySource, resp.HTTPResponse.Request.URL.String(), nil
 }
 
-func (c *IdentitySourceClient) GetIdentitySources(ctx context.Context, sort string, count string) (*IdentitySourceList, string, error) {
-
+func (c *IdentitySourceClient) GetIdentitySources(ctx context.Context, sort string, count string, page int, limit int) (*IdentitySourceList, string, error) {
 	vc := contextx.GetVerifyContext(ctx)
 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
 	params := &openapi.GetInstancesV2Params{}
@@ -101,7 +106,19 @@ func (c *IdentitySourceClient) GetIdentitySources(ctx context.Context, sort stri
 	if len(count) > 0 {
 		params.Count = &count
 	}
+	pagination := url.Values{}
+	if page > 0 {
+		pagination.Set("page", fmt.Sprintf("%d", page))
+	}
 
+	if limit > 0 {
+		pagination.Set("limit", fmt.Sprintf("%d", limit))
+	}
+
+	if len(pagination) > 0 {
+		paginationStr := pagination.Encode()
+		params.Pagination = &paginationStr
+	}
 	headers := &openapi.Headers{
 		Token:  vc.Token,
 		Accept: "application/json",
@@ -203,4 +220,50 @@ func (c *IdentitySourceClient) UpdateSignInOptions(ctx context.Context, identity
 	}
 
 	return nil
+}
+
+func IdentitySourceExample() *IdentitySource {
+	var identitySource *IdentitySource = &IdentitySource{}
+	identitySource.Properties = append(identitySource.Properties, openapi.IdentitySourceInstancesPropertiesData{Key: "", Value: "", Sensitive: false})
+	return identitySource
+}
+
+// This function helps in boilerplate generation to update Sign in options
+func SignInOptionsExample() *SignInOptions {
+	var signInOptions = &SignInOptions{
+		InstanceName: "",
+		Properties: []map[string]interface{}{
+			{
+				"key":       "show_admin_user",
+				"value":     "false",
+				"sensitive": false,
+			},
+			{
+				"key":       "show_admin_user_qr",
+				"value":     "false",
+				"sensitive": false,
+			},
+			{
+				"key":       "show_admin_user_fido",
+				"value":     "false",
+				"sensitive": false,
+			},
+			{
+				"key":       "show_end_user",
+				"value":     "false",
+				"sensitive": false,
+			},
+			{
+				"key":       "show_end_user_qr",
+				"value":     "false",
+				"sensitive": false,
+			},
+			{
+				"key":       "show_end_user_fido",
+				"value":     "false",
+				"sensitive": false,
+			},
+		},
+	}
+	return signInOptions
 }

@@ -527,3 +527,217 @@ func (c *ApplicationClient) DeleteApplicationByID(ctx context.Context, appliacti
 
 	return nil
 }
+
+func ApplicationExample(applicationType string) *Application {
+	var application *Application = &Application{}
+	// setting common fields
+	application.VisibleOnLaunchpad = true
+	application.ApplicationState = true
+	application.Description = " "
+	application.TemplateID = " "
+	if applicationType == "saml" {
+		application.Owners = append(application.Owners, " ")
+		// set target
+		application.Target = map[string]bool{
+			"connectedApp_SalesforceChatter":      true,
+			"connectedApp_DataDotcom":             false,
+			"connectedApp_SalesforceSalesCloud":   false,
+			"connectedApp_SalesforceServiceCloud": false,
+		}
+		// set providers
+		application.Providers = Providers{
+			SAML: SAML{
+				JustInTimeProvisioning: "false",
+				Properties: SAMLProperties{
+					CompanyName:                 " ",
+					GenerateUniqueID:            "false",
+					ValidateAuthnRequest:        "false",
+					EncryptAssertion:            "false",
+					ICIReservedSubjectNameID:    " ",
+					IncludeAllAttributes:        "true",
+					UniqueID:                    " ",
+					ProviderID:                  " ",
+					AssertionConsumerServiceURL: " ",
+				},
+			},
+			SSO: SSO{
+				DomainName:  " ",
+				UserOptions: "saml",
+			},
+		}
+		// set provisioning
+		application.Provisioning = Provisioning{
+			Policies: ProvisioningPolicies{
+				GracePeriod:  1,
+				ProvPolicy:   "disabled",
+				DeProvPolicy: "disabled",
+				DeProvAction: "suspend",
+				AdoptionPolicy: AdoptionPolicy{
+					MatchingAttributes: []*AttributeMapping{},
+					RemediationPolicy: map[string]string{
+						"policy": "NONE",
+					},
+				},
+			},
+		}
+	} else if applicationType == "aclc" {
+		// set provisioning
+		application.Provisioning = Provisioning{
+			Extension: Extension{
+				Properties: map[string]string{
+					"endpointBaseUrl": "",
+				},
+			},
+			AttributeMappings: []*AttributeMapping{
+				{TargetName: " ", SourceID: " ", OutboundTracking: true},
+			},
+			ReverseAttributeMappings: []*AttributeMapping{
+				{TargetName: " ", SourceID: " ", OutboundTracking: true},
+			},
+			Policies: ProvisioningPolicies{
+				ProvPolicy:   "automatic",
+				DeProvPolicy: "automatic",
+				DeProvAction: "delete",
+				GracePeriod:  0,
+				AdoptionPolicy: AdoptionPolicy{
+					MatchingAttributes: []*AttributeMapping{
+						{TargetName: " ", SourceID: " "},
+					},
+					RemediationPolicy: map[string]string{
+						"policy": "NONE",
+					},
+				},
+			},
+			Authentication: Authentication{
+				Properties: map[string]string{
+					"pwd_client_secret": " ",
+					"client_id":         " ",
+				},
+			},
+			SendNotifications: true,
+		}
+		// set Provider
+		application.Providers = Providers{
+			SSO: SSO{
+				DomainName:  " ",
+				UserOptions: " ",
+			},
+			SAML: SAML{
+				JustInTimeProvisioning: "false",
+				Properties: SAMLProperties{
+					CompanyName: " ",
+				},
+			},
+			Bookmark: Bookmark{
+				BookmarkURL: " ",
+			},
+		}
+	} else if applicationType == "oidc" {
+		// set providers
+		application.Providers = Providers{
+			SSO: SSO{
+				UserOptions: "oidc",
+			},
+			SAML: SAML{
+				Properties: SAMLProperties{
+					CompanyName: " ",
+					UniqueID:    " ",
+				},
+			},
+			OIDC: OIDC{
+				Properties: OIDCProperties{
+					DoNotGenerateClientSecret: "false",
+					GenerateRefreshToken:      "false",
+					RenewRefreshToken:         "true",
+					IDTokenEncryptAlg:         "none",
+					IDTokenEncryptEnc:         "none",
+					GrantTypes: GrantTypes{
+						AuthorizationCode: true,
+						Implicit:          true,
+						ClientCredentials: true,
+						ROPC:              true,
+						TokenExchange:     true,
+						DeviceFlow:        true,
+						JWTBearer:         true,
+						PolicyAuth:        true,
+					},
+					AccessTokenExpiry:  1,
+					RefreshTokenExpiry: 1,
+					IDTokenSigningAlg:  "RS256",
+					RedirectURIs:       []interface{}{" ", " "},
+					AdditionalConfig: OIDCAdditionalConfig{
+						Oidcv3:                                 true,
+						RequestObjectParametersOnly:            "false",
+						RequestObjectSigningAlg:                "RS256",
+						RequestObjectRequireExp:                "true",
+						CertificateBoundAccessTokens:           "false",
+						DpopBoundAccessTokens:                  "false",
+						ValidateDPoPProofJti:                   "false",
+						DpopProofSigningAlg:                    "RS256",
+						AuthorizeRspSigningAlg:                 "RS256",
+						AuthorizeRspEncryptionAlg:              "none",
+						AuthorizeRspEncryptionEnc:              "none",
+						ResponseTypes:                          []string{"none", "code"},
+						ResponseModes:                          []string{"query", "fragment", "form_post", "query.jwt", "fragment.jwt", "form_post.jwt"},
+						ClientAuthMethod:                       "default",
+						RequirePushAuthorize:                   "false",
+						RequestObjectMaxExpFromNbf:             1,
+						ExchangeForSSOSessionOption:            "default",
+						SubjectTokenTypes:                      []string{"urn:ietf:params:oauth:token-type:access_token"},
+						ActorTokenTypes:                        []string{"urn:ietf:params:oauth:token-type:access_token"},
+						RequestedTokenTypes:                    []string{"urn:ietf:params:oauth:token-type:access_token"},
+						ActorTokenRequired:                     true,
+						LogoutOption:                           "none",
+						SessionRequired:                        true,
+						RequestUris:                            []string{" "},
+						AllowedClientAssertionVerificationKeys: []string{" ", " "},
+					},
+				},
+				Token: Token{
+					AccessTokenType: "default",
+					Audiences:       []interface{}{" "},
+				},
+				GrantProperties: GrantProperties{
+					GenerateDeviceFlowQRCode: "false",
+				},
+				RequirePKCEVerification: "true",
+				ConsentAction:           "always_promt",
+				ApplicationURL:          " ",
+				RestrictEntitlements:    true,
+			},
+		}
+
+	} else if applicationType == "bookmark" {
+		// set provisioning
+		application.Provisioning = Provisioning{
+			Policies: ProvisioningPolicies{
+				GracePeriod:  1,
+				ProvPolicy:   "disabled",
+				DeProvPolicy: "disabled",
+				DeProvAction: "delete",
+				AdoptionPolicy: AdoptionPolicy{
+					MatchingAttributes: []*AttributeMapping{},
+					RemediationPolicy: map[string]string{
+						"policy": "NONE",
+					},
+				},
+			},
+		}
+		// set providers
+		application.Providers = Providers{
+			SAML: SAML{
+				Properties: SAMLProperties{
+					CompanyName: " ",
+				},
+			},
+			SSO: SSO{
+				UserOptions:            "applicationBookmark",
+				IDPInitiatedSSOSupport: "false",
+			},
+			Bookmark: Bookmark{
+				BookmarkURL: " ",
+			},
+		}
+	}
+	return application
+}

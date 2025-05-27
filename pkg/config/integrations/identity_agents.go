@@ -20,8 +20,6 @@ type IdentityAgentClient struct {
 
 type IdentityAgentListResponse = []openapi.OnpremAgentConfiguration
 type IdentityAgentConfig = openapi.OnpremAgentConfiguration
-type OnpremAgentConfigurationPurpose = openapi.OnpremAgentConfigurationPurpose
-type OnpremAgentConfigReference = openapi.OnpremAgentConfigReference
 
 func NewIdentityAgentClient() *IdentityAgentClient {
 	return &IdentityAgentClient{}
@@ -208,4 +206,60 @@ func (c *IdentityAgentClient) DeleteIdentityAgentByID(ctx context.Context, ident
 		return errorsx.G11NError("unable to delete the Identity Agent; code=%d, body=%s", response.StatusCode(), string(response.Body))
 	}
 	return nil
+}
+
+func IdentityAgentExample(identityType string) *IdentityAgentConfig {
+	var identityAgent *IdentityAgentConfig = &IdentityAgentConfig{}
+	identityAgent.Purpose = (*openapi.OnpremAgentConfigurationPurpose)(&identityType)
+	timeoutVal := int32(1)
+	identityAgent.AuthnCacheTimeout = &timeoutVal
+	certLavel := " "
+	identityAgent.CertLabel = &certLavel
+	identityAgent.References = &[]openapi.OnpremAgentConfigReference{{}}
+	if identityType == "PROV" {
+		identityAgent.Modules = append(identityAgent.Modules, map[string]map[string]interface{}{
+			"external": {
+				"caCerts":  "",
+				"id":       "",
+				"password": "",
+				"uri":      []string{},
+			},
+		})
+	} else if identityType == "LDAPAUTH" {
+		identityAgent.Modules = append(identityAgent.Modules, map[string]map[string]interface{}{
+			"ldapauth": {
+				"ldapBindPwd":               "",
+				"ldapBindDn":                "",
+				"ldapCACerts":               "",
+				"ldapConnIdleTime":          0,
+				"ldapConnMaxTime":           0,
+				"ldapFetchAttributes":       []string{},
+				"ldapFetchBinaryAttributes": []string{},
+				"ldapMaxConnections":        0,
+				"ldapRequestTimeout":        0,
+				"ldapSearchBase":            "o=ibm,c=us",
+				"ldapStartTls":              false,
+				"ldapUri":                   []string{},
+				"ldapUsernameAttribute":     "",
+				"ldapUserSearchObjectclass": []string{},
+			},
+		})
+	} else if identityType == "EXTAUTHN" {
+		identityAgent.Modules = append(identityAgent.Modules, map[string]map[string]interface{}{
+			"extauthn": {
+				"authentication": map[string]interface{}{
+					"type": "",
+					"basic": map[string]interface{}{
+						"username": "",
+						"password": "",
+					},
+				},
+
+				"caCerts":         "",
+				"uris":            []string{},
+				"fetchAttributes": []string{},
+			},
+		})
+	}
+	return identityAgent
 }
