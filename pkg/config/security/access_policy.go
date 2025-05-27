@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"net/url"
 	"strconv"
 
 	"github.com/ibm-verify/verify-sdk-go/internal/openapi"
@@ -184,15 +185,29 @@ func (c *PolicyClient) GetAccessPolicy(ctx context.Context, policyID string) (*P
 	return AccessPolicy, response.HTTPResponse.Request.URL.String(), nil
 }
 
-func (c *PolicyClient) GetAccessPolicies(ctx context.Context) (*PolicyListResponse, string, error) {
+func (c *PolicyClient) GetAccessPolicies(ctx context.Context, page int, limit int) (*PolicyListResponse, string, error) {
 
 	vc := contextx.GetVerifyContext(ctx)
 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
+	params := &openapi.ListAccessPoliciesParams{}
+	pagination := url.Values{}
+	if page > 0 {
+		pagination.Set("page", fmt.Sprintf("%d", page))
+	}
+
+	if limit > 0 {
+		pagination.Set("limit", fmt.Sprintf("%d", limit))
+	}
+
+	if len(pagination) > 0 {
+		paginationStr := pagination.Encode()
+		params.Pagination = &paginationStr
+	}
 	headers := &openapi.Headers{
 		Accept: "application/json",
 		Token:  vc.Token,
 	}
-	response, err := client.ListAccessPoliciesWithResponse(ctx, &openapi.ListAccessPoliciesParams{}, openapi.DefaultRequestEditors(ctx, headers)...)
+	response, err := client.ListAccessPoliciesWithResponse(ctx, params, openapi.DefaultRequestEditors(ctx, headers)...)
 
 	if err != nil {
 		vc.Logger.Errorf("unable to get the Access Policies; err=%s", err.Error())

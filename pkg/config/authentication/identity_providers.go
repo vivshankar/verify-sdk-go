@@ -4,7 +4,9 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
+	"net/url"
 
 	"github.com/ibm-verify/verify-sdk-go/internal/openapi"
 
@@ -94,8 +96,7 @@ func (c *IdentitySourceClient) GetIdentitySourceByID(ctx context.Context, identi
 	return IdentitySource, resp.HTTPResponse.Request.URL.String(), nil
 }
 
-func (c *IdentitySourceClient) GetIdentitySources(ctx context.Context, sort string, count string) (*IdentitySourceList, string, error) {
-
+func (c *IdentitySourceClient) GetIdentitySources(ctx context.Context, sort string, count string, page int, limit int) (*IdentitySourceList, string, error) {
 	vc := contextx.GetVerifyContext(ctx)
 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
 	params := &openapi.GetInstancesV2Params{}
@@ -105,7 +106,19 @@ func (c *IdentitySourceClient) GetIdentitySources(ctx context.Context, sort stri
 	if len(count) > 0 {
 		params.Count = &count
 	}
+	pagination := url.Values{}
+	if page > 0 {
+		pagination.Set("page", fmt.Sprintf("%d", page))
+	}
 
+	if limit > 0 {
+		pagination.Set("limit", fmt.Sprintf("%d", limit))
+	}
+
+	if len(pagination) > 0 {
+		paginationStr := pagination.Encode()
+		params.Pagination = &paginationStr
+	}
 	headers := &openapi.Headers{
 		Token:  vc.Token,
 		Accept: "application/json",
