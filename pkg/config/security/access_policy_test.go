@@ -206,7 +206,7 @@ func (s *AccessPolicyTestSuite) TestAccessPolicy() {
 	require.NoError(s.T(), err, "unable to get Access Policy %s; err=%v", policyID, err)
 
 	// Get Access Policy list
-	_, _, err = s.client.GetAccessPolicies(s.ctx)
+	_, _, err = s.client.GetAccessPolicies(s.ctx, 1, 1)
 	require.NoError(s.T(), err, "unable to list Access Policies; err=%v", err)
 
 	// Update Access Policy
