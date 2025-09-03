@@ -126,7 +126,7 @@ func (s *IdentityProvidersTestSuite) TestIdentityProviders() {
 	require.NoError(s.T(), err, "unable to get Identity Provider %s; err=%v", identitySourceID, err)
 
 	// Get Identity Provider list
-	_, _, err = s.client.GetIdentitySources(s.ctx, "", "")
+	_, _, err = s.client.GetIdentitySources(s.ctx, "", "", 1, 1)
 	require.NoError(s.T(), err, "unable to list Identity Providers; err=%v", err)
 
 	// Update Identity Provider

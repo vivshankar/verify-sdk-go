@@ -299,3 +299,30 @@ func (c *PasswordPolicyClient) GetPasswordPolicyID(ctx context.Context, PolicyNa
 
 	return "", errorsx.G11NError("no valid non-predefined policy found with name: %s", PolicyName)
 }
+
+func PasswordPolicyExample() *PasswordPolicy {
+	var passwordPolicy *PasswordPolicy = &PasswordPolicy{}
+	passwordPolicy.PolicyDescription = " "
+	passwordPolicy.Schemas = []string{"urn:ietf:params:scim:schemas:ibm:core:3.0:policy:Password"}
+	passwordPolicy.PasswordSecurity = PasswordSecurity{
+		PwdInHistory:       1,
+		PwdLockout:         true,
+		PwdLockoutDuration: 1,
+		PwdMaxAge:          1,
+		PwdMaxFailure:      1,
+		PwdMinAge:          1,
+	}
+	passwordPolicy.PasswordStrength = PasswordStrength{
+		PasswordMaxConsecutiveRepeatedChars: 1,
+		PasswordMaxRepeatedChars:            1,
+		PasswordMinAlphaChars:               1,
+		PasswordMinDiffChars:                1,
+		PasswordMinLowerCaseChars:           1,
+		PasswordMinNumberChars:              1,
+		PasswordMinOtherChars:               1,
+		PasswordMinSpecialChars:             1,
+		PasswordMinUpperCaseChars:           1,
+		PwdMinLength:                        1,
+	}
+	return passwordPolicy
+}
