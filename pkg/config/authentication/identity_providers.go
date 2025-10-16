@@ -19,8 +19,8 @@ type IdentitySourceClient struct {
 }
 
 type SignInOptions struct {
-	InstanceName string                   `json:"instanceName" yaml:"instanceName"`
-	Properties   []map[string]interface{} `json:"properties" yaml:"properties"`
+	InstanceName string           `json:"instanceName" yaml:"instanceName"`
+	Properties   []map[string]any `json:"properties" yaml:"properties"`
 }
 
 type IdentitySource = openapi.IdentitySourceInstancesData
@@ -52,7 +52,7 @@ func (c *IdentitySourceClient) CreateIdentitySource(ctx context.Context, identit
 	}
 
 	if resp.StatusCode() != http.StatusCreated {
-		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, "unable to create identitySource"); err != nil {
+		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, resp.Body, "unable to create identitySource"); err != nil {
 			vc.Logger.Errorf("unable to create the identitySource; err=%s", err.Error())
 			return "", errorsx.G11NError("unable to create the identitySource; err=%s", err.Error())
 		}
@@ -79,7 +79,7 @@ func (c *IdentitySourceClient) GetIdentitySourceByID(ctx context.Context, identi
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, "unable to get IdentitySource"); err != nil {
+		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, resp.Body, "unable to get IdentitySource"); err != nil {
 			vc.Logger.Errorf("unable to get the IdentitySource; err=%s", err.Error())
 			return nil, "", err
 		}
@@ -130,7 +130,7 @@ func (c *IdentitySourceClient) GetIdentitySources(ctx context.Context, sort stri
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, "unable to get IdentitySources"); err != nil {
+		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, resp.Body, "unable to get IdentitySources"); err != nil {
 			vc.Logger.Errorf("unable to get the IdentitySources; err=%s", err.Error())
 			return nil, "", err
 		}
@@ -163,7 +163,7 @@ func (c *IdentitySourceClient) DeleteIdentitySourceByID(ctx context.Context, ide
 	}
 
 	if resp.StatusCode() != http.StatusNoContent {
-		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, "unable to delete IdentitySource"); err != nil {
+		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, resp.Body, "unable to delete IdentitySource"); err != nil {
 			vc.Logger.Errorf("unable to delete the IdentitySource; err=%s", err.Error())
 			return errorsx.G11NError("unable to delete the IdentitySource; err=%s", err.Error())
 		}
@@ -191,7 +191,7 @@ func (c *IdentitySourceClient) UpdateIdentitySource(ctx context.Context, identit
 	}
 	resp, err := client.UpdateIdentitySourceV2WithBodyWithResponse(ctx, identitySourceID, "application/json", bytes.NewBuffer(body), openapi.DefaultRequestEditors(ctx, headers)...)
 	if err != nil {
-		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, "unable to update Identity provider"); err != nil {
+		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, resp.Body, "unable to update Identity provider"); err != nil {
 			vc.Logger.Errorf("unable to update the Identity provider; err=%s", err.Error())
 			return err
 		}
@@ -209,12 +209,12 @@ func (c *IdentitySourceClient) UpdateIdentitySource(ctx context.Context, identit
 
 func (c *IdentitySourceClient) UpdateSignInOptions(ctx context.Context, identitySource *IdentitySource) error {
 	vc := contextx.GetVerifyContext(ctx)
-	if identitySource.ID == "" {
+	if identitySource.ID == nil || *identitySource.ID == "" {
 		vc.Logger.Errorf("'id' cannot be empty")
 		return errorsx.G11NError("'id' cannot be empty")
 	}
 
-	if err := c.UpdateIdentitySource(ctx, identitySource.ID, identitySource); err != nil {
+	if err := c.UpdateIdentitySource(ctx, *identitySource.ID, identitySource); err != nil {
 		vc.Logger.Errorf("unable to update the IdentitySource with 'id' %s; err=%s", identitySource.ID, err.Error())
 		return errorsx.G11NError("unable to update the IdentitySource with 'id' %s; err=%s", identitySource.ID, err.Error())
 	}
@@ -232,7 +232,7 @@ func IdentitySourceExample() *IdentitySource {
 func SignInOptionsExample() *SignInOptions {
 	var signInOptions = &SignInOptions{
 		InstanceName: "",
-		Properties: []map[string]interface{}{
+		Properties: []map[string]any{
 			{
 				"key":       "show_admin_user",
 				"value":     "false",

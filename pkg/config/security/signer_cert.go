@@ -60,7 +60,7 @@ func (c *SignerCertClient) CreateSignerCert(ctx context.Context, SignerCert *Sig
 		return "", errorsx.G11NError("unable to create Signer certificate")
 	}
 	if resp.StatusCode() != http.StatusCreated {
-		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, "unable to create Signer certificate"); err != nil {
+		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, resp.Body, "unable to create Signer certificate"); err != nil {
 			vc.Logger.Errorf("unable to create the Signer certificate; err=%s", err.Error())
 			return "", err
 		}
@@ -94,7 +94,7 @@ func (c *SignerCertClient) DeleteSignerCert(ctx context.Context, label string) e
 	}
 
 	if resp.StatusCode() != http.StatusNoContent && resp.StatusCode() != http.StatusOK {
-		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, "unable to delete Signer certificate"); err != nil {
+		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, resp.Body, "unable to delete Signer certificate"); err != nil {
 			vc.Logger.Errorf("unable to delete the Signer certificate; err=%s", err.Error())
 			return err
 		}
@@ -120,7 +120,7 @@ func (c *SignerCertClient) GetSignerCerts(ctx context.Context, sort string, coun
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, "unable to get Signer certificates"); err != nil {
+		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, resp.Body, "unable to get Signer certificates"); err != nil {
 			vc.Logger.Errorf("unable to get Signer certificates; err=%s", err.Error())
 			return nil, "", err
 		}
@@ -156,19 +156,18 @@ func (c *SignerCertClient) GetSignerCert(ctx context.Context, label string) (*Si
 		return nil, "", errorsx.G11NError("unable to get Signer certificate with label %s; err=%s", label, err.Error())
 	}
 	defer func() { _ = resp.Body.Close() }()
-
-	if resp.StatusCode != http.StatusOK {
-		if err := errorsx.HandleCommonErrors(ctx, resp, "unable to get Signer certificate"); err != nil {
-			vc.Logger.Errorf("unable to get Signer certificate; err=%s", err.Error())
-			return nil, "", err
-		}
-		return nil, "", errorsx.G11NError("unable to get Signer certificate; status code=%d", resp.StatusCode)
-	}
-
 	buf, err := io.ReadAll(resp.Body)
 	if err != nil {
 		vc.Logger.Errorf("unable to read Signer certificate body; err=%v", err)
 		return nil, "", errorsx.G11NError("unable to read Signer certificate body: %w", err)
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		if err := errorsx.HandleCommonErrors(ctx, resp, buf, "unable to get Signer certificate"); err != nil {
+			vc.Logger.Errorf("unable to get Signer certificate; err=%s", err.Error())
+			return nil, "", err
+		}
+		return nil, "", errorsx.G11NError("unable to get Signer certificate; status code=%d", resp.StatusCode)
 	}
 
 	var certResponse struct {

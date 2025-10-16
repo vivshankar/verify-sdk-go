@@ -1,7 +1,10 @@
 // Package types extends Go types
 package types
 
-import "strings"
+import (
+	"fmt"
+	"strings"
+)
 
 const replacement = ""
 
@@ -27,4 +30,16 @@ func String(obj any) string {
 
 func RemoveNewline(str string) string {
 	return newlineReplacer.Replace(str)
+}
+
+func AddDoubleQuotesIfNotFound(s string) string {
+	firstChar := s[0]
+	lastChar := s[len(s)-1]
+
+	// Check for double quotes
+	if firstChar == '"' && lastChar == '"' {
+		return s
+	}
+
+	return fmt.Sprintf("\"%s\"", s)
 }

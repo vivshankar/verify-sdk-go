@@ -92,6 +92,88 @@ def transform(doc):
     del doc["components"]["schemas"]["AssignmentFilter"]["properties"]["assignmentTypes"]["enum"]
     del doc["components"]["schemas"]["AssignmentFilter"]["properties"]["assignmentStatus"]["enum"]
 
+    # 6) Fix the attributes API response
+    doc["paths"]["/v1.0/attributes"]["get"]["responses"]["200"]["content"]["application/json"]["schema"] = {
+        "anyOf": [
+            {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/Attribute_0"
+                }
+            },
+            {
+                "$ref": "#/components/schemas/PaginatedAttribute_0"
+            }
+        ]
+    }
+
+    doc["components"]["schemas"]["PaginatedAttribute_0"] = {
+                "required": [
+                    "limit",
+                    "page",
+                    "total",
+                    "count",
+                    "attributes"
+                ],
+                "type": "object",
+                "properties": {
+                    "limit": {
+                        "type": "integer"
+                    },
+                    "page": {
+                        "type": "integer"
+                    },
+                    "total": {
+                        "type": "integer"
+                    },
+                    "count": {
+                        "type": "integer"
+                    },
+                    "attributes": {
+                        "type": "array",
+                        "description": "list of attributes",
+                        "items": {
+                            "$ref": "#/components/schemas/Attribute_0"
+                        }
+                    }
+                }
+            }
+
+    # 7) Fix the identity sources API
+    doc["paths"]["/v2.0/identitysources"]["get"]["parameters"].append({
+                        "name": "count",
+                        "in": "query",
+                        "description": "The prefix for the count parameter is <b>count=</b>. ",
+                        "schema": {
+                            "type": "string"
+                        }
+                    })
+
+    doc["components"]["schemas"]["IdentitySourceInstancesData"]["properties"]["id"] = {
+                        "type": "string",
+                        "description": "The ID of the identity source",
+                        "example": "00000000-1111-2222-3333-444444444444"
+                    }
+
+    # 8) Fix the  CD objects
+    del doc["components"]["schemas"]["PatchOperation_0"]["properties"]["value"]["type"] # make this object type
+
+    # 9) Fix API clients
+    doc["paths"]["/v1.0/apiclients"]["get"]["responses"]["200"]["content"]["application/json"] = {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIClientConfigPaginatedResponseContainer"
+                                }
+                            }
+    doc["components"]["schemas"]["APIClientConfig"]["properties"]["additionalProperties"] = {
+                        "type": "object",
+                        "description": "additional properties for the client"
+                    }
+
+    # 10) Fix applications
+    doc["components"]["schemas"]["AdminApplicationWithoutProv"]["properties"]["applicationState"]["x-go-type"] = "StringOrBoolean"
+    doc["components"]["schemas"]["AdminApplicationWithoutProv"]["properties"]["approvalRequired"]["x-go-type"] = "StringOrBoolean"
+    doc["components"]["schemas"]["AdminApplicationWithoutProv"]["properties"]["visibleOnLaunchpad"]["x-go-type"] = "StringOrBoolean"
+
     return doc
 
 

@@ -52,7 +52,7 @@ func (c *GroupClient) GetGroupByName(ctx context.Context, groupName string) (*Gr
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, "unable to get Group"); err != nil {
+		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, resp.Body, "unable to get Group"); err != nil {
 			vc.Logger.Errorf("unable to get the Group; err=%s", err.Error())
 			return nil, "", err
 		}
@@ -84,7 +84,7 @@ func (c *GroupClient) GetGroupByID(ctx context.Context, id string) (*Group, stri
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, "unable to get Group"); err != nil {
+		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, resp.Body, "unable to get Group"); err != nil {
 			vc.Logger.Errorf("unable to get the Group; err=%s", err.Error())
 			return nil, "", err
 		}
@@ -126,7 +126,7 @@ func (c *GroupClient) GetGroups(ctx context.Context, sort string, count string) 
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, "unable to get Groups"); err != nil {
+		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, resp.Body, "unable to get Groups"); err != nil {
 			vc.Logger.Errorf("unable to get the Groups; err=%s", err.Error())
 			return nil, "", err
 		}
@@ -185,7 +185,7 @@ func (c *GroupClient) CreateGroup(ctx context.Context, group *Group) (string, er
 	}
 
 	if resp.StatusCode() != http.StatusCreated {
-		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, "unable to create group"); err != nil {
+		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, resp.Body, "unable to create group"); err != nil {
 			vc.Logger.Errorf("unable to create the group; err=%s", err.Error())
 			return "", err
 		}
@@ -222,7 +222,7 @@ func (c *GroupClient) DeleteGroup(ctx context.Context, groupName string) error {
 	}
 
 	if resp.StatusCode() != http.StatusNoContent {
-		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, "unable to delete Group"); err != nil {
+		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, resp.Body, "unable to delete Group"); err != nil {
 			vc.Logger.Errorf("unable to delete the Group; err=%s", err.Error())
 			return errorsx.G11NError("unable to delete the Group; err=%s", err.Error())
 		}
@@ -292,7 +292,7 @@ func (c *GroupClient) UpdateGroup(ctx context.Context, groupName string, operati
 		return errorsx.G11NError("unable to update group; err=%v", err)
 	}
 	if resp.StatusCode() != http.StatusNoContent {
-		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, "unable to update group"); err != nil {
+		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, resp.Body, "unable to update group"); err != nil {
 			vc.Logger.Errorf("unable to update the group; err=%s", err.Error())
 			return err
 		}
@@ -320,7 +320,7 @@ func (c *GroupClient) GetGroupId(ctx context.Context, name string) (string, erro
 		return "", errorsx.G11NError("unable to get the Group with groupName %s; err=%s", name, err.Error())
 	}
 	if resp.StatusCode() != http.StatusOK {
-		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, "unable to get Group"); err != nil {
+		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, resp.Body, "unable to get Group"); err != nil {
 			vc.Logger.Errorf("unable to get the Group with groupName %s; err=%s", name, err.Error())
 			return "", errorsx.G11NError("unable to get the Group with groupName %s; err=%s", name, err.Error())
 		}

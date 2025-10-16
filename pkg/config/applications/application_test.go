@@ -313,6 +313,16 @@ apiAccessClients:
 	_ = yaml.Unmarshal([]byte(applicationPatchRawData), &s.applicationPatch)
 
 	s.client = applications.NewApplicationClient()
+
+	// delete the applications if found
+	if apps, _, err := s.client.GetApplications(s.ctx, fmt.Sprintf("name=%s", s.applicationCreate.Name), "", 1, 1); err == nil && apps.Embedded != nil && apps.Embedded.Applications != nil {
+
+		for _, v := range *apps.Embedded.Applications {
+			appID := v.Links.Self.Href[strings.LastIndex(v.Links.Self.Href, "/")+1:]
+			logger.Infof("Deleting application with ID: %s", appID)
+			_ = s.client.DeleteApplicationByID(s.ctx, appID)
+		}
+	}
 }
 
 func (s *ApplicationTestSuite) TestApplication() {

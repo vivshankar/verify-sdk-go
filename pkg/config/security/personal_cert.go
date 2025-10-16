@@ -63,7 +63,7 @@ func (c *PersonalCertClient) CreatePersonalCert(ctx context.Context, PersonalCer
 		return "", errorsx.G11NError("unable to create personal certificate")
 	}
 	if resp.StatusCode() != http.StatusCreated {
-		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, "unable to create personal certificate"); err != nil {
+		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, resp.Body, "unable to create personal certificate"); err != nil {
 			vc.Logger.Errorf("unable to create the personal certificate; err=%s", err.Error())
 			return "", err
 		}
@@ -104,7 +104,7 @@ func (c *PersonalCertClient) UpdatePersonalCert(ctx context.Context, personalCer
 	}
 
 	if resp.StatusCode() != http.StatusNoContent && resp.StatusCode() != http.StatusOK {
-		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, "unable to update personal certificate"); err != nil {
+		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, resp.Body, "unable to update personal certificate"); err != nil {
 			vc.Logger.Errorf("unable to update the personal certificate; err=%s", err.Error())
 			return err
 		}
@@ -134,7 +134,7 @@ func (c *PersonalCertClient) DeletePersonalCert(ctx context.Context, label strin
 	}
 
 	if resp.StatusCode() != http.StatusNoContent && resp.StatusCode() != http.StatusOK {
-		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, "unable to delete personal certificate"); err != nil {
+		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, resp.Body, "unable to delete personal certificate"); err != nil {
 			vc.Logger.Errorf("unable to delete the personal certificate; err=%s", err.Error())
 			return err
 		}
@@ -159,7 +159,7 @@ func (c *PersonalCertClient) GetPersonalCert(ctx context.Context, label string) 
 		return nil, "", err
 	}
 	if resp.StatusCode() != http.StatusOK {
-		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, "unable to get personal certificate"); err != nil {
+		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, resp.Body, "unable to get personal certificate"); err != nil {
 			vc.Logger.Errorf("unable to get the personal certificate; err=%s", err.Error())
 			return nil, "", err
 		}
@@ -186,7 +186,7 @@ func (c *PersonalCertClient) GetPersonalCert(ctx context.Context, label string) 
 					if c.IsDefault != nil {
 						isDefault = *c.IsDefault
 					}
-					var certMap []map[string]interface{}
+					var certMap []map[string]any
 					if err := json.Unmarshal(certsResp.Body, &certMap); err == nil {
 						for _, m := range certMap {
 							if strings.EqualFold(m["label"].(string), label) {
@@ -226,7 +226,7 @@ func (c *PersonalCertClient) GetPersonalCerts(ctx context.Context, sort string, 
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, "unable to get personal certificates"); err != nil {
+		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, resp.Body, "unable to get personal certificates"); err != nil {
 			vc.Logger.Errorf("unable to get personal certificates; err=%s", err.Error())
 			return nil, "", err
 		}

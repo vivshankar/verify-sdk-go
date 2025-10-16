@@ -47,7 +47,7 @@ func (c *IdentityAgentClient) CreateIdentityAgent(ctx context.Context, IdentityA
 	}
 
 	if response.StatusCode() != http.StatusCreated {
-		if err := errorsx.HandleCommonErrors(ctx, response.HTTPResponse, "unable to get Identity Agent"); err != nil {
+		if err := errorsx.HandleCommonErrors(ctx, response.HTTPResponse, response.Body, "unable to get Identity Agent"); err != nil {
 			vc.Logger.Errorf("unable to create the Identity Agent; err=%s", err.Error())
 			return "", err
 		}
@@ -78,7 +78,7 @@ func (c *IdentityAgentClient) GetIdentityAgentByID(ctx context.Context, identity
 	}
 
 	if response.StatusCode() != http.StatusOK {
-		if err := errorsx.HandleCommonErrors(ctx, response.HTTPResponse, "unable to get Identity agent"); err != nil {
+		if err := errorsx.HandleCommonErrors(ctx, response.HTTPResponse, response.Body, "unable to get Identity agent"); err != nil {
 			vc.Logger.Errorf("unable to get the Identity agent; err=%s", err.Error())
 			return nil, "", err
 		}
@@ -137,7 +137,7 @@ func (c *IdentityAgentClient) GetIdentityAgents(ctx context.Context, search stri
 
 	if response.StatusCode != http.StatusOK {
 		fmt.Println(response.StatusCode)
-		if err := errorsx.HandleCommonErrors(ctx, response, "unable to get Identity agents"); err != nil {
+		if err := errorsx.HandleCommonErrors(ctx, response, buf, "unable to get Identity agents"); err != nil {
 			vc.Logger.Errorf("unable to get the Identity agents; err=%s", err.Error())
 			return nil, "", err
 		}
@@ -170,7 +170,7 @@ func (c *IdentityAgentClient) UpdateIdentityAgent(ctx context.Context, identityA
 	}
 	response, err := client.UpdateOnpremAgentWithBodyWithResponse(ctx, *identityAgentsConfig.ID, "application/json", bytes.NewBuffer(body), openapi.DefaultRequestEditors(ctx, headers)...)
 	if err != nil {
-		if err := errorsx.HandleCommonErrors(ctx, response.HTTPResponse, "unable to update Identity Agent"); err != nil {
+		if err := errorsx.HandleCommonErrors(ctx, response.HTTPResponse, response.Body, "unable to update Identity Agent"); err != nil {
 			vc.Logger.Errorf("unable to update the Identity Agent; err=%s", err.Error())
 			return err
 		}
@@ -198,7 +198,7 @@ func (c *IdentityAgentClient) DeleteIdentityAgentByID(ctx context.Context, ident
 		return errorsx.G11NError("unable to delete the Identity Agent; err=%s", err.Error())
 	}
 	if response.StatusCode() != http.StatusNoContent {
-		if err := errorsx.HandleCommonErrors(ctx, response.HTTPResponse, "unable to delete Identity Agent"); err != nil {
+		if err := errorsx.HandleCommonErrors(ctx, response.HTTPResponse, response.Body, "unable to delete Identity Agent"); err != nil {
 			vc.Logger.Errorf("unable to delete the Identity Agent; err=%s", err.Error())
 			return errorsx.G11NError("unable to delete the Identity Agent; err=%s", err.Error())
 		}
@@ -217,7 +217,7 @@ func IdentityAgentExample(identityType string) *IdentityAgentConfig {
 	identityAgent.CertLabel = &certLavel
 	identityAgent.References = &[]openapi.OnpremAgentConfigReference{{}}
 	if identityType == "PROV" {
-		identityAgent.Modules = append(identityAgent.Modules, map[string]map[string]interface{}{
+		identityAgent.Modules = append(identityAgent.Modules, map[string]map[string]any{
 			"external": {
 				"caCerts":  "",
 				"id":       "",
@@ -226,7 +226,7 @@ func IdentityAgentExample(identityType string) *IdentityAgentConfig {
 			},
 		})
 	} else if identityType == "LDAPAUTH" {
-		identityAgent.Modules = append(identityAgent.Modules, map[string]map[string]interface{}{
+		identityAgent.Modules = append(identityAgent.Modules, map[string]map[string]any{
 			"ldapauth": {
 				"ldapBindPwd":               "",
 				"ldapBindDn":                "",
@@ -245,11 +245,11 @@ func IdentityAgentExample(identityType string) *IdentityAgentConfig {
 			},
 		})
 	} else if identityType == "EXTAUTHN" {
-		identityAgent.Modules = append(identityAgent.Modules, map[string]map[string]interface{}{
+		identityAgent.Modules = append(identityAgent.Modules, map[string]map[string]any{
 			"extauthn": {
-				"authentication": map[string]interface{}{
+				"authentication": map[string]any{
 					"type": "",
-					"basic": map[string]interface{}{
+					"basic": map[string]any{
 						"username": "",
 						"password": "",
 					},

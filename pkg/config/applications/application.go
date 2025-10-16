@@ -13,6 +13,7 @@ import (
 	"github.com/ibm-verify/verify-sdk-go/internal/openapi"
 	contextx "github.com/ibm-verify/verify-sdk-go/pkg/core/context"
 	errorsx "github.com/ibm-verify/verify-sdk-go/pkg/core/errors"
+	typesx "github.com/ibm-verify/verify-sdk-go/x/types"
 )
 
 type ApplicationListResponse = openapi.SearchAdminApplicationWithoutProvResponseBean
@@ -336,7 +337,7 @@ func (c *ApplicationClient) CreateApplication(ctx context.Context, application *
 	}
 
 	if resp.StatusCode() != http.StatusCreated {
-		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, "unable to create application"); err != nil {
+		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, resp.Body, "unable to create application"); err != nil {
 			vc.Logger.Errorf("unable to create the application; err=%s", err.Error())
 			return "", err
 		}
@@ -399,7 +400,7 @@ func (c *ApplicationClient) UpdateApplication(ctx context.Context, applicationID
 	}
 
 	if resp.StatusCode() != http.StatusNoContent && resp.StatusCode() != http.StatusOK {
-		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, "unable to update application"); err != nil {
+		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, resp.Body, "unable to update application"); err != nil {
 			vc.Logger.Errorf("unable to update the application; err=%s", err.Error())
 			return err
 		}
@@ -432,13 +433,12 @@ func (c *ApplicationClient) GetApplicationByID(ctx context.Context, applicationI
 	}
 
 	if resp.StatusCode != http.StatusOK {
-		if err := errorsx.HandleCommonErrors(ctx, resp, "unable to get application"); err != nil {
+		if err := errorsx.HandleCommonErrors(ctx, resp, buf, "unable to get application"); err != nil {
 			vc.Logger.Errorf("unable to get the application; err=%s", err.Error())
 			return nil, "", err
 		}
 
-		data, _ := io.ReadAll(resp.Body)
-		vc.Logger.Errorf("unable to get the application; code=%d, body=%s", resp.StatusCode, string(data))
+		vc.Logger.Errorf("unable to get the application; code=%d, body=%s", resp.StatusCode, string(buf))
 		return nil, "", errorsx.G11NError("unable to get the application")
 	}
 
@@ -457,6 +457,7 @@ func (c *ApplicationClient) GetApplications(ctx context.Context, search string, 
 
 	params := &openapi.SearchApplicationsParams{}
 	if len(search) > 0 {
+		search = typesx.AddDoubleQuotesIfNotFound(search)
 		params.Search = &search
 	}
 	if len(sort) > 0 {
@@ -483,7 +484,7 @@ func (c *ApplicationClient) GetApplications(ctx context.Context, search string, 
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, "unable to get Applications"); err != nil {
+		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, resp.Body, "unable to get Applications"); err != nil {
 			vc.Logger.Errorf("unable to get the Applications; code=%d, body=%s", resp.StatusCode(), string(resp.Body))
 			return nil, "", errorsx.G11NError("unable to get the Applications")
 		}
@@ -517,7 +518,7 @@ func (c *ApplicationClient) DeleteApplicationByID(ctx context.Context, appliacti
 	}
 
 	if resp.StatusCode() != http.StatusNoContent && resp.StatusCode() != http.StatusOK {
-		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, "unable to update application"); err != nil {
+		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, resp.Body, "unable to update application"); err != nil {
 			vc.Logger.Errorf("unable to delete the application; err=%s", err.Error())
 			return err
 		}
@@ -664,7 +665,7 @@ func ApplicationExample(applicationType string) *Application {
 					AccessTokenExpiry:  1,
 					RefreshTokenExpiry: 1,
 					IDTokenSigningAlg:  "RS256",
-					RedirectURIs:       []interface{}{" ", " "},
+					RedirectURIs:       []any{" ", " "},
 					AdditionalConfig: OIDCAdditionalConfig{
 						Oidcv3:                                 true,
 						RequestObjectParametersOnly:            "false",
@@ -695,7 +696,7 @@ func ApplicationExample(applicationType string) *Application {
 				},
 				Token: Token{
 					AccessTokenType: "default",
-					Audiences:       []interface{}{" "},
+					Audiences:       []any{" "},
 				},
 				GrantProperties: GrantProperties{
 					GenerateDeviceFlowQRCode: "false",

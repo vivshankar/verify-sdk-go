@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
 
 	"github.com/ibm-verify/verify-sdk-go/pkg/i18n"
@@ -23,7 +22,7 @@ func G11NError(message string, args ...any) error {
 	return fmt.Errorf("%s", i18n.TranslateWithArgs(message, args...))
 }
 
-func HandleCommonErrors(ctx context.Context, response *http.Response, defaultError string) error {
+func HandleCommonErrors(ctx context.Context, response *http.Response, body []byte, defaultError string) error {
 	if response.StatusCode == http.StatusUnauthorized {
 		return G11NError("login again")
 	}
@@ -34,8 +33,6 @@ func HandleCommonErrors(ctx context.Context, response *http.Response, defaultErr
 
 	if response.StatusCode == http.StatusBadRequest {
 		var errorMessage VerifyError
-		body, _ := io.ReadAll(response.Body)
-
 		if err := json.Unmarshal(body, &errorMessage); err != nil {
 			return G11NError("bad request: %s", defaultError)
 		}

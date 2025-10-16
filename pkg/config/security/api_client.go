@@ -50,7 +50,7 @@ func (c *APIClient) CreateAPIClient(ctx context.Context, apiClientConfig *APICli
 	}
 
 	if response.StatusCode() != http.StatusCreated {
-		if err := errorsx.HandleCommonErrors(ctx, response.HTTPResponse, "unable to get API client"); err != nil {
+		if err := errorsx.HandleCommonErrors(ctx, response.HTTPResponse, response.Body, "unable to get API client"); err != nil {
 			vc.Logger.Errorf("unable to create the API client; err=%s", err.Error())
 			return "", err
 		}
@@ -86,7 +86,7 @@ func (c *APIClient) GetAPIClientByName(ctx context.Context, clientName string) (
 	}
 
 	if response.StatusCode() != http.StatusOK {
-		if err := errorsx.HandleCommonErrors(ctx, response.HTTPResponse, "unable to get API client"); err != nil {
+		if err := errorsx.HandleCommonErrors(ctx, response.HTTPResponse, response.Body, "unable to get API client"); err != nil {
 			vc.Logger.Errorf("unable to get the API client; err=%s", err.Error())
 			return nil, "", err
 		}
@@ -118,7 +118,7 @@ func (c *APIClient) GetAPIClientByID(ctx context.Context, clientID string) (*API
 	}
 
 	if response.StatusCode() != http.StatusOK {
-		if err := errorsx.HandleCommonErrors(ctx, response.HTTPResponse, "unable to get API client"); err != nil {
+		if err := errorsx.HandleCommonErrors(ctx, response.HTTPResponse, response.Body, "unable to get API client"); err != nil {
 			vc.Logger.Errorf("unable to get the API client; err=%s", err.Error())
 			return nil, "", err
 		}
@@ -172,7 +172,7 @@ func (c *APIClient) GetAPIClients(ctx context.Context, search string, sort strin
 	}
 
 	if response.StatusCode() != http.StatusOK {
-		if err := errorsx.HandleCommonErrors(ctx, response.HTTPResponse, "unable to get API clients"); err != nil {
+		if err := errorsx.HandleCommonErrors(ctx, response.HTTPResponse, response.Body, "unable to get API clients"); err != nil {
 			vc.Logger.Errorf("unable to get the API clients; err=%s", err.Error())
 			return nil, "", err
 		}
@@ -216,7 +216,7 @@ func (c *APIClient) UpdateAPIClient(ctx context.Context, apiClientConfig *APICli
 	}
 	response, err := client.UpdateAPIClientWithBodyWithResponse(ctx, ID, "application/json", bytes.NewBuffer(body), openapi.DefaultRequestEditors(ctx, headers)...)
 	if err != nil {
-		if err := errorsx.HandleCommonErrors(ctx, response.HTTPResponse, "unable to update API client"); err != nil {
+		if err := errorsx.HandleCommonErrors(ctx, response.HTTPResponse, response.Body, "unable to update API client"); err != nil {
 			vc.Logger.Errorf("unable to update the API client; err=%s", err.Error())
 			return err
 		}
@@ -250,7 +250,7 @@ func (c *APIClient) DeleteAPIClientByName(ctx context.Context, clientName string
 		return errorsx.G11NError("unable to delete the API client; err=%s", err.Error())
 	}
 	if response.StatusCode() != http.StatusNoContent {
-		if err := errorsx.HandleCommonErrors(ctx, response.HTTPResponse, "unable to delete API client"); err != nil {
+		if err := errorsx.HandleCommonErrors(ctx, response.HTTPResponse, response.Body, "unable to delete API client"); err != nil {
 			vc.Logger.Errorf("unable to delete the API client; err=%s", err.Error())
 			return errorsx.G11NError("unable to delete the API client; err=%s", err.Error())
 		}
@@ -273,7 +273,7 @@ func (c *APIClient) DeleteAPIClientById(ctx context.Context, ID string) error {
 		return errorsx.G11NError("unable to delete the API client; err=%s", err.Error())
 	}
 	if response.StatusCode() != http.StatusNoContent {
-		if err := errorsx.HandleCommonErrors(ctx, response.HTTPResponse, "unable to delete API client"); err != nil {
+		if err := errorsx.HandleCommonErrors(ctx, response.HTTPResponse, response.Body, "unable to delete API client"); err != nil {
 			vc.Logger.Errorf("unable to delete the API client; err=%s", err.Error())
 			return errorsx.G11NError("unable to delete the API client; err=%s", err.Error())
 		}
@@ -304,7 +304,7 @@ func (c *APIClient) getAPIClientId(ctx context.Context, clientName string) (stri
 	}
 
 	if response.StatusCode() != http.StatusOK {
-		if err := errorsx.HandleCommonErrors(ctx, response.HTTPResponse, "unable to get API client"); err != nil {
+		if err := errorsx.HandleCommonErrors(ctx, response.HTTPResponse, response.Body, "unable to get API client"); err != nil {
 			vc.Logger.Errorf("unable to get the API client with clientName %s; err=%s", clientName, err.Error())
 			return "", errorsx.G11NError("unable to get the API client with clientName %s; err=%s", clientName, err.Error())
 		}
@@ -358,7 +358,7 @@ func APIClientExample() *APIClientConfig {
 	var apiClient *APIClientConfig = &APIClientConfig{}
 	dummyBool := true
 	dummyStr := " "
-	dummyMap := map[string]interface{}{" ": " "}
+	dummyMap := map[string]any{" ": " "}
 	dummyIPFilterOp := openapi.APIClientConfigIPFilterOp(" ")
 	apiClient.Entitlements = []string{" "}
 	apiClient.Enabled = &dummyBool
