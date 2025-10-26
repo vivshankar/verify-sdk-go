@@ -22,6 +22,39 @@ type AttributeClient struct {
 type Attribute = openapi.Attribute0
 type AttributeList = openapi.PaginatedAttribute0
 
+type AttributesSearchCriteria struct {
+	// Search is the criteria used to filter the attributes. The format to use the search query parameter is 'search={parameter}{operator}{value}
+	//
+	// The following search parameters are allowed: name, credname, tags, sourcetype, id, scope.
+	// Valid operators for string values are =, !=, contains, startswith, endswith, and exists. Only for the 'exists' operator, there is no need to specify search value.
+	// For all other operators, use double quotation marks for the search values.
+	//
+	// Multiple search conditions can be combined using either the & (AND) or | (OR) operators. Conditions in parentheses () have a higher priority and are evaluated first.
+	// Without parentheses, & (AND) is evaluated first. Nested parentheses are not supported.
+	//
+	// Example:
+	//  Search for attributes with 'sso' tag: tags="sso"
+	//  Search for attributes with name that starts with 'pre': name startswith "pre"
+	//  Search for attributes with tag: tags exists
+	//  Search for attributes with the SSO tag with the name 'email' or name starts with 'mobile': tags="sso"&(name="email"|name startswith "mobile")
+	Search string
+
+	// Sort indicates how the results should be sorted.
+	//
+	// The following sort parameters are allowed: name, credname, tags, sourcetype, scope.
+	// Each sort parameter must be prefixed with either + or -.
+	//
+	// Example:
+	// 	Sort attributes by ascending 'name': sort=+name
+	Sort string
+
+	// Limit indicates the number of results returned.
+	Limit int
+
+	// Page indicates the page number. Usually, this is paired with limit.
+	Page int
+}
+
 func NewAttributeClient() *AttributeClient {
 	return &AttributeClient{}
 }
@@ -70,59 +103,65 @@ func (c *AttributeClient) GetAttribute(ctx context.Context, id string) (*Attribu
 	return attribute, resp.HTTPResponse.Request.URL.String(), nil
 }
 
-func (c *AttributeClient) GetAttributes(ctx context.Context, search string, sort string, page int, limit int) (*AttributeList, string, error) {
+func (c *AttributeClient) GetAttributes(ctx context.Context, criteria *AttributesSearchCriteria) (*AttributeList, error) {
 	vc := contextx.GetVerifyContext(ctx)
 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
 
 	params := &openapi.GetAllAttributesParams{
 		Authorization: fmt.Sprintf("Bearer %s", vc.Token),
 	}
-	if len(search) > 0 {
-		params.Search = &search
-	}
-	if len(sort) > 0 {
-		params.Sort = &sort
-	}
-	pagination := url.Values{}
-	if page > 0 {
-		pagination.Set("page", fmt.Sprintf("%d", page))
-	}
 
-	if limit > 0 {
-		pagination.Set("limit", fmt.Sprintf("%d", limit))
-	}
-	paginationStr := pagination.Encode()
-	if paginationStr != "" {
-		params.Pagination = &paginationStr
+	pagination := url.Values{}
+	if criteria != nil {
+		if len(criteria.Search) > 0 {
+			params.Search = &criteria.Search
+		}
+
+		if len(criteria.Sort) > 0 {
+			params.Sort = &criteria.Sort
+		}
+
+		if criteria.Page > 0 {
+			pagination.Set("page", fmt.Sprintf("%d", criteria.Page))
+		}
+
+		if criteria.Limit > 0 {
+			pagination.Set("limit", fmt.Sprintf("%d", criteria.Limit))
+		}
+
+		if len(pagination) > 0 {
+			paginationStr := pagination.Encode()
+			params.Pagination = &paginationStr
+		}
 	}
 
 	resp, err := client.GetAllAttributes(ctx, params)
 	if err != nil {
 		vc.Logger.Errorf("unable to get attributes; err=%v", err)
-		return nil, "", err
+		return nil, err
 	}
 
 	buf, err := io.ReadAll(resp.Body)
 	defer func() { _ = resp.Body.Close() }()
 	if err != nil {
 		vc.Logger.Errorf("unable to read the attributes body; err=%v", err)
-		return nil, "", err
+		return nil, err
 	}
 
 	body := &AttributeList{}
 	if len(pagination) > 0 {
 		if err = json.Unmarshal(buf, &body); err != nil {
 			vc.Logger.Errorf("unable to get the attributes; err=%s, body=%s", err, string(buf))
-			return nil, "", errorsx.G11NError("unable to get the attributes")
+			return nil, errorsx.G11NError("unable to get the attributes")
 		}
 	} else {
 		if err = json.Unmarshal(buf, &body.Attributes); err != nil {
 			vc.Logger.Errorf("unable to get the attributes; err=%s, body=%s", err, string(buf))
-			return nil, "", errorsx.G11NError("unable to get the attributes")
+			return nil, errorsx.G11NError("unable to get the attributes")
 		}
 	}
 
-	return body, resp.Request.URL.String(), nil
+	return body, nil
 }
 
 // CreateAttribute creates an attribute and returns the resource URI.
@@ -172,16 +211,6 @@ func (c *AttributeClient) CreateAttribute(ctx context.Context, attribute *Attrib
 		return "", defaultErr
 	}
 
-	// unmarshal the response body to get the ID
-	/*m := map[string]any{}
-	resourceURI := ""
-	if err := json.Unmarshal(resp.Body, &m); err != nil {
-		vc.Logger.Warnf("unable to unmarshal the response body to get the 'id'")
-		resourceURI = resp.HTTPResponse.Header.Get("Location")
-	} else {
-		id := typesx.Map(m).SafeString("id", "")
-		resourceURI = resp.HTTPResponse.Request.URL.JoinPath(id).String()
-	}*/
 	resourceURI := resp.HTTPResponse.Header.Get("Location")
 	return resourceURI, nil
 }
