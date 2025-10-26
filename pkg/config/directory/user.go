@@ -55,7 +55,7 @@ func (c *UserClient) CreateUser(ctx context.Context, user *User) (string, error)
 	}
 
 	if resp.StatusCode() != http.StatusCreated {
-		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, "unable to create user"); err != nil {
+		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, resp.Body, "unable to create user"); err != nil {
 			vc.Logger.Errorf("unable to create the user; err=%s", err.Error())
 			return "", errorsx.G11NError("unable to create the user; err=%s", err.Error())
 		}
@@ -94,7 +94,7 @@ func (c *UserClient) GetUser(ctx context.Context, userName string) (*User, strin
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, "unable to get User"); err != nil {
+		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, resp.Body, "unable to get User"); err != nil {
 			vc.Logger.Errorf("unable to get the User; err=%s", err.Error())
 			return nil, "", err
 		}
@@ -136,7 +136,7 @@ func (c *UserClient) GetUsers(ctx context.Context, sort string, count string) (*
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, "unable to get Users"); err != nil {
+		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, resp.Body, "unable to get Users"); err != nil {
 			vc.Logger.Errorf("unable to get the Users; err=%s", err.Error())
 			return nil, "", err
 		}
@@ -174,7 +174,7 @@ func (c *UserClient) DeleteUser(ctx context.Context, name string) error {
 	}
 
 	if resp.StatusCode() != http.StatusNoContent {
-		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, "unable to delete User"); err != nil {
+		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, resp.Body, "unable to delete User"); err != nil {
 			vc.Logger.Errorf("unable to delete the User; err=%s", err.Error())
 			return errorsx.G11NError("unable to delete the User; err=%s", err.Error())
 		}
@@ -222,7 +222,7 @@ func (c *UserClient) UpdateUser(ctx context.Context, userName string, operations
 		return errorsx.G11NError("unable to update user; err=%v", err)
 	}
 	if resp.StatusCode() != http.StatusNoContent {
-		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, "unable to update user"); err != nil {
+		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, resp.Body, "unable to update user"); err != nil {
 			vc.Logger.Errorf("unable to update the user; err=%s", err.Error())
 			return err
 		}
@@ -245,20 +245,20 @@ func (c *UserClient) GetUserId(ctx context.Context, name string) (string, error)
 		Token:  vc.Token,
 		Accept: "application/scim+json",
 	}
-	response, err := client.GetUsersWithResponse(ctx, params, openapi.DefaultRequestEditors(ctx, headers)...)
+	resp, err := client.GetUsersWithResponse(ctx, params, openapi.DefaultRequestEditors(ctx, headers)...)
 	if err != nil {
 		vc.Logger.Errorf("unable to get the User with userName; err=%v", err)
 		return "", errorsx.G11NError("unable to get the User with userName %s; err=%s", name, err.Error())
 	}
-	if response.StatusCode() != http.StatusOK {
-		if err := errorsx.HandleCommonErrors(ctx, response.HTTPResponse, "unable to get User"); err != nil {
+	if resp.StatusCode() != http.StatusOK {
+		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, resp.Body, "unable to get User"); err != nil {
 			vc.Logger.Errorf("unable to get the User with userName %s; err=%s", name, err.Error())
 			return "", errorsx.G11NError("unable to get the User with userName %s; err=%s", name, err.Error())
 		}
 	}
 
 	var data map[string]any
-	if err := json.Unmarshal(response.Body, &data); err != nil {
+	if err := json.Unmarshal(resp.Body, &data); err != nil {
 		return "", errorsx.G11NError("failed to parse response: %w", err)
 	}
 

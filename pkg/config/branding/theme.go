@@ -91,14 +91,14 @@ func (c *ThemeClient) ListThemes(ctx context.Context, count int, page int, limit
 		pagination.Add("limit", fmt.Sprintf("%d", limit))
 	}
 
-	params := &openapi.GetThemeRegistrationsParams{}
+	params := &openapi.GetThemeRegistrations0Params{}
 	if len(pagination) > 0 {
 		paginationString := pagination.Encode()
 		params.Pagination = &paginationString
 	}
 
 	headers := &openapi.Headers{Token: vc.Token}
-	resp, err := client.GetThemeRegistrationsWithResponse(ctx, params, openapi.DefaultRequestEditors(ctx, headers)...)
+	resp, err := client.GetThemeRegistrations0WithResponse(ctx, params, openapi.DefaultRequestEditors(ctx, headers)...)
 	if err != nil {
 		vc.Logger.Errorf("unable to get the themes; err=%s", err.Error())
 		return nil, "", err
@@ -179,7 +179,7 @@ func (c *ThemeClient) GetTheme(ctx context.Context, themeID string, customizedOn
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, "unable to get the file"); err != nil {
+		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, resp.Body, "unable to get the file"); err != nil {
 			vc.Logger.Errorf("unable to get the theme with ID %s; err=%s", themeID, err.Error())
 			return nil, "", err
 		}
@@ -203,7 +203,7 @@ func (c *ThemeClient) GetFile(ctx context.Context, themeID string, path string) 
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, "unable to get the file"); err != nil {
+		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, resp.Body, "unable to get the file"); err != nil {
 			vc.Logger.Errorf("unable to get the theme with ID %s and path %s; err=%s", themeID, path, err.Error())
 			return nil, "", err
 		}
@@ -228,19 +228,19 @@ func (c *ThemeClient) UpdateFile(ctx context.Context, themeID string, path strin
 	}
 
 	headers := &openapi.Headers{Token: vc.Token}
-	response, err := client.UpdateThemeTemplateWithBodyWithResponse(ctx, themeID, path, "multipart/form-data", buffer, openapi.DefaultRequestEditors(ctx, headers)...)
+	resp, err := client.UpdateThemeTemplateWithBodyWithResponse(ctx, themeID, path, "multipart/form-data", buffer, openapi.DefaultRequestEditors(ctx, headers)...)
 	if err != nil {
 		vc.Logger.Errorf("unable to update the file; err=%s", err.Error())
 		return err
 	}
 
-	if response.StatusCode() != http.StatusNoContent {
-		if err := errorsx.HandleCommonErrors(ctx, response.HTTPResponse, "unable to update the file"); err != nil {
+	if resp.StatusCode() != http.StatusNoContent {
+		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, resp.Body, "unable to update the file"); err != nil {
 			vc.Logger.Errorf("unable to update the theme with ID %s and path %s; err=%s", themeID, path, err.Error())
 			return err
 		}
 
-		vc.Logger.Errorf("unable to update the theme with ID %s and path %s; responseCode=%d, responseBody=%s", themeID, path, response.StatusCode(), string(response.Body))
+		vc.Logger.Errorf("unable to update the theme with ID %s and path %s; responseCode=%d, responseBody=%s", themeID, path, resp.StatusCode(), string(resp.Body))
 		return errorsx.G11NError("unable to update the file")
 	}
 
@@ -267,19 +267,19 @@ func (c *ThemeClient) UpdateTheme(ctx context.Context, themeID string, data []by
 	}
 
 	headers := &openapi.Headers{Token: vc.Token}
-	response, err := client.UpdateThemeTemplatesWithBodyWithResponse(ctx, themeID, "multipart/form-data", buffer, openapi.DefaultRequestEditors(ctx, headers)...)
+	resp, err := client.UpdateThemeTemplatesWithBodyWithResponse(ctx, themeID, "multipart/form-data", buffer, openapi.DefaultRequestEditors(ctx, headers)...)
 	if err != nil {
 		vc.Logger.Errorf("unable to update the theme; err=%s", err.Error())
 		return err
 	}
 
-	if response.StatusCode() != http.StatusNoContent {
-		if err := errorsx.HandleCommonErrors(ctx, response.HTTPResponse, "unable to update the theme"); err != nil {
+	if resp.StatusCode() != http.StatusNoContent {
+		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, resp.Body, "unable to update the theme"); err != nil {
 			vc.Logger.Errorf("unable to update the theme with ID %s; err=%s", themeID, err.Error())
 			return err
 		}
 
-		vc.Logger.Errorf("unable to update the theme with ID %s; responseCode=%d, responseBody=%s", themeID, response.StatusCode(), string(response.Body))
+		vc.Logger.Errorf("unable to update the theme with ID %s; responseCode=%d, responseBody=%s", themeID, resp.StatusCode(), string(resp.Body))
 		return errorsx.G11NError("unable to update the theme")
 	}
 

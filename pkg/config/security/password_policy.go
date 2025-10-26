@@ -86,7 +86,7 @@ func (c *PasswordPolicyClient) GetPasswordPolicyByID(ctx context.Context, passwo
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, "unable to get password policy"); err != nil {
+		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, resp.Body, "unable to get password policy"); err != nil {
 			vc.Logger.Errorf("unable to get the password policy; err=%s", err.Error())
 			return nil, "", err
 		}
@@ -128,7 +128,7 @@ func (c *PasswordPolicyClient) CreatePasswordPolicy(ctx context.Context, Passwor
 		return "", errorsx.G11NError("unable to create password policy")
 	}
 	if resp.StatusCode() != http.StatusCreated {
-		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, "unable to create password policy"); err != nil {
+		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, resp.Body, "unable to create password policy"); err != nil {
 			vc.Logger.Errorf("unable to create the password policy; err=%s", err.Error())
 			return "", err
 		}
@@ -136,7 +136,7 @@ func (c *PasswordPolicyClient) CreatePasswordPolicy(ctx context.Context, Passwor
 		return "", errorsx.G11NError("failed to create password policy; code=%d, body=%s", resp.StatusCode(), string(resp.Body))
 	}
 
-	m := map[string]interface{}{}
+	m := map[string]any{}
 	resourceURI := ""
 	if err := yaml.Unmarshal(resp.Body, &m); err != nil {
 		vc.Logger.Warnf("unable to unmarshal the response body to get the 'id'")
@@ -173,7 +173,7 @@ func (c *PasswordPolicyClient) UpdatePasswordPolicy(ctx context.Context, passwor
 	}
 
 	if resp.StatusCode() != http.StatusNoContent && resp.StatusCode() != http.StatusOK {
-		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, "unable to update password policy"); err != nil {
+		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, resp.Body, "unable to update password policy"); err != nil {
 			vc.Logger.Errorf("unable to update the password policy; err=%s", err.Error())
 			return err
 		}
@@ -201,7 +201,7 @@ func (c *PasswordPolicyClient) GetPasswordPolicies(ctx context.Context, sort str
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, "unable to get password policies"); err != nil {
+		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, resp.Body, "unable to get password policies"); err != nil {
 			vc.Logger.Errorf("unable to get the password policies; code=%d, body=%s", resp.StatusCode(), string(resp.Body))
 			return nil, "", errorsx.G11NError("unable to get the password policies")
 		}
@@ -236,7 +236,7 @@ func (c *PasswordPolicyClient) DeletePasswordPolicyByID(ctx context.Context, pas
 	}
 
 	if resp.StatusCode() != http.StatusNoContent && resp.StatusCode() != http.StatusOK {
-		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, "unable to update password policy"); err != nil {
+		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, resp.Body, "unable to update password policy"); err != nil {
 			vc.Logger.Errorf("unable to delete the password policy; err=%s", err.Error())
 			return err
 		}
@@ -263,24 +263,24 @@ func (c *PasswordPolicyClient) GetPasswordPolicyID(ctx context.Context, PolicyNa
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, "unable to get password policy"); err != nil {
+		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, resp.Body, "unable to get password policy"); err != nil {
 			vc.Logger.Errorf("unable to get the password policy with Name %s; err=%s", PolicyName, err.Error())
 			return "", errorsx.G11NError("unable to get the password policy with Name %s; err=%s", PolicyName, err.Error())
 		}
 	}
 
-	var data map[string]interface{}
+	var data map[string]any
 	if err := json.Unmarshal(resp.Body, &data); err != nil {
 		return "", errorsx.G11NError("failed to parse response: %w", err)
 	}
 
-	resources, ok := data["Resources"].([]interface{})
+	resources, ok := data["Resources"].([]any)
 	if !ok || len(resources) == 0 {
 		return "", errorsx.G11NError("no Password Policy found with PolicyName %s", PolicyName)
 	}
 
 	for _, res := range resources {
-		policy, ok := res.(map[string]interface{})
+		policy, ok := res.(map[string]any)
 		if !ok {
 			continue
 		}
