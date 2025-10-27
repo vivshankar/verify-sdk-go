@@ -268,7 +268,7 @@ func (c *AttributeClient) UpdateAttribute(ctx context.Context, attribute *Attrib
 	return nil
 }
 
-func (c *AttributeClient) DeleteAttributeByID(ctx context.Context, id string) error {
+func (c *AttributeClient) DeleteAttribute(ctx context.Context, id string) error {
 	vc := contextx.GetVerifyContext(ctx)
 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
 	if id == "" {

@@ -7,14 +7,18 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
-	"strconv"
 
 	"github.com/ibm-verify/verify-sdk-go/internal/openapi"
 	contextx "github.com/ibm-verify/verify-sdk-go/pkg/core/context"
 	errorsx "github.com/ibm-verify/verify-sdk-go/pkg/core/errors"
 )
 
-// Root structure
+type AccessPolicyCriteria struct {
+	Limit int
+	Page  int
+}
+
+// PolicyListResponse contains the results of the fetch operation
 type PolicyListResponse struct {
 	Total    int       `json:"total" yaml:"total"`
 	Count    int       `json:"count" yaml:"count"`
@@ -23,7 +27,7 @@ type PolicyListResponse struct {
 	Policies []*Policy `json:"policies" yaml:"policies"`
 }
 
-// Policy structure
+// Policy represents a single Access Policy
 type Policy struct {
 	ID                    int              `json:"id,omitempty" yaml:"id,omitempty"`
 	Name                  string           `json:"name" yaml:"name"`
@@ -34,7 +38,7 @@ type Policy struct {
 	RequiredSubscriptions []string         `json:"requiredSubscription,omitempty" yaml:"requiredSubscriptions,omitempty"`
 }
 
-// Rule structure
+// Rule represents a policy rule
 type Rule struct {
 	ID          string       `json:"id,omitempty" yaml:"id,omitempty"`
 	Name        string       `json:"name,omitempty" yaml:"name,omitempty"`
@@ -54,7 +58,7 @@ type Condition struct {
 	Attributes []*Attributes `json:"attributes,omitempty" yaml:"attributes,omitempty"` // Nested attributes
 }
 
-// Attribute represents an attribute within a condition
+// Attribute represents an attribute condition within a condition
 type Attributes struct {
 	Name   string   `json:"name" yaml:"name"`
 	Opcode string   `json:"opCode" yaml:"opCode"`
@@ -106,15 +110,15 @@ func NewAccessPolicyClient() *PolicyClient {
 	return &PolicyClient{}
 }
 
-func (c *PolicyClient) CreateAccessPolicy(ctx context.Context, accessPolicy *Policy) (string, error) {
+func (c *PolicyClient) CreateAccessPolicy(ctx context.Context, accessPolicy *Policy) (*Policy, error) {
 	vc := contextx.GetVerifyContext(ctx)
 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
-	defaultErr := fmt.Errorf("unable to create accessPolicy")
+	defaultErr := errorsx.G11NError("unable to create accessPolicy")
 
 	b, err := json.Marshal(accessPolicy)
 	if err != nil {
 		vc.Logger.Errorf("Unable to marshal accessPolicy data; err=%v", err)
-		return "", defaultErr
+		return nil, defaultErr
 	}
 	headers := &openapi.Headers{
 		Accept: "application/json",
@@ -123,80 +127,70 @@ func (c *PolicyClient) CreateAccessPolicy(ctx context.Context, accessPolicy *Pol
 	response, err := client.CreateAccessPolicyWithBodyWithResponse(ctx, "application/json", bytes.NewBuffer(b), openapi.DefaultRequestEditors(ctx, headers)...)
 	if err != nil {
 		vc.Logger.Errorf("Unable to create accessPolicy; err=%v", err)
-		return "", defaultErr
+		return nil, defaultErr
 	}
 
 	if response.StatusCode() != http.StatusCreated {
-		if err := errorsx.HandleCommonErrors(ctx, response.HTTPResponse, response.Body, "unable to create accessPolicy"); err != nil {
+		if err := errorsx.HandleCommonErrors(ctx, response.HTTPResponse, response.Body, defaultErr.Error()); err != nil {
 			vc.Logger.Errorf("unable to create the accessPolicy; err=%s", err.Error())
-			return "", fmt.Errorf("unable to create the accessPolicy; err=%s", err.Error())
+			return nil, err
 		}
 
 		vc.Logger.Errorf("unable to create the accessPolicy; code=%d, body=%s", response.StatusCode(), string(response.Body))
-		return "", fmt.Errorf("unable to create the accessPolicy; code=%d, body=%s", response.StatusCode(), string(response.Body))
+		return nil, fmt.Errorf("unable to create the accessPolicy; code=%d, body=%s", response.StatusCode(), string(response.Body))
 	}
 
-	m := map[string]any{}
-	if err := json.Unmarshal(response.Body, &m); err != nil {
-		return "", fmt.Errorf("failed to parse response: %v", err)
+	policy := &Policy{}
+	if err := json.Unmarshal(response.Body, &policy); err != nil {
+		return nil, fmt.Errorf("failed to parse response: %v", err)
 	}
 
-	id, ok := m["id"].(float64)
-	if !ok {
-		return "", fmt.Errorf("failed to parse 'id' as float64")
-	}
-
-	return fmt.Sprintf("%s/%d", response.HTTPResponse.Request.URL.String(), int(id)), nil
+	return policy, nil
 }
 
-func (c *PolicyClient) GetAccessPolicy(ctx context.Context, policyID string) (*Policy, string, error) {
+func (c *PolicyClient) GetAccessPolicy(ctx context.Context, policyID int) (*Policy, error) {
 	vc := contextx.GetVerifyContext(ctx)
 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
-	id, err := strconv.Atoi(policyID)
-	if err != nil {
-		vc.Logger.Errorf("unable to get the access policy ID; err=%s", err.Error())
-		return nil, "", err
-	}
 	headers := &openapi.Headers{
 		Accept: "application/json",
 		Token:  vc.Token,
 	}
-	response, err := client.GetAccessPolicyWithResponse(ctx, int64(id), openapi.DefaultRequestEditors(ctx, headers)...)
+	response, err := client.GetAccessPolicyWithResponse(ctx, int64(policyID), openapi.DefaultRequestEditors(ctx, headers)...)
 	if err != nil {
 		vc.Logger.Errorf("unable to get the Access Policy; err=%s", err.Error())
-		return nil, "", err
+		return nil, err
 	}
 
 	if response.StatusCode() != http.StatusOK {
 		if err := errorsx.HandleCommonErrors(ctx, response.HTTPResponse, response.Body, "unable to get Access Policy"); err != nil {
 			vc.Logger.Errorf("unable to get the Access Policy; err=%s", err.Error())
-			return nil, "", err
+			return nil, err
 		}
 
 		vc.Logger.Errorf("unable to get the Access Policy; code=%d, body=%s", response.StatusCode(), string(response.Body))
-		return nil, "", fmt.Errorf("unable to get the Access Policy")
+		return nil, fmt.Errorf("unable to get the Access Policy")
 	}
 
-	AccessPolicy := &Policy{}
-	if err = json.Unmarshal(response.Body, AccessPolicy); err != nil {
-		return nil, "", fmt.Errorf("unable to get the Access Policy")
+	policy := &Policy{}
+	if err = json.Unmarshal(response.Body, policy); err != nil {
+		return nil, fmt.Errorf("unable to get the Access Policy")
 	}
 
-	return AccessPolicy, response.HTTPResponse.Request.URL.String(), nil
+	return policy, nil
 }
 
-func (c *PolicyClient) GetAccessPolicies(ctx context.Context, page int, limit int) (*PolicyListResponse, string, error) {
+func (c *PolicyClient) GetAccessPolicies(ctx context.Context, criteria *AccessPolicyCriteria) (*PolicyListResponse, error) {
 
 	vc := contextx.GetVerifyContext(ctx)
 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
 	params := &openapi.ListAccessPoliciesParams{}
 	pagination := url.Values{}
-	if page > 0 {
-		pagination.Set("page", fmt.Sprintf("%d", page))
+	if criteria.Page > 0 {
+		pagination.Set("page", fmt.Sprintf("%d", criteria.Page))
 	}
 
-	if limit > 0 {
-		pagination.Set("limit", fmt.Sprintf("%d", limit))
+	if criteria.Limit > 0 {
+		pagination.Set("limit", fmt.Sprintf("%d", criteria.Limit))
 	}
 
 	if len(pagination) > 0 {
@@ -211,41 +205,36 @@ func (c *PolicyClient) GetAccessPolicies(ctx context.Context, page int, limit in
 
 	if err != nil {
 		vc.Logger.Errorf("unable to get the Access Policies; err=%s", err.Error())
-		return nil, "", err
+		return nil, err
 	}
 
 	if response.StatusCode() != http.StatusOK {
 		if err := errorsx.HandleCommonErrors(ctx, response.HTTPResponse, response.Body, "unable to get Access Policies"); err != nil {
 			vc.Logger.Errorf("unable to get the Access Policies; err=%s", err.Error())
-			return nil, "", err
+			return nil, err
 		}
 
 		vc.Logger.Errorf("unable to get the Access Policies; code=%d, body=%s", response.StatusCode(), string(response.Body))
-		return nil, "", fmt.Errorf("unable to get the Access Policies")
+		return nil, fmt.Errorf("unable to get the Access Policies")
 	}
 
 	AccessPoliciesResponse := &PolicyListResponse{}
 	if err = json.Unmarshal(response.Body, &AccessPoliciesResponse); err != nil {
 		vc.Logger.Errorf("unable to get the AccessPolicies; err=%s, body=%s", err, string(response.Body))
-		return nil, "", fmt.Errorf("unable to get the AccessPolicies")
+		return nil, fmt.Errorf("unable to get the AccessPolicies")
 	}
 
-	return AccessPoliciesResponse, response.HTTPResponse.Request.URL.String(), nil
+	return AccessPoliciesResponse, nil
 }
 
-func (c *PolicyClient) DeleteAccessPolicyByID(ctx context.Context, policyID string) error {
+func (c *PolicyClient) DeleteAccessPolicy(ctx context.Context, policyID int) error {
 	vc := contextx.GetVerifyContext(ctx)
 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
-	ID, err := strconv.Atoi(policyID)
-	if err != nil {
-		vc.Logger.Errorf("unable to get the access policy ID; err=%s", err.Error())
-		return err
-	}
 	headers := &openapi.Headers{
 		Accept: "application/json",
 		Token:  vc.Token,
 	}
-	response, err := client.DeleteAccessPolicyWithResponse(ctx, int64(ID), openapi.DefaultRequestEditors(ctx, headers)...)
+	response, err := client.DeleteAccessPolicyWithResponse(ctx, int64(policyID), openapi.DefaultRequestEditors(ctx, headers)...)
 	if err != nil {
 		vc.Logger.Errorf("unable to delete the Access Policy; err=%s", err.Error())
 		return fmt.Errorf("unable to delete the Access Policy; err=%s", err.Error())
@@ -264,7 +253,7 @@ func (c *PolicyClient) DeleteAccessPolicyByID(ctx context.Context, policyID stri
 	return nil
 }
 
-func (c *PolicyClient) UpdateAccessPolicy(ctx context.Context, accessPolicy *Policy) error {
+func (c *PolicyClient) UpdateAccessPolicy(ctx context.Context, accessPolicy *Policy) (*Policy, error) {
 	vc := contextx.GetVerifyContext(ctx)
 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
 
@@ -278,20 +267,25 @@ func (c *PolicyClient) UpdateAccessPolicy(ctx context.Context, accessPolicy *Pol
 
 	if err != nil {
 		vc.Logger.Errorf("unable to marshal the patch request; err=%v", err)
-		return fmt.Errorf("unable to marshal the patch request; err=%v", err)
+		return nil, fmt.Errorf("unable to marshal the patch request; err=%v", err)
 	}
 
 	response, err := client.UpdateAccessPolicyWithBodyWithResponse(ctx, int64(accessPolicy.ID), "", bytes.NewBuffer(b), openapi.DefaultRequestEditors(ctx, headers)...)
 	if err != nil {
 		vc.Logger.Errorf("unable to update accessPolicy; err=%v", err)
-		return fmt.Errorf("unable to update accessPolicy; err=%v", err)
+		return nil, fmt.Errorf("unable to update accessPolicy; err=%v", err)
 	}
 	if response.StatusCode() != http.StatusCreated {
 		vc.Logger.Errorf("failed to update accessPolicy; code=%d, body=%s", response.StatusCode(), string(response.Body))
-		return fmt.Errorf("failed to update accessPolicy ; code=%d, body=%s", response.StatusCode(), string(response.Body))
+		return nil, fmt.Errorf("failed to update accessPolicy ; code=%d, body=%s", response.StatusCode(), string(response.Body))
 	}
 
-	return nil
+	policy := &Policy{}
+	if err = json.Unmarshal(response.Body, policy); err != nil {
+		return nil, fmt.Errorf("failed to parse the response")
+	}
+
+	return policy, nil
 }
 
 func (c *PolicyClient) GetAccessPolicyID(ctx context.Context, name string) (string, error) {

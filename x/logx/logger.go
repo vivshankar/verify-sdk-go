@@ -1,9 +1,12 @@
 package logx
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"log/slog"
+	"runtime"
+	"time"
 )
 
 type Logger struct {
@@ -16,7 +19,12 @@ func (l *Logger) Errorf(str string, args ...any) {
 	if l.AddNewline {
 		str = str + "\n"
 	}
-	l.Error(fmt.Sprintf(str, args...))
+
+	var pcs [1]uintptr
+	runtime.Callers(2, pcs[:])
+
+	r := slog.NewRecord(time.Now(), slog.LevelError, fmt.Sprintf(str, args...), pcs[0])
+	_ = l.Handler().Handle(context.Background(), r)
 }
 
 func (l *Logger) Infof(str string, args ...any) {

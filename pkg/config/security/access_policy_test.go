@@ -4,8 +4,6 @@ import (
 	"context"
 	"log/slog"
 	"os"
-	"strconv"
-	"strings"
 	"testing"
 
 	"github.com/google/uuid"
@@ -199,23 +197,26 @@ func (s *AccessPolicyTestSuite) TestAccessPolicy() {
 	resp, err := s.client.CreateAccessPolicy(s.ctx, &s.accessPolicyCreateOrPatch)
 	require.NoError(s.T(), err, "unable to create Access Policy; err=%v", err)
 	// set the access policy ID
-	policyID := strings.Split(resp, "/")[len(strings.Split(resp, "/"))-1]
+	policyID := resp.ID
 
 	// Get Access Policy details
-	_, _, err = s.client.GetAccessPolicy(s.ctx, policyID)
+	_, err = s.client.GetAccessPolicy(s.ctx, policyID)
 	require.NoError(s.T(), err, "unable to get Access Policy %s; err=%v", policyID, err)
 
 	// Get Access Policy list
-	_, _, err = s.client.GetAccessPolicies(s.ctx, 1, 1)
+	_, err = s.client.GetAccessPolicies(s.ctx, &security.AccessPolicyCriteria{
+		Limit: 1,
+		Page:  1,
+	})
 	require.NoError(s.T(), err, "unable to list Access Policies; err=%v", err)
 
 	// Update Access Policy
-	s.accessPolicyCreateOrPatch.ID, _ = strconv.Atoi(policyID)
-	err = s.client.UpdateAccessPolicy(s.ctx, &s.accessPolicyCreateOrPatch)
+	s.accessPolicyCreateOrPatch.ID = policyID
+	_, err = s.client.UpdateAccessPolicy(s.ctx, &s.accessPolicyCreateOrPatch)
 	require.NoError(s.T(), err, "unable to update Access Policy %s; err=%v", policyID, err)
 
 	// Delete Access Policy
-	err = s.client.DeleteAccessPolicyByID(s.ctx, policyID)
+	err = s.client.DeleteAccessPolicy(s.ctx, policyID)
 	require.NoError(s.T(), err, "unable to delete Access Policy %s; err=%v", policyID, err)
 }
 

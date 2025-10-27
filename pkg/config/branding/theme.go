@@ -28,17 +28,7 @@ type ListThemesResponse struct {
 	Themes []*Theme `json:"themeRegistrations" yaml:"themeRegistrations"`
 }
 
-func NewThemeWithMap(m map[string]any) *Theme {
-	tm := typesx.Map(m)
-	return &Theme{
-		ThemeID:     tm.SafeString("id", ""),
-		Name:        tm.SafeString("name", ""),
-		Description: tm.SafeString("description", ""),
-	}
-}
-
-func NewListThemesResponse(r *openapi.ThemeRegistrationPaginatedResponseContainer) *ListThemesResponse {
-	ltr := &ListThemesResponse{}
+func (ltr ListThemesResponse) convertFromOpenAPIObject(r *openapi.ThemeRegistrationPaginatedResponseContainer) *ListThemesResponse {
 	if r.Count != nil {
 		ltr.Count = int(*r.Count)
 	}
@@ -56,14 +46,23 @@ func NewListThemesResponse(r *openapi.ThemeRegistrationPaginatedResponseContaine
 	}
 
 	if r.ThemeRegistrations == nil {
-		return ltr
+		return &ltr
 	}
 
 	for _, tr := range *r.ThemeRegistrations {
 		ltr.Themes = append(ltr.Themes, NewThemeWithMap(tr))
 	}
 
-	return ltr
+	return &ltr
+}
+
+func NewThemeWithMap(m map[string]any) *Theme {
+	tm := typesx.Map(m)
+	return &Theme{
+		ThemeID:     tm.SafeString("id", ""),
+		Name:        tm.SafeString("name", ""),
+		Description: tm.SafeString("description", ""),
+	}
 }
 
 type ThemeClient struct {
@@ -158,7 +157,7 @@ func (c *ThemeClient) ListThemes(ctx context.Context, count int, page int, limit
 		return nil, "", errorsx.G11NError("unable to get the themes")
 	}
 
-	return NewListThemesResponse(resp.JSON200), resp.HTTPResponse.Request.URL.String(), nil
+	return ListThemesResponse{}.convertFromOpenAPIObject(resp.JSON200), resp.HTTPResponse.Request.URL.String(), nil
 }
 
 func (c *ThemeClient) GetTheme(ctx context.Context, themeID string, customizedOnly bool) ([]byte, string, error) {

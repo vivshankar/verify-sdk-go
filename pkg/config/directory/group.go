@@ -101,14 +101,18 @@ func (c *GroupClient) GetGroupByID(ctx context.Context, id string) (*Group, stri
 	return Group, resp.HTTPResponse.Request.URL.String(), nil
 }
 
-func (c *GroupClient) GetGroups(ctx context.Context, sort string, count string) (*GroupListResponse, string, error) {
+func (c *GroupClient) GetGroups(ctx context.Context, sortBy string, sortOrder string, count string) (*GroupListResponse, string, error) {
 
 	vc := contextx.GetVerifyContext(ctx)
 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
 
 	params := &openapi.GetGroupsParams{}
-	if len(sort) > 0 {
-		params.SortBy = &sort
+	if len(sortBy) > 0 {
+		params.SortBy = &sortBy
+	}
+	if len(sortOrder) > 0 {
+		orderValue := openapi.GetGroupsParamsSortOrder(sortOrder)
+		params.SortOrder = &orderValue
 	}
 	if len(count) > 0 {
 		params.Count = &count
@@ -146,22 +150,7 @@ func (c *GroupClient) GetGroups(ctx context.Context, sort string, count string) 
 
 func (c *GroupClient) CreateGroup(ctx context.Context, group *Group) (string, error) {
 	vc := contextx.GetVerifyContext(ctx)
-	userClient := NewUserClient()
 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
-
-	for i, m := range *group.Members {
-		// Get the username from the member's Value field.
-		username := m.Value
-		// Retrieve the actual user ID using the provided function.
-		userID, err := userClient.GetUserId(ctx, username)
-		if err != nil {
-			vc.Logger.Errorf("unable to get user ID for username %s; err=%s", username, err.Error())
-			return "", errorsx.G11NError("unable to get user ID for username %s; err=%s", username, err.Error())
-		}
-
-		// Update the member's Value with the obtained user ID.
-		(*group.Members)[i].Value = userID
-	}
 
 	body, err := json.Marshal(group)
 	if err != nil {
@@ -234,9 +223,8 @@ func (c *GroupClient) DeleteGroup(ctx context.Context, groupName string) error {
 	return nil
 }
 
-func (c *GroupClient) UpdateGroup(ctx context.Context, groupName string, operations *[]GroupPatchOperation) error {
+func (c *GroupClient) UpdateGroup(ctx context.Context, groupName string, operations []GroupPatchOperation) error {
 	vc := contextx.GetVerifyContext(ctx)
-	userClient := NewUserClient()
 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
 	groupID, err := c.GetGroupId(ctx, groupName)
 	if err != nil {
@@ -244,37 +232,9 @@ func (c *GroupClient) UpdateGroup(ctx context.Context, groupName string, operati
 		return errorsx.G11NError("unable to get the group ID; err=%s", err.Error())
 	}
 
-	for i, op := range *operations {
-		if op.Op == "add" && op.Path == "members" {
-			if values, ok := (*op.Value).([]any); ok {
-				for j, v := range values {
-					if member, ok := v.(map[string]any); ok {
-						if username, exists := member["value"].(string); exists {
-							userID, err := userClient.GetUserId(ctx, username)
-							if err != nil {
-								vc.Logger.Errorf("unable to get user ID for username %s; err=%s", username, err.Error())
-								return errorsx.G11NError("unable to get user ID for username %s; err=%s", username, err.Error())
-							}
-							(*(*operations)[i].Value).([]any)[j].(map[string]any)["value"] = userID
-						}
-					}
-				}
-			}
-		} else if op.Op == "remove" {
-			username := extractUsernameFromPath(op.Path)
-			if username != "" {
-				userID, err := userClient.GetUserId(ctx, username)
-				if err != nil {
-					vc.Logger.Errorf("unable to get user ID for username %s; err=%s", username, err.Error())
-					return errorsx.G11NError("unable to get user ID for username %s; err=%s", username, err.Error())
-				}
-				(*operations)[i].Path = fmt.Sprintf("members[value eq \"%s\"]", userID)
-			}
-		}
-	}
 	patchRequest := openapi.PatchBody{
 		Schemas:    []string{"urn:ietf:params:scim:api:messages:2.0:PatchOp"},
-		Operations: *operations,
+		Operations: operations,
 	}
 	body, err := json.Marshal(patchRequest)
 	if err != nil {

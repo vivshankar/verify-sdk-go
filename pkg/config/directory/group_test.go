@@ -92,11 +92,11 @@ func (s *GroupTestSuite) TestGetGroup() {
 	require.NoError(s.T(), err, "unable to get group %s; err=%v", s.groupName, err)
 
 	// Get group list
-	_, _, err = s.client.GetGroups(s.ctx, "", "")
+	_, _, err = s.client.GetGroups(s.ctx, "", "", "0")
 	require.NoError(s.T(), err, "unable to list groups; err=%v", err)
 
 	// Update group
-	err = s.client.UpdateGroup(s.ctx, s.groupName, &s.groupPatch.SCIMPatchRequest.Operations)
+	err = s.client.UpdateGroup(s.ctx, s.groupName, s.groupPatch.SCIMPatchRequest.Operations)
 	require.NoError(s.T(), err, "unable to update group %s; err=%v", s.groupName, err)
 
 	// Delete group
