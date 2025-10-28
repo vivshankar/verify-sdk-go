@@ -114,11 +114,11 @@ func (c *AttributeClient) GetAttributes(ctx context.Context, criteria *Attribute
 	pagination := url.Values{}
 	if criteria != nil {
 		if len(criteria.Search) > 0 {
-			params.Search = &criteria.Search
+			params.Search = criteria.Search
 		}
 
 		if len(criteria.Sort) > 0 {
-			params.Sort = &criteria.Sort
+			params.Sort = criteria.Sort
 		}
 
 		if criteria.Page > 0 {
@@ -130,8 +130,7 @@ func (c *AttributeClient) GetAttributes(ctx context.Context, criteria *Attribute
 		}
 
 		if len(pagination) > 0 {
-			paginationStr := pagination.Encode()
-			params.Pagination = &paginationStr
+			params.Pagination = pagination.Encode()
 		}
 	}
 
@@ -220,7 +219,7 @@ func (c *AttributeClient) UpdateAttribute(ctx context.Context, attribute *Attrib
 	defaultErr := errorsx.G11NError("unable to update attribute")
 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
 
-	if len(*attribute.ID) == 0 {
+	if len(attribute.ID) == 0 {
 		return errorsx.G11NError("'%s' is required", "id")
 	}
 	params := &openapi.UpdateAttributeParams{
@@ -231,7 +230,7 @@ func (c *AttributeClient) UpdateAttribute(ctx context.Context, attribute *Attrib
 		vc.Logger.Errorf("unable to marshal the attribute; err=%v", err)
 		return defaultErr
 	}
-	resp, err := client.UpdateAttributeWithBodyWithResponse(ctx, *attribute.ID, params, "application/json", bytes.NewReader(body))
+	resp, err := client.UpdateAttributeWithBodyWithResponse(ctx, attribute.ID, params, "application/json", bytes.NewReader(body))
 	if err != nil {
 		vc.Logger.Errorf("unable to update attribute; err=%v", err)
 		return defaultErr

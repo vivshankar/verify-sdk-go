@@ -67,7 +67,10 @@ def transform(doc):
         "\"?\": {": "\"?\": {\"x-go-name\": \"URLQueryRegex\",",
         "\"#\": {": "\"#\": {\"x-go-name\": \"URLFragmentRegex\",",
         "\"Client\":": "\"AuthenticatorClient\":",
-        "\"#/components/schemas/Client\"": "\"#/components/schemas/AuthenticatorClient\""
+        "\"#/components/schemas/Client\"": "\"#/components/schemas/AuthenticatorClient\"",
+        "\"type\": \"string\"": "\"type\": \"string\",\"x-go-type-skip-optional-pointer\": true",
+        "\"type\": \"boolean\"": "\"type\": \"boolean\",\"x-go-type-skip-optional-pointer\": true",
+        "\"type\": \"integer\"": "\"type\": \"integer\",\"x-go-type-skip-optional-pointer\": true",
     }
 
     text = json.dumps(doc)
@@ -77,21 +80,16 @@ def transform(doc):
 
     doc = json.loads(text)    
 
-    # 5) delete specific properties in the JSON
-    del doc["components"]["schemas"]["CampaignConfigurationInput"]["properties"]["launchDate"]["enum"]
-    del doc["components"]["schemas"]["CampaignConfigurationInput"]["properties"]["creationDate"]["enum"]
-    del doc["components"]["schemas"]["CampaignConfigurationInput"]["properties"]["nextRunDate"]["enum"]
-    del doc["components"]["schemas"]["CampaignInstanceOutput"]["properties"]["campaignConfiguration"]["properties"]["launchDate"]["enum"]
-    del doc["components"]["schemas"]["CampaignConfiguration"]["properties"]["launchDate"]["enum"]
-    del doc["components"]["schemas"]["CampaignConfiguration"]["properties"]["creationDate"]["enum"]
-    del doc["components"]["schemas"]["CampaignConfiguration"]["properties"]["nextRunDate"]["enum"]
-    del doc["components"]["schemas"]["CampaignConfigurationOutput"]["properties"]["launchDate"]["enum"]
-    del doc["components"]["schemas"]["AssignmentUpdateAction"]["properties"]["events"]["enum"]
-    del doc["components"]["schemas"]["AssignmentActionReplaceInput"]["properties"]["events"]["enum"]
-    del doc["components"]["schemas"]["AssignmentFilter"]["properties"]["lastActions"]["enum"]
-    del doc["components"]["schemas"]["AssignmentFilter"]["properties"]["assignmentTypes"]["enum"]
-    del doc["components"]["schemas"]["AssignmentFilter"]["properties"]["assignmentStatus"]["enum"]
-
+    # 5) delete specific objects
+    del doc["components"]["schemas"]["HttpServletRequest"]
+    del doc["components"]["schemas"]["AsyncContext"]
+    del doc["components"]["schemas"]["ServletRequest"]
+    del doc["components"]["schemas"]["ServletResponse"]
+    del doc["components"]["schemas"]["ClassLoader"]
+    del doc["components"]["schemas"]["ServletContext"]
+    del doc["components"]["schemas"]["HttpSession"]
+    del doc["components"]["schemas"]["ServletConfig"]
+    
     # 6) Fix the attributes API response
     doc["paths"]["/v1.0/attributes"]["get"]["responses"]["200"]["content"]["application/json"]["schema"] = {
         "anyOf": [
@@ -145,7 +143,8 @@ def transform(doc):
                         "in": "query",
                         "description": "The prefix for the count parameter is <b>count=</b>. ",
                         "schema": {
-                            "type": "string"
+                            "type": "integer",
+                            "x-go-type-skip-optional-pointer": True
                         }
                     })
 
@@ -173,6 +172,7 @@ def transform(doc):
     doc["components"]["schemas"]["AdminApplicationWithoutProv"]["properties"]["applicationState"]["x-go-type"] = "StringOrBoolean"
     doc["components"]["schemas"]["AdminApplicationWithoutProv"]["properties"]["approvalRequired"]["x-go-type"] = "StringOrBoolean"
     doc["components"]["schemas"]["AdminApplicationWithoutProv"]["properties"]["visibleOnLaunchpad"]["x-go-type"] = "StringOrBoolean"
+    doc["components"]["schemas"]["OIDCPropertiesBean"]["properties"]["additionalConfig"]["$ref"] = "#/components/schemas/AdditionalConfiguration"
 
     return doc
 

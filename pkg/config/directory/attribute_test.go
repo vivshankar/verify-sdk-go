@@ -63,9 +63,9 @@ func (s *AttributeTestSuite) SetupSuite() {
 	if err == nil && attributeList != nil && len(attributeList.Attributes) > 0 {
 		// If test attribute exists, delete it
 		for _, attr := range attributeList.Attributes {
-			if attr.ID != nil {
-				s.T().Logf("Found existing test attribute with ID %s, deleting it", *attr.ID)
-				err = client.DeleteAttribute(ctx, *attr.ID)
+			if attr.ID != "" {
+				s.T().Logf("Found existing test attribute with ID %s, deleting it", attr.ID)
+				err = client.DeleteAttribute(ctx, attr.ID)
 				if err != nil {
 					s.T().Logf("Warning: Failed to delete existing test attribute: %v", err)
 				}
@@ -191,10 +191,8 @@ func (s *AttributeTestSuite) TestUpdateAttribute() {
 	require.NoError(s.T(), err, "unable to get attribute %s; err=%v", s.attributeID, err)
 
 	// Update attribute
-	id := s.attributeID
-	attribute.ID = &id
-	description := "Updated description for testing"
-	attribute.Description = &description
+	attribute.ID = s.attributeID
+	attribute.Description = "Updated description for testing"
 	err = s.client.UpdateAttribute(s.ctx, attribute)
 	require.NoError(s.T(), err, "unable to update attribute %s; err=%v", s.attributeID, err)
 
@@ -202,7 +200,7 @@ func (s *AttributeTestSuite) TestUpdateAttribute() {
 	updatedAttribute, _, err := s.client.GetAttribute(s.ctx, s.attributeID)
 	require.NoError(s.T(), err, "unable to get updated attribute %s; err=%v", s.attributeID, err)
 	require.NotNil(s.T(), updatedAttribute.Description, "description should not be nil")
-	require.Equal(s.T(), "Updated description for testing", *updatedAttribute.Description, "description should be updated")
+	require.Equal(s.T(), "Updated description for testing", updatedAttribute.Description, "description should be updated")
 
 	// Clean up - delete the attribute
 	err = s.client.DeleteAttribute(s.ctx, s.attributeID)

@@ -29,27 +29,16 @@ type ListThemesResponse struct {
 }
 
 func (ltr ListThemesResponse) convertFromOpenAPIObject(r *openapi.ThemeRegistrationPaginatedResponseContainer) *ListThemesResponse {
-	if r.Count != nil {
-		ltr.Count = int(*r.Count)
-	}
-
-	if r.Limit != nil {
-		ltr.Limit = int(*r.Limit)
-	}
-
-	if r.Page != nil {
-		ltr.Page = int(*r.Page)
-	}
-
-	if r.Total != nil {
-		ltr.Total = int(*r.Total)
-	}
+	ltr.Count = int(r.Count)
+	ltr.Limit = int(r.Limit)
+	ltr.Page = int(r.Page)
+	ltr.Total = int(r.Total)
 
 	if r.ThemeRegistrations == nil {
 		return &ltr
 	}
 
-	for _, tr := range *r.ThemeRegistrations {
+	for _, tr := range r.ThemeRegistrations {
 		ltr.Themes = append(ltr.Themes, NewThemeWithMap(tr))
 	}
 
@@ -92,8 +81,7 @@ func (c *ThemeClient) ListThemes(ctx context.Context, count int, page int, limit
 
 	params := &openapi.GetThemeRegistrations0Params{}
 	if len(pagination) > 0 {
-		paginationString := pagination.Encode()
-		params.Pagination = &paginationString
+		params.Pagination = pagination.Encode()
 	}
 
 	headers := &openapi.Headers{Token: vc.Token}
@@ -165,7 +153,7 @@ func (c *ThemeClient) GetTheme(ctx context.Context, themeID string, customizedOn
 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
 
 	params := &openapi.DownloadThemeTemplatesParams{}
-	params.CustomizedOnly = &customizedOnly
+	params.CustomizedOnly = customizedOnly
 
 	headers := &openapi.Headers{
 		Token:  vc.Token,

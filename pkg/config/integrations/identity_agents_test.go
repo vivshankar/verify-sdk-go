@@ -106,7 +106,7 @@ func (s *IdentityAgentTestSuite) TestIdentityAgent() {
 	require.NoError(s.T(), err, "unable to list Identity Agents; err=%v", err)
 
 	// Update Identity Agent
-	s.identityAgentPatch.ID = &identityAgentID
+	s.identityAgentPatch.ID = identityAgentID
 	err = s.client.UpdateIdentityAgent(s.ctx, s.identityAgentPatch)
 	require.NoError(s.T(), err, "unable to update Identity Agent %s; err=%v", identityAgentID, err)
 

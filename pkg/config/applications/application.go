@@ -458,18 +458,18 @@ func (c *ApplicationClient) GetApplications(ctx context.Context, search string, 
 	params := &openapi.SearchApplicationsParams{}
 	if len(search) > 0 {
 		search = typesx.AddDoubleQuotesIfNotFound(search)
-		params.Search = &search
+		params.Search = search
 	}
 	if len(sort) > 0 {
-		params.Sort = &sort
+		params.Sort = sort
 	}
 	if page > 0 {
 		pageStr := strconv.Itoa(page)
-		params.Page = &pageStr
+		params.Page = pageStr
 	}
 	if limit > 0 {
 		limitStr := strconv.Itoa(limit)
-		params.Limit = &limitStr
+		params.Limit = limitStr
 	}
 	// u.RawQuery = q.Encode()
 

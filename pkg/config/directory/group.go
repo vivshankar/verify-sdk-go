@@ -108,14 +108,14 @@ func (c *GroupClient) GetGroups(ctx context.Context, sortBy string, sortOrder st
 
 	params := &openapi.GetGroupsParams{}
 	if len(sortBy) > 0 {
-		params.SortBy = &sortBy
+		params.SortBy = sortBy
 	}
 	if len(sortOrder) > 0 {
 		orderValue := openapi.GetGroupsParamsSortOrder(sortOrder)
-		params.SortOrder = &orderValue
+		params.SortOrder = orderValue
 	}
 	if len(count) > 0 {
-		params.Count = &count
+		params.Count = count
 	}
 
 	headers := &openapi.Headers{
@@ -268,7 +268,7 @@ func (c *GroupClient) GetGroupId(ctx context.Context, name string) (string, erro
 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
 	filter := fmt.Sprintf(`displayName eq "%s"`, name)
 	params := &openapi.GetGroupsParams{
-		Filter: &filter,
+		Filter: filter,
 	}
 	headers := &openapi.Headers{
 		Token:  vc.Token,

@@ -52,8 +52,8 @@ func DefaultRequestEditors(ctx context.Context, headers *Headers) []RequestEdito
 
 func (e *TemplateError) ConvertToError() *errorsx.VerifyError {
 	return &errorsx.VerifyError{
-		MessageID:          *e.MessageID,
-		MessageDescription: *e.MessageDescription,
+		MessageID:          e.MessageID,
+		MessageDescription: e.MessageDescription,
 	}
 }
 

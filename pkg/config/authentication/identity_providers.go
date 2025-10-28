@@ -96,15 +96,15 @@ func (c *IdentitySourceClient) GetIdentitySourceByID(ctx context.Context, identi
 	return IdentitySource, resp.HTTPResponse.Request.URL.String(), nil
 }
 
-func (c *IdentitySourceClient) GetIdentitySources(ctx context.Context, sort string, count string, page int, limit int) (*IdentitySourceList, string, error) {
+func (c *IdentitySourceClient) GetIdentitySources(ctx context.Context, sort string, count int, page int, limit int) (*IdentitySourceList, string, error) {
 	vc := contextx.GetVerifyContext(ctx)
 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
 	params := &openapi.GetInstancesV2Params{}
 	if len(sort) > 0 {
-		params.Sort = &sort
+		params.Sort = sort
 	}
-	if len(count) > 0 {
-		params.Count = &count
+	if count > 0 {
+		params.Count = count
 	}
 	pagination := url.Values{}
 	if page > 0 {
@@ -116,8 +116,7 @@ func (c *IdentitySourceClient) GetIdentitySources(ctx context.Context, sort stri
 	}
 
 	if len(pagination) > 0 {
-		paginationStr := pagination.Encode()
-		params.Pagination = &paginationStr
+		params.Pagination = pagination.Encode()
 	}
 	headers := &openapi.Headers{
 		Token:  vc.Token,

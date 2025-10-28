@@ -140,10 +140,10 @@ func (c *APIClient) GetAPIClients(ctx context.Context, search string, sort strin
 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
 	params := &openapi.GetAPIClientsParams{}
 	if len(search) > 0 {
-		params.Search = &search
+		params.Search = search
 	}
 	if len(sort) > 0 {
-		params.Sort = &sort
+		params.Sort = sort
 	}
 
 	pagination := url.Values{}
@@ -156,8 +156,7 @@ func (c *APIClient) GetAPIClients(ctx context.Context, search string, sort strin
 	}
 
 	if len(pagination) > 0 {
-		paginationStr := pagination.Encode()
-		params.Pagination = &paginationStr
+		params.Pagination = pagination.Encode()
 	}
 
 	headers := &openapi.Headers{
@@ -203,7 +202,7 @@ func (c *APIClient) UpdateAPIClient(ctx context.Context, apiClientConfig *APICli
 		vc.Logger.Errorf("unable to get the client ID for API client '%s'; err=%s", apiClientConfig.ClientName, err.Error())
 		return errorsx.G11NError("unable to get the client ID for API client '%s'; err=%s", apiClientConfig.ClientName, err.Error())
 	}
-	apiClientConfig.ID = &ID
+	apiClientConfig.ID = ID
 	body, err := json.Marshal(apiClientConfig)
 	if err != nil {
 		vc.Logger.Errorf("unable to marshal the API client; err=%v", err)
@@ -289,7 +288,7 @@ func (c *APIClient) getAPIClientId(ctx context.Context, clientName string) (stri
 
 	search := fmt.Sprintf(`clientName contains "%s"`, clientName)
 	params := &openapi.GetAPIClientsParams{
-		Search: &search,
+		Search: search,
 	}
 
 	headers := &openapi.Headers{
@@ -356,27 +355,25 @@ func (c *APIClient) getAPIClientId(ctx context.Context, clientName string) (stri
 
 func APIClientExample() *APIClientConfig {
 	var apiClient *APIClientConfig = &APIClientConfig{}
-	dummyBool := true
-	dummyStr := " "
-	dummyMap := map[string]any{" ": " "}
-	dummyIPFilterOp := openapi.APIClientConfigIPFilterOp(" ")
 	apiClient.Entitlements = []string{" "}
-	apiClient.Enabled = &dummyBool
-	apiClient.Description = &dummyStr
-	apiClient.IPFilterOp = &dummyIPFilterOp
-	apiClient.IPFilters = &[]string{" "}
-	apiClient.JwkURI = &dummyStr
-	apiClient.AdditionalProperties = &dummyMap
+	apiClient.Enabled = true
+	apiClient.Description = "Test API client"
+	apiClient.IPFilterOp = openapi.APIClientConfigIPFilterOpAllow
+	apiClient.IPFilters = []string{"10.0.0.0/8"}
+	apiClient.JwkURI = "https://example.com/jwk"
+	apiClient.AdditionalProperties = map[string]any{
+		"foo": "bar",
+	}
 	apiClient.OverrideSettings = &openapi.APIClientOverrideSettings{
-		RestrictScopes: &dummyBool,
-		Scopes: &[]openapi.APIClientScopes{
-			{Name: &dummyStr, Description: &dummyStr},
+		RestrictScopes: true,
+		Scopes: []openapi.APIClientScopes{
+			{Name: "scope_foo", Description: "Foo scope"},
 		},
 	}
 	apiClient.AdditionalConfig = &openapi.APIClientAdditionalConfig{
-		ClientAuthMethod:                       &dummyStr,
-		ValidateClientAssertionJti:             &dummyBool,
-		AllowedClientAssertionVerificationKeys: &[]string{" "},
+		ClientAuthMethod:                       "client_secret_post",
+		ValidateClientAssertionJti:             false,
+		AllowedClientAssertionVerificationKeys: nil,
 	}
 	return apiClient
 }

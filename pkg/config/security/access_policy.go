@@ -194,8 +194,7 @@ func (c *PolicyClient) GetAccessPolicies(ctx context.Context, criteria *AccessPo
 	}
 
 	if len(pagination) > 0 {
-		paginationStr := pagination.Encode()
-		params.Pagination = &paginationStr
+		params.Pagination = pagination.Encode()
 	}
 	headers := &openapi.Headers{
 		Accept: "application/json",
@@ -293,7 +292,7 @@ func (c *PolicyClient) GetAccessPolicyID(ctx context.Context, name string) (stri
 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
 	search := fmt.Sprintf(`name = "%s"`, name)
 	params := &openapi.ListAccessPoliciesParams{
-		Search: &search,
+		Search: search,
 	}
 	headers := &openapi.Headers{
 		Accept: "application/json",

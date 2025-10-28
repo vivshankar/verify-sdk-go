@@ -11,3 +11,6 @@ output-options:
   nullable-type: false
   name-normalizer: "ToCamelCaseWithInitialisms"
   response-type-suffix: "Object"
+  prefer-skip-optional-pointer-on-container-types: true
+  yaml-tags: true
+  

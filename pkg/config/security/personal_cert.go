@@ -182,10 +182,6 @@ func (c *PersonalCertClient) GetPersonalCert(ctx context.Context, label string) 
 		if err := json.Unmarshal(certsResp.Body, &certs); err == nil {
 			for _, c := range certs {
 				if strings.EqualFold(c.Label, label) {
-					isDefault := false
-					if c.IsDefault != nil {
-						isDefault = *c.IsDefault
-					}
 					var certMap []map[string]any
 					if err := json.Unmarshal(certsResp.Body, &certMap); err == nil {
 						for _, m := range certMap {
@@ -197,7 +193,7 @@ func (c *PersonalCertClient) GetPersonalCert(ctx context.Context, label string) 
 									KeySize:            int(c.Keysize),
 									SignatureAlgorithm: signatureAlgorithm,
 									Cert:               certResponse.Cert,
-									IsDefault:          isDefault,
+									IsDefault:          c.IsDefault,
 								}
 								break
 							}

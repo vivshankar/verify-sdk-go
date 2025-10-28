@@ -40,7 +40,7 @@ func (c *UserClient) CreateUser(ctx context.Context, user *User) (string, error)
 	}
 	var usershouldnotneedtoresetpassword openapi.CreateUserParamsUsershouldnotneedtoresetpassword = "false"
 	params := &openapi.CreateUserParams{
-		Usershouldnotneedtoresetpassword: &usershouldnotneedtoresetpassword,
+		Usershouldnotneedtoresetpassword: usershouldnotneedtoresetpassword,
 	}
 
 	headers := &openapi.Headers{
@@ -118,10 +118,10 @@ func (c *UserClient) GetUsers(ctx context.Context, sort string, count string) (*
 
 	params := &openapi.GetUsersParams{}
 	if len(sort) > 0 {
-		params.SortBy = &sort
+		params.SortBy = sort
 	}
 	if len(count) > 0 {
-		params.Count = &count
+		params.Count = count
 	}
 
 	headers := &openapi.Headers{
@@ -208,7 +208,7 @@ func (c *UserClient) UpdateUser(ctx context.Context, userName string, operations
 	}
 	var usershouldnotneedtoresetpassword openapi.PatchUserParamsUsershouldnotneedtoresetpassword = "false"
 	params := &openapi.PatchUserParams{
-		Usershouldnotneedtoresetpassword: &usershouldnotneedtoresetpassword,
+		Usershouldnotneedtoresetpassword: usershouldnotneedtoresetpassword,
 	}
 
 	headers := &openapi.Headers{
@@ -238,7 +238,7 @@ func (c *UserClient) GetUserId(ctx context.Context, name string) (string, error)
 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
 	filter := fmt.Sprintf(`userName eq "%s"`, name)
 	params := &openapi.GetUsersParams{
-		Filter: &filter,
+		Filter: filter,
 	}
 
 	headers := &openapi.Headers{

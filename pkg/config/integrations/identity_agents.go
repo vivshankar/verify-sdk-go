@@ -100,7 +100,7 @@ func (c *IdentityAgentClient) GetIdentityAgents(ctx context.Context, search stri
 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
 	params := &openapi.ListOnpremAgentsParams{}
 	if len(search) > 0 {
-		params.Search = &search
+		params.Search = search
 	}
 
 	pagination := url.Values{}
@@ -113,8 +113,7 @@ func (c *IdentityAgentClient) GetIdentityAgents(ctx context.Context, search stri
 	}
 
 	if len(pagination) > 0 {
-		paginationStr := pagination.Encode()
-		params.Pagination = &paginationStr
+		params.Pagination = pagination.Encode()
 	}
 
 	headers := &openapi.Headers{
@@ -168,7 +167,7 @@ func (c *IdentityAgentClient) UpdateIdentityAgent(ctx context.Context, identityA
 		Token:  vc.Token,
 		Accept: "application/json",
 	}
-	response, err := client.UpdateOnpremAgentWithBodyWithResponse(ctx, *identityAgentsConfig.ID, "application/json", bytes.NewBuffer(body), openapi.DefaultRequestEditors(ctx, headers)...)
+	response, err := client.UpdateOnpremAgentWithBodyWithResponse(ctx, identityAgentsConfig.ID, "application/json", bytes.NewBuffer(body), openapi.DefaultRequestEditors(ctx, headers)...)
 	if err != nil {
 		if err := errorsx.HandleCommonErrors(ctx, response.HTTPResponse, response.Body, "unable to update Identity Agent"); err != nil {
 			vc.Logger.Errorf("unable to update the Identity Agent; err=%s", err.Error())
@@ -210,12 +209,12 @@ func (c *IdentityAgentClient) DeleteIdentityAgentByID(ctx context.Context, ident
 
 func IdentityAgentExample(identityType string) *IdentityAgentConfig {
 	var identityAgent *IdentityAgentConfig = &IdentityAgentConfig{}
-	identityAgent.Purpose = (*openapi.OnpremAgentConfigurationPurpose)(&identityType)
-	timeoutVal := int32(1)
-	identityAgent.AuthnCacheTimeout = &timeoutVal
+	identityAgent.Purpose = (openapi.OnpremAgentConfigurationPurpose)(identityType)
+	timeoutVal := int32(30)
+	identityAgent.AuthnCacheTimeout = timeoutVal
 	certLavel := " "
-	identityAgent.CertLabel = &certLavel
-	identityAgent.References = &[]openapi.OnpremAgentConfigReference{{}}
+	identityAgent.CertLabel = certLavel
+	identityAgent.References = []openapi.OnpremAgentConfigReference{{}}
 	if identityType == "PROV" {
 		identityAgent.Modules = append(identityAgent.Modules, map[string]map[string]any{
 			"external": {
