@@ -3322,7 +3322,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SearchAdminApplicationWithoutProvResponseBean"
+                  "$ref": "#/components/schemas/ApplicationListResponse"
                 }
               }
             }
@@ -3356,7 +3356,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ApplicationRequestBean"
+                "$ref": "#/components/schemas/ApplicationSettings"
               }
             }
           },
@@ -3691,7 +3691,7 @@
           "content": {
             "*/*": {
               "schema": {
-                "$ref": "#/components/schemas/ApplicationRequestBean"
+                "$ref": "#/components/schemas/ApplicationSettings"
               }
             }
           },
@@ -6356,7 +6356,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/IdentitySourceIntancesDataList"
+                  "$ref": "#/components/schemas/IdentitySourceList"
                 }
               }
             }
@@ -6406,7 +6406,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/IdentitySourceInstancesData"
+                "$ref": "#/components/schemas/IdentitySource"
               }
             }
           },
@@ -6479,7 +6479,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/IdentitySourceIntancesDataList"
+                  "$ref": "#/components/schemas/IdentitySourceList"
                 }
               }
             }
@@ -6555,7 +6555,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/IdentitySourceIntancesDataList"
+                  "$ref": "#/components/schemas/IdentitySourceList"
                 }
               }
             }
@@ -6827,7 +6827,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/IdentitySourceInstancesData"
+                  "$ref": "#/components/schemas/IdentitySource"
                 }
               }
             }
@@ -6879,7 +6879,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/IdentitySourceInstancesData"
+                "$ref": "#/components/schemas/IdentitySource"
               }
             }
           },
@@ -7234,7 +7234,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/IdentitySourceIntancesDataList"
+                  "$ref": "#/components/schemas/IdentitySourceList"
                 }
               }
             }
@@ -7283,7 +7283,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/IdentitySourceInstancesData"
+                "$ref": "#/components/schemas/IdentitySource"
               }
             }
           },
@@ -7355,7 +7355,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/IdentitySourceIntancesDataList"
+                  "$ref": "#/components/schemas/IdentitySourceList"
                 }
               }
             }
@@ -7430,7 +7430,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/IdentitySourceIntancesDataList"
+                  "$ref": "#/components/schemas/IdentitySourceList"
                 }
               }
             }
@@ -7495,7 +7495,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/IdentitySourceInstancesData"
+                  "$ref": "#/components/schemas/IdentitySource"
                 }
               }
             }
@@ -7546,7 +7546,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/IdentitySourceInstancesData"
+                "$ref": "#/components/schemas/IdentitySource"
               }
             }
           },
@@ -45191,7 +45191,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorBean_0"
+                  "$ref": "#/components/schemas/ErrorBean1_0"
                 }
               }
             }
@@ -45201,7 +45201,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorBean_0"
+                  "$ref": "#/components/schemas/ErrorBean1_0"
                 }
               }
             }
@@ -45211,7 +45211,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorBean_0"
+                  "$ref": "#/components/schemas/ErrorBean1_0"
                 }
               }
             }
@@ -45259,7 +45259,7 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorBean_0"
+                  "$ref": "#/components/schemas/ErrorBean1_0"
                 }
               }
             }
@@ -45269,7 +45269,7 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorBean_0"
+                  "$ref": "#/components/schemas/ErrorBean1_0"
                 }
               }
             }
@@ -45325,7 +45325,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorBean_0"
+                  "$ref": "#/components/schemas/ErrorBean1_0"
                 }
               }
             }
@@ -45335,7 +45335,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorBean_0"
+                  "$ref": "#/components/schemas/ErrorBean1_0"
                 }
               }
             }
@@ -45345,7 +45345,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorBean_0"
+                  "$ref": "#/components/schemas/ErrorBean1_0"
                 }
               }
             }
@@ -45403,7 +45403,7 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorBean_0"
+                  "$ref": "#/components/schemas/ErrorBean1_0"
                 }
               }
             }
@@ -45413,7 +45413,7 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorBean_0"
+                  "$ref": "#/components/schemas/ErrorBean1_0"
                 }
               }
             }
@@ -45461,7 +45461,7 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorBean_0"
+                  "$ref": "#/components/schemas/ErrorBean1_0"
                 }
               }
             }
@@ -45471,7 +45471,7 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorBean_0"
+                  "$ref": "#/components/schemas/ErrorBean1_0"
                 }
               }
             }
@@ -45519,7 +45519,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorBean_0"
+                  "$ref": "#/components/schemas/ErrorBean1_0"
                 }
               }
             }
@@ -45529,7 +45529,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorBean_0"
+                  "$ref": "#/components/schemas/ErrorBean1_0"
                 }
               }
             }
@@ -45539,7 +45539,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorBean_0"
+                  "$ref": "#/components/schemas/ErrorBean1_0"
                 }
               }
             }
@@ -45587,7 +45587,7 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorBean_0"
+                  "$ref": "#/components/schemas/ErrorBean1_0"
                 }
               }
             }
@@ -45597,7 +45597,7 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorBean_0"
+                  "$ref": "#/components/schemas/ErrorBean1_0"
                 }
               }
             }
@@ -45653,7 +45653,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorBean_0"
+                  "$ref": "#/components/schemas/ErrorBean1_0"
                 }
               }
             }
@@ -45663,7 +45663,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorBean_0"
+                  "$ref": "#/components/schemas/ErrorBean1_0"
                 }
               }
             }
@@ -45673,7 +45673,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorBean_0"
+                  "$ref": "#/components/schemas/ErrorBean1_0"
                 }
               }
             }
@@ -45719,7 +45719,7 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorBean_0"
+                  "$ref": "#/components/schemas/ErrorBean1_0"
                 }
               }
             }
@@ -45729,7 +45729,7 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorBean_0"
+                  "$ref": "#/components/schemas/ErrorBean1_0"
                 }
               }
             }
@@ -62043,13 +62043,13 @@
           "identitySources": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/IdentitySource"
+              "$ref": "#/components/schemas/ExternalAgentIdentitySource"
             }
           }
         },
         "description": "The creation data of an agent configuration."
       },
-      "IdentitySource": {
+      "ExternalAgentIdentitySource": {
         "type": "object",
         "properties": {
           "attributeMappings": {
@@ -64746,7 +64746,7 @@
           }
         }
       },
-      "SearchAdminApplicationWithoutProvResponseBean": {
+      "ApplicationListResponse": {
         "type": "object",
         "properties": {
           "_embedded": {
@@ -65233,7 +65233,7 @@
           }
         }
       },
-      "APIAccessClientBean": {
+      "APIAccessClient": {
         "required": [
           "clientName",
           "enabled"
@@ -65329,11 +65329,12 @@
               "type": "object",
               "properties": {}
             },
-            "description": "Additional OIDC configurations"
+            "description": "Additional OIDC configurations",
+            "$ref": "#/components/schemas/AdditionalConfiguration"
           }
         }
       },
-      "AdaptiveAuthenticationBean": {
+      "AdaptiveAuthentication": {
         "type": "object",
         "properties": {
           "platform": {
@@ -65474,13 +65475,13 @@
             "description": "ID of the template for this application"
           },
           "providers": {
-            "$ref": "#/components/schemas/ProviderBean"
+            "$ref": "#/components/schemas/ApplicationSignOnSettings"
           },
           "attributeMappings": {
             "type": "array",
             "description": "List[AttributeMapBean], collection of attributeMapping.",
             "items": {
-              "$ref": "#/components/schemas/AttributeMapBean"
+              "$ref": "#/components/schemas/AttributeMappings"
             }
           },
           "applicationState": {
@@ -65494,7 +65495,7 @@
             "description": "description about application"
           },
           "authPolicy": {
-            "$ref": "#/components/schemas/AuthenticationPolicyBean"
+            "$ref": "#/components/schemas/ApplicationAuthPolicy"
           },
           "provisioningMode": {
             "type": "string",
@@ -65515,23 +65516,23 @@
             "description": "Visibility flag for the application on launchpad."
           },
           "provisioning": {
-            "$ref": "#/components/schemas/ProvisioningBean"
+            "$ref": "#/components/schemas/ApplicationProvisioningSettings"
           },
           "customization": {
-            "$ref": "#/components/schemas/CustomizationBean"
+            "$ref": "#/components/schemas/ApplicationBranding"
           },
           "devportalSettings": {
-            "$ref": "#/components/schemas/DevportalSettingsBean"
+            "$ref": "#/components/schemas/DeveloperPortalSettings"
           },
           "apiAccessClients": {
             "type": "array",
             "description": "List of API access clients for application",
             "items": {
-              "$ref": "#/components/schemas/APIAccessClientBean"
+              "$ref": "#/components/schemas/APIAccessClient"
             }
           },
           "adaptiveAuthentication": {
-            "$ref": "#/components/schemas/AdaptiveAuthenticationBean"
+            "$ref": "#/components/schemas/AdaptiveAuthentication"
           }
         }
       },
@@ -65559,7 +65560,7 @@
           }
         }
       },
-      "AttributeMapBean": {
+      "AttributeMappings": {
         "required": [
           "name",
           "targetName"
@@ -65588,7 +65589,7 @@
           }
         }
       },
-      "AuthenticationPolicyBean": {
+      "ApplicationAuthPolicy": {
         "required": [
           "id"
         ],
@@ -65629,7 +65630,7 @@
           }
         }
       },
-      "BookmarkBean": {
+      "ApplicationBookmarkSettings": {
         "required": [
           "bookmarkUrl"
         ],
@@ -65642,7 +65643,7 @@
           }
         }
       },
-      "CustomizationBean": {
+      "ApplicationBranding": {
         "required": [
           "themeId"
         ],
@@ -65655,7 +65656,7 @@
           }
         }
       },
-      "DevportalSettingsBean": {
+      "DeveloperPortalSettings": {
         "type": "object",
         "properties": {
           "grantTypes": {
@@ -65670,7 +65671,7 @@
             }
           },
           "authPolicy": {
-            "$ref": "#/components/schemas/AuthenticationPolicyBean"
+            "$ref": "#/components/schemas/ApplicationAuthPolicy"
           },
           "sendAllKnownUserAttributes": {
             "type": "string",
@@ -65681,7 +65682,7 @@
             "type": "array",
             "description": "List[AttributeMapBean], collection of attributeMapping settings for the developer portal application .",
             "items": {
-              "$ref": "#/components/schemas/AttributeMapBean"
+              "$ref": "#/components/schemas/AttributeMappings"
             }
           },
           "extendedProperties": {
@@ -65704,7 +65705,8 @@
             "enum": [
               "true",
               "false"
-            ]
+            ],
+            "x-go-type": "StringOrBoolean"
           },
           "implicit": {
             "type": "string",
@@ -65713,7 +65715,8 @@
             "enum": [
               "true",
               "false"
-            ]
+            ],
+            "x-go-type": "StringOrBoolean"
           },
           "deviceFlow": {
             "type": "string",
@@ -65722,7 +65725,8 @@
             "enum": [
               "true",
               "false"
-            ]
+            ],
+            "x-go-type": "StringOrBoolean"
           },
           "ropc": {
             "type": "string",
@@ -65731,7 +65735,8 @@
             "enum": [
               "true",
               "false"
-            ]
+            ],
+            "x-go-type": "StringOrBoolean"
           },
           "jwtBearer": {
             "type": "string",
@@ -65740,7 +65745,8 @@
             "enum": [
               "true",
               "false"
-            ]
+            ],
+            "x-go-type": "StringOrBoolean"
           },
           "policyAuth": {
             "type": "string",
@@ -65749,7 +65755,8 @@
             "enum": [
               "true",
               "false"
-            ]
+            ],
+            "x-go-type": "StringOrBoolean"
           },
           "clientCredentials": {
             "type": "string",
@@ -65758,7 +65765,8 @@
             "enum": [
               "true",
               "false"
-            ]
+            ],
+            "x-go-type": "StringOrBoolean"
           },
           "tokenExchange": {
             "type": "string",
@@ -65767,7 +65775,8 @@
             "enum": [
               "true",
               "false"
-            ]
+            ],
+            "x-go-type": "StringOrBoolean"
           }
         }
       },
@@ -65803,7 +65812,7 @@
           }
         }
       },
-      "OIDCBean": {
+      "ApplicationOIDCSettings": {
         "type": "object",
         "properties": {
           "applicationUrl": {
@@ -65929,7 +65938,8 @@
           "generateRefreshToken": {
             "type": "string",
             "x-go-type-skip-optional-pointer": true,
-            "description": "Boolean flag to indicate that lifetime of authorization grant must be set. "
+            "description": "Boolean flag to indicate that lifetime of authorization grant must be set. ",
+            "x-go-type": "StringOrBoolean"
           },
           "renewRefreshTokenExpiry": {
             "type": "integer",
@@ -65975,7 +65985,8 @@
           "renewRefreshToken": {
             "type": "string",
             "x-go-type-skip-optional-pointer": true,
-            "description": "Should renew refresh token, true or false"
+            "description": "Should renew refresh token, true or false",
+            "x-go-type": "StringOrBoolean"
           },
           "additionalConfig": {
             "type": "object",
@@ -66093,26 +66104,26 @@
           }
         }
       },
-      "ProviderBean": {
+      "ApplicationSignOnSettings": {
         "required": [
           "sso"
         ],
         "type": "object",
         "properties": {
           "saml": {
-            "$ref": "#/components/schemas/SAMLBean"
+            "$ref": "#/components/schemas/ApplicationSAMLSettings"
           },
           "sso": {
             "$ref": "#/components/schemas/SSOBean"
           },
           "bookmark": {
-            "$ref": "#/components/schemas/BookmarkBean"
+            "$ref": "#/components/schemas/ApplicationBookmarkSettings"
           },
           "oidc": {
-            "$ref": "#/components/schemas/OIDCBean"
+            "$ref": "#/components/schemas/ApplicationOIDCSettings"
           },
           "wsfed": {
-            "$ref": "#/components/schemas/WsFedBean"
+            "$ref": "#/components/schemas/ApplicationWSFedSettings"
           }
         }
       },
@@ -66163,7 +66174,7 @@
           }
         }
       },
-      "ProvisioningBean": {
+      "ApplicationProvisioningSettings": {
         "type": "object",
         "properties": {
           "authentication": {
@@ -66194,16 +66205,7 @@
         }
       },
       "ProvisioningExtensionBean": {
-        "type": "object",
-        "properties": {
-          "properties": {
-            "type": "object",
-            "additionalProperties": {
-              "type": "object",
-              "properties": {}
-            }
-          }
-        }
+        "type": "object"
       },
       "ProvisioningPoliciesBean": {
         "type": "object",
@@ -66249,7 +66251,7 @@
           }
         }
       },
-      "SAMLBean": {
+      "ApplicationSAMLSettings": {
         "required": [
           "assertionConsumerService",
           "properties"
@@ -66300,12 +66302,14 @@
           "generateUniqueID": {
             "type": "string",
             "x-go-type-skip-optional-pointer": true,
-            "description": "Boolean flag to indicate whether the \"UniqueID\" is used in combination with providerId for checking uniqueness at the federation level."
+            "description": "Boolean flag to indicate whether the \"UniqueID\" is used in combination with providerId for checking uniqueness at the federation level.",
+            "x-go-type": "StringOrBoolean"
           },
           "signAuthnResponse": {
             "type": "string",
             "x-go-type-skip-optional-pointer": true,
-            "description": "Boolean flag to indicate whether IDP will sign the SAML authentication response sent to the service provider."
+            "description": "Boolean flag to indicate whether IDP will sign the SAML authentication response sent to the service provider.",
+            "x-go-type": "StringOrBoolean"
           },
           "signatureAlgorithm": {
             "type": "string",
@@ -66315,22 +66319,26 @@
           "validateAuthnRequest": {
             "type": "string",
             "x-go-type-skip-optional-pointer": true,
-            "description": "Boolean flag to indicate whether the IDP should validate the SAML request signature."
+            "description": "Boolean flag to indicate whether the IDP should validate the SAML request signature.",
+            "x-go-type": "StringOrBoolean"
           },
           "encryptAssertion": {
             "type": "string",
             "x-go-type-skip-optional-pointer": true,
-            "description": "Boolean flag to indicate whether the SAML assertion will be encrypted."
+            "description": "Boolean flag to indicate whether the SAML assertion will be encrypted.",
+            "x-go-type": "StringOrBoolean"
           },
           "ici_reserved_subjectNameID": {
             "type": "string",
             "x-go-type-skip-optional-pointer": true,
-            "description": "Attribute source identifier."
+            "description": "Attribute source identifier.",
+            "x-go-name": "subjectNameID"
           },
           "includeAllAttributes": {
             "type": "string",
             "x-go-type-skip-optional-pointer": true,
-            "description": "Boolean flag to indicate whether all known attributes of the user will be included in the SAML assertion."
+            "description": "Boolean flag to indicate whether all known attributes of the user will be included in the SAML assertion.",
+            "x-go-type": "StringOrBoolean"
           },
           "defaultNameIdFormat": {
             "type": "string",
@@ -66373,7 +66381,7 @@
             "description": "Unique id generated. "
           },
           "sessionNotOnOrAfter": {
-            "type": "string",
+            "type": "integer",
             "x-go-type-skip-optional-pointer": true,
             "description": "SAML configuration for SessionNotOnOrAfter"
           },
@@ -66408,7 +66416,8 @@
           "idpInitiatedSSOSupport": {
             "type": "string",
             "x-go-type-skip-optional-pointer": true,
-            "description": "string representation for IDP initiated SSO Support"
+            "description": "string representation for IDP initiated SSO Support",
+            "x-go-type": "StringOrBoolean"
           },
           "userOptions": {
             "type": "string",
@@ -66445,7 +66454,7 @@
           }
         }
       },
-      "WsFedAdditionalPropetties": {
+      "WsFedAdditionalProperties": {
         "type": "object",
         "properties": {
           "name": {
@@ -66458,7 +66467,7 @@
           }
         }
       },
-      "WsFedBean": {
+      "ApplicationWSFedSettings": {
         "type": "object",
         "properties": {
           "properties": {
@@ -66482,7 +66491,8 @@
           },
           "multipleDomainsEnabled": {
             "type": "string",
-            "x-go-type-skip-optional-pointer": true
+            "x-go-type-skip-optional-pointer": true,
+            "x-go-type": "StringOrBoolean"
           },
           "activeProfile": {
             "$ref": "#/components/schemas/WsFedActiveProfileBean"
@@ -66492,13 +66502,14 @@
           },
           "ici_reserved_subjectNameID": {
             "type": "string",
-            "x-go-type-skip-optional-pointer": true
+            "x-go-type-skip-optional-pointer": true,
+            "x-go-name": "subjectNameID"
           },
           "additionalProperties": {
             "type": "array",
             "description": "List of additional WSFed properties.",
             "items": {
-              "$ref": "#/components/schemas/WsFedAdditionalPropetties"
+              "$ref": "#/components/schemas/WsFedAdditionalProperties"
             }
           }
         }
@@ -66508,7 +66519,8 @@
         "properties": {
           "signSamlAssertion": {
             "type": "string",
-            "x-go-type-skip-optional-pointer": true
+            "x-go-type-skip-optional-pointer": true,
+            "x-go-type": "StringOrBoolean"
           },
           "keyLabel": {
             "type": "string",
@@ -66842,7 +66854,7 @@
           }
         }
       },
-      "ApplicationRequestBean": {
+      "ApplicationSettings": {
         "required": [
           "name",
           "providers",
@@ -66870,19 +66882,20 @@
             "description": "ID of the template for this application"
           },
           "providers": {
-            "$ref": "#/components/schemas/ProviderBean"
+            "$ref": "#/components/schemas/ApplicationSignOnSettings"
           },
           "attributeMappings": {
             "type": "array",
             "description": "List[AttributeMapBean], collection of attributeMapping.",
             "items": {
-              "$ref": "#/components/schemas/AttributeMapBean"
+              "$ref": "#/components/schemas/AttributeMappings"
             }
           },
           "applicationState": {
             "type": "boolean",
             "x-go-type-skip-optional-pointer": true,
-            "description": "True if application is saved and False if it is in Draft State."
+            "description": "True if application is saved and False if it is in Draft State.",
+            "x-go-type": "StringOrBoolean"
           },
           "description": {
             "type": "string",
@@ -66890,7 +66903,7 @@
             "description": "description about application"
           },
           "authPolicy": {
-            "$ref": "#/components/schemas/AuthenticationPolicyBean"
+            "$ref": "#/components/schemas/ApplicationAuthPolicy"
           },
           "provisioningMode": {
             "type": "string",
@@ -66908,26 +66921,27 @@
           "visibleOnLaunchpad": {
             "type": "boolean",
             "x-go-type-skip-optional-pointer": true,
-            "description": "Visibility flag for the application on launchpad."
+            "description": "Visibility flag for the application on launchpad.",
+            "x-go-type": "StringOrBoolean"
           },
           "provisioning": {
-            "$ref": "#/components/schemas/ProvisioningBean"
+            "$ref": "#/components/schemas/ApplicationProvisioningSettings"
           },
           "customization": {
-            "$ref": "#/components/schemas/CustomizationBean"
+            "$ref": "#/components/schemas/ApplicationBranding"
           },
           "devportalSettings": {
-            "$ref": "#/components/schemas/DevportalSettingsBean"
+            "$ref": "#/components/schemas/DeveloperPortalSettings"
           },
           "apiAccessClients": {
             "type": "array",
             "description": "List of API access clients for application",
             "items": {
-              "$ref": "#/components/schemas/APIAccessClientBean"
+              "$ref": "#/components/schemas/APIAccessClient"
             }
           },
           "adaptiveAuthentication": {
-            "$ref": "#/components/schemas/AdaptiveAuthenticationBean"
+            "$ref": "#/components/schemas/AdaptiveAuthentication"
           },
           "owners": {
             "type": "array",
@@ -66935,7 +66949,9 @@
             "items": {
               "type": "string",
               "x-go-type-skip-optional-pointer": true
-            }
+            },
+            "x-go-type": "[]ApplicationOwner",
+            "x-go-type-skip-optional-pointer": true
           },
           "target": {
             "type": "object",
@@ -69744,7 +69760,7 @@
             "type": "array",
             "description": "The list of attribute mapping objects.",
             "items": {
-              "$ref": "#/components/schemas/AttributeMapping_0"
+              "$ref": "#/components/schemas/IdentitySourceAttributeMapping"
             }
           },
           "groupSource": {
@@ -70404,7 +70420,7 @@
           }
         }
       },
-      "IdentitySourceInstancesPropertiesData": {
+      "IdentitySourceProperty": {
         "required": [
           "key",
           "sensitive",
@@ -70432,7 +70448,7 @@
           }
         }
       },
-      "IdentitySourceInstancesData": {
+      "IdentitySource": {
         "required": [
           "enabled",
           "instanceName",
@@ -70482,24 +70498,25 @@
             "type": "array",
             "description": "A set of properties that are associated with the identity source instance.\n  It is an array of properties of identity source instance that are required to perform the runtime login flow.\n  The properties and the number of properties differ with the provider type.",
             "items": {
-              "$ref": "#/components/schemas/IdentitySourceInstancesPropertiesData"
+              "$ref": "#/components/schemas/IdentitySourceProperty"
             }
           },
           "attributeMappings": {
             "type": "array",
             "description": "A set of attribute mappings that are associated with the identity source instance.\n It is an array of attribute mappings that are not required but an optional input for certain runtime login flows.\n The properties and the number of properties differe with the provider type.",
             "items": {
-              "$ref": "#/components/schemas/AttributeMapping_0"
+              "$ref": "#/components/schemas/IdentitySourceAttributeMapping"
             }
           },
           "id": {
             "type": "string",
             "description": "The ID of the identity source",
-            "example": "00000000-1111-2222-3333-444444444444"
+            "example": "00000000-1111-2222-3333-444444444444",
+            "x-go-type-skip-optional-pointer": true
           }
         }
       },
-      "IdentitySourceIntancesDataList": {
+      "IdentitySourceList": {
         "required": [
           "identitySources",
           "total"
@@ -70517,7 +70534,7 @@
             "type": "array",
             "description": "A list of identity source intances configured for the tenant.",
             "items": {
-              "$ref": "#/components/schemas/IdentitySourceInstancesData"
+              "$ref": "#/components/schemas/IdentitySource"
             }
           }
         }
@@ -70915,7 +70932,7 @@
           }
         }
       },
-      "AttributeMapping_0": {
+      "IdentitySourceAttributeMapping": {
         "required": [
           "attrId",
           "idsAttrName",
@@ -109145,7 +109162,7 @@
           "supportedAttributes": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/Attribute_0"
+              "$ref": "#/components/schemas/Attribute1_0"
             }
           },
           "integrationProcessingEndpoint": {

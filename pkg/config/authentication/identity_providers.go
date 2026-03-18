@@ -1,51 +1,206 @@
 package authentication
 
 import (
-	"bytes"
 	"context"
 	"encoding/json"
-	"fmt"
 	"net/http"
-	"net/url"
 
 	"github.com/ibm-verify/verify-sdk-go/internal/openapi"
 
 	contextx "github.com/ibm-verify/verify-sdk-go/pkg/core/context"
 	errorsx "github.com/ibm-verify/verify-sdk-go/pkg/core/errors"
+	"github.com/ibm-verify/verify-sdk-go/pkg/core/models"
+)
+
+const (
+	sampleOIDCIdentitySource = `
+{
+    "attributeMappings": [
+        {
+            "attrId": "aa41ddbe-586a-4b21-bed8-a95466c2f621",
+            "jitpOption": "ALWAYS",
+            "idsAttrName": "groupIds"
+        },
+        {
+            "attrId": "idpsurname",
+            "jitpOption": "DISABLED",
+            "idsAttrName": "surname"
+        },
+        {
+            "attrId": "idpdomain",
+            "jitpOption": "DISABLED",
+            "idsAttrName": "domain"
+        },
+        {
+            "attrId": "idpusername",
+            "jitpOption": "ALWAYS",
+            "idsAttrName": "email"
+        },
+        {
+            "attrId": "email",
+            "jitpOption": "ALWAYS",
+            "idsAttrName": "email"
+        }
+    ],
+    "instanceName": "Test OIDC IdP",
+    "enabled": true,
+    "predefined": false,
+    "properties": [
+        {
+            "sensitive": false,
+            "value": "a-client-id",
+            "key": "client_id"
+        },
+        {
+            "sensitive": false,
+            "value": "a-client-secret",
+            "key": "client_secret"
+        },
+        {
+            "sensitive": false,
+            "value": "true",
+            "key": "forward_login_hint"
+        },
+        {
+            "sensitive": false,
+            "value": "true",
+            "key": "forward_max_age"
+        },
+        {
+            "sensitive": false,
+            "value": "true",
+            "key": "forward_prompt"
+        },
+        {
+            "sensitive": false,
+            "value": "BigBlue OIDC IdP",
+            "key": "friendly_name"
+        },
+        {
+            "sensitive": false,
+            "value": "false",
+            "key": "identityLinkingEnabled"
+        },
+        {
+            "sensitive": false,
+            "value": "",
+            "key": "identityLinkingExternalId"
+        },
+        {
+            "sensitive": false,
+            "value": "",
+            "key": "identityLinkingExternalIdTransform"
+        },
+        {
+            "sensitive": false,
+            "value": "true",
+            "key": "jitEnabled"
+        },
+        {
+            "sensitive": false,
+            "value": "https://oidc.BigBlue.com/oauth/jwks",
+            "key": "jwks_uri"
+        },
+        {
+            "sensitive": false,
+            "value": "false",
+            "key": "pkce_support"
+        },
+        {
+            "sensitive": false,
+            "value": "preferred_username",
+            "key": "principalAttribute"
+        },
+        {
+            "sensitive": false,
+            "value": "",
+            "key": "principalAttributeTransform"
+        },
+        {
+            "sensitive": false,
+            "value": "https://oidc.BigBlue.com/oauth",
+            "key": "realm"
+        },
+        {
+            "sensitive": false,
+            "value": "openid email",
+            "key": "scopes"
+        },
+        {
+            "sensitive": false,
+            "value": "false",
+            "key": "show_admin_user"
+        },
+		{
+			"key":       "show_admin_user_qr",
+			"value":     "false",
+			"sensitive": false,
+		},
+		{
+			"key":       "show_admin_user_fido",
+			"value":     "false",
+			"sensitive": false,
+		},
+        {
+            "sensitive": false,
+            "value": "true",
+            "key": "show_end_user"
+        },
+		{
+			"key":       "show_end_user_qr",
+			"value":     "false",
+			"sensitive": false,
+		},
+		{
+			"key":       "show_end_user_fido",
+			"value":     "false",
+			"sensitive": false,
+		}
+        {
+            "sensitive": false,
+            "value": "authorization_code",
+            "key": "supported_grant_types"
+        },
+        {
+            "sensitive": false,
+            "value": "",
+            "key": "userInvitationProfile"
+        },
+        {
+            "sensitive": false,
+            "value": "false",
+            "key": "userInvitationsEnabled"
+        },
+        {
+            "sensitive": false,
+            "value": "https://oidc.BigBlue.com/.well-known/openid-configuration",
+            "key": "wellknown_endpoint"
+        }
+    ],
+    "sourceTypeId": 19,
+    "status": "configured"
+}
+`
 )
 
 type IdentitySourceClient struct {
 	Client *http.Client
 }
 
-type SignInOptions struct {
-	InstanceName string           `json:"instanceName" yaml:"instanceName"`
-	Properties   []map[string]any `json:"properties" yaml:"properties"`
-}
-
-type IdentitySource = openapi.IdentitySourceInstancesData
-type IdentitySourceList = openapi.IdentitySourceIntancesDataList
-
 func NewIdentitySourceClient() *IdentitySourceClient {
 	return &IdentitySourceClient{}
 }
 
-func (c *IdentitySourceClient) CreateIdentitySource(ctx context.Context, identitySource *IdentitySource) (string, error) {
+func (c *IdentitySourceClient) CreateIdentitySource(ctx context.Context, identitySource *models.IdentitySource) (string, error) {
 	vc := contextx.GetVerifyContext(ctx)
 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
 	defaultErr := errorsx.G11NError("unable to create identitySource")
-
-	body, err := json.Marshal(identitySource)
-	if err != nil {
-		vc.Logger.Errorf("Unable to marshal identitySource data; err=%v", err)
-		return "", defaultErr
-	}
 
 	headers := &openapi.Headers{
 		Token:  vc.Token,
 		Accept: "application/json",
 	}
-	resp, err := client.CreateIdentitySourceV2WithBodyWithResponse(ctx, "application/json", bytes.NewBuffer(body), openapi.DefaultRequestEditors(ctx, headers)...)
+	resp, err := client.CreateIdentitySourceV2WithResponse(ctx, *identitySource, openapi.DefaultRequestEditors(ctx, headers)...)
 	if err != nil {
 		vc.Logger.Errorf("Unable to create identitySource; err=%v", err)
 		return "", defaultErr
@@ -65,89 +220,70 @@ func (c *IdentitySourceClient) CreateIdentitySource(ctx context.Context, identit
 	return uri.String(), nil
 }
 
-func (c *IdentitySourceClient) GetIdentitySourceByID(ctx context.Context, identitySourceID string) (*IdentitySource, string, error) {
+func (c *IdentitySourceClient) GetIdentitySource(ctx context.Context, id string) (*models.IdentitySource, error) {
 	vc := contextx.GetVerifyContext(ctx)
 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
 	headers := &openapi.Headers{
 		Token:  vc.Token,
 		Accept: "application/json",
 	}
-	resp, err := client.GetInstanceV2WithResponse(ctx, identitySourceID, openapi.DefaultRequestEditors(ctx, headers)...)
+	resp, err := client.GetInstanceV2WithResponse(ctx, id, openapi.DefaultRequestEditors(ctx, headers)...)
 	if err != nil {
 		vc.Logger.Errorf("unable to get the IdentitySource; err=%s", err.Error())
-		return nil, "", err
+		return nil, err
 	}
 
 	if resp.StatusCode() != http.StatusOK {
 		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, resp.Body, "unable to get IdentitySource"); err != nil {
 			vc.Logger.Errorf("unable to get the IdentitySource; err=%s", err.Error())
-			return nil, "", err
+			return nil, err
 		}
 
 		vc.Logger.Errorf("unable to get the IdentitySource; code=%d, body=%s", resp.StatusCode(), string(resp.Body))
-		return nil, "", errorsx.G11NError("unable to get the IdentitySource")
+		return nil, errorsx.G11NError("unable to get the IdentitySource; code=%d, body=%s", resp.StatusCode(), string(resp.Body))
 	}
 
-	IdentitySource := &IdentitySource{}
+	IdentitySource := &models.IdentitySource{}
 	if err = json.Unmarshal(resp.Body, IdentitySource); err != nil {
-		return nil, "", errorsx.G11NError("unable to get the IdentitySource")
+		return nil, err
 	}
 
-	return IdentitySource, resp.HTTPResponse.Request.URL.String(), nil
+	return IdentitySource, nil
 }
 
-func (c *IdentitySourceClient) GetIdentitySources(ctx context.Context, sort string, count int, page int, limit int) (*IdentitySourceList, string, error) {
+func (c *IdentitySourceClient) GetIdentitySources(ctx context.Context, criteria *models.GetInstancesV2Params) (*models.IdentitySourceList, error) {
 	vc := contextx.GetVerifyContext(ctx)
 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
-	params := &openapi.GetInstancesV2Params{}
-	if len(sort) > 0 {
-		params.Sort = sort
-	}
-	if count > 0 {
-		params.Count = count
-	}
-	pagination := url.Values{}
-	if page > 0 {
-		pagination.Set("page", fmt.Sprintf("%d", page))
-	}
-
-	if limit > 0 {
-		pagination.Set("limit", fmt.Sprintf("%d", limit))
-	}
-
-	if len(pagination) > 0 {
-		params.Pagination = pagination.Encode()
-	}
 	headers := &openapi.Headers{
 		Token:  vc.Token,
 		Accept: "application/json",
 	}
-	resp, err := client.GetInstancesV2WithResponse(ctx, params, openapi.DefaultRequestEditors(ctx, headers)...)
+	resp, err := client.GetInstancesV2WithResponse(ctx, criteria, openapi.DefaultRequestEditors(ctx, headers)...)
 	if err != nil {
 		vc.Logger.Errorf("unable to get the IdentitySources; err=%s", err.Error())
-		return nil, "", err
+		return nil, err
 	}
 
 	if resp.StatusCode() != http.StatusOK {
 		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, resp.Body, "unable to get IdentitySources"); err != nil {
 			vc.Logger.Errorf("unable to get the IdentitySources; err=%s", err.Error())
-			return nil, "", err
+			return nil, err
 		}
 
 		vc.Logger.Errorf("unable to get the IdentitySources; code=%d, body=%s", resp.StatusCode(), string(resp.Body))
-		return nil, "", errorsx.G11NError("unable to get the IdentitySources")
+		return nil, errorsx.G11NError("unable to get the IdentitySources; code=%d, body=%s", resp.StatusCode(), string(resp.Body))
 	}
 
-	IdentitySourcesResponse := &IdentitySourceList{}
-	if err = json.Unmarshal(resp.Body, &IdentitySourcesResponse); err != nil {
+	list := &models.IdentitySourceList{}
+	if err = json.Unmarshal(resp.Body, &list); err != nil {
 		vc.Logger.Errorf("unable to get the IdentitySources; err=%s, body=%s", err, string(resp.Body))
-		return nil, "", errorsx.G11NError("unable to get the IdentitySources")
+		return nil, err
 	}
 
-	return IdentitySourcesResponse, resp.HTTPResponse.Request.URL.String(), nil
+	return list, nil
 }
 
-func (c *IdentitySourceClient) DeleteIdentitySourceByID(ctx context.Context, identitySourceID string) error {
+func (c *IdentitySourceClient) DeleteIdentitySource(ctx context.Context, id string) error {
 	vc := contextx.GetVerifyContext(ctx)
 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
 
@@ -155,7 +291,7 @@ func (c *IdentitySourceClient) DeleteIdentitySourceByID(ctx context.Context, ide
 		Token:  vc.Token,
 		Accept: "application/json",
 	}
-	resp, err := client.DeleteIdentitySourceV2WithResponse(ctx, identitySourceID, openapi.DefaultRequestEditors(ctx, headers)...)
+	resp, err := client.DeleteIdentitySourceV2WithResponse(ctx, id, openapi.DefaultRequestEditors(ctx, headers)...)
 	if err != nil {
 		vc.Logger.Errorf("unable to delete the IdentitySource; err=%s", err.Error())
 		return errorsx.G11NError("unable to delete the IdentitySource; err=%s", err.Error())
@@ -174,21 +310,15 @@ func (c *IdentitySourceClient) DeleteIdentitySourceByID(ctx context.Context, ide
 	return nil
 }
 
-func (c *IdentitySourceClient) UpdateIdentitySource(ctx context.Context, identitySourceID string, identitySource *IdentitySource) error {
+func (c *IdentitySourceClient) UpdateIdentitySource(ctx context.Context, id string, identitySource *models.IdentitySource) error {
 	vc := contextx.GetVerifyContext(ctx)
 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
-	defaultErr := errorsx.G11NError("unable to update identitySource")
-	body, err := json.Marshal(identitySource)
-	if err != nil {
-		vc.Logger.Errorf("Unable to marshal identitySource data; err=%v", err)
-		return defaultErr
-	}
 
 	headers := &openapi.Headers{
 		Token:  vc.Token,
 		Accept: "application/json",
 	}
-	resp, err := client.UpdateIdentitySourceV2WithBodyWithResponse(ctx, identitySourceID, "application/json", bytes.NewBuffer(body), openapi.DefaultRequestEditors(ctx, headers)...)
+	resp, err := client.UpdateIdentitySourceV2WithResponse(ctx, id, *identitySource, openapi.DefaultRequestEditors(ctx, headers)...)
 	if err != nil {
 		if err := errorsx.HandleCommonErrors(ctx, resp.HTTPResponse, resp.Body, "unable to update Identity provider"); err != nil {
 			vc.Logger.Errorf("unable to update the Identity provider; err=%s", err.Error())
@@ -206,63 +336,9 @@ func (c *IdentitySourceClient) UpdateIdentitySource(ctx context.Context, identit
 	return nil
 }
 
-func (c *IdentitySourceClient) UpdateSignInOptions(ctx context.Context, identitySource *IdentitySource) error {
-	vc := contextx.GetVerifyContext(ctx)
-	if identitySource.ID == nil || *identitySource.ID == "" {
-		vc.Logger.Errorf("'id' cannot be empty")
-		return errorsx.G11NError("'id' cannot be empty")
-	}
+func IdentitySourceExample() *models.IdentitySource {
+	identitySource := &models.IdentitySource{}
 
-	if err := c.UpdateIdentitySource(ctx, *identitySource.ID, identitySource); err != nil {
-		vc.Logger.Errorf("unable to update the IdentitySource with 'id' %s; err=%s", identitySource.ID, err.Error())
-		return errorsx.G11NError("unable to update the IdentitySource with 'id' %s; err=%s", identitySource.ID, err.Error())
-	}
-
-	return nil
-}
-
-func IdentitySourceExample() *IdentitySource {
-	var identitySource *IdentitySource = &IdentitySource{}
-	identitySource.Properties = append(identitySource.Properties, openapi.IdentitySourceInstancesPropertiesData{Key: "", Value: "", Sensitive: false})
+	_ = json.Unmarshal([]byte(sampleOIDCIdentitySource), identitySource)
 	return identitySource
-}
-
-// This function helps in boilerplate generation to update Sign in options
-func SignInOptionsExample() *SignInOptions {
-	var signInOptions = &SignInOptions{
-		InstanceName: "",
-		Properties: []map[string]any{
-			{
-				"key":       "show_admin_user",
-				"value":     "false",
-				"sensitive": false,
-			},
-			{
-				"key":       "show_admin_user_qr",
-				"value":     "false",
-				"sensitive": false,
-			},
-			{
-				"key":       "show_admin_user_fido",
-				"value":     "false",
-				"sensitive": false,
-			},
-			{
-				"key":       "show_end_user",
-				"value":     "false",
-				"sensitive": false,
-			},
-			{
-				"key":       "show_end_user_qr",
-				"value":     "false",
-				"sensitive": false,
-			},
-			{
-				"key":       "show_end_user_fido",
-				"value":     "false",
-				"sensitive": false,
-			},
-		},
-	}
-	return signInOptions
 }

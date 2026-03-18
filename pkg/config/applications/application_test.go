@@ -12,6 +12,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/ibm-verify/verify-sdk-go/internal/test_helper"
 	"github.com/ibm-verify/verify-sdk-go/pkg/config/applications"
+	"github.com/ibm-verify/verify-sdk-go/pkg/core/models"
 	"gopkg.in/yaml.v3"
 
 	contextx "github.com/ibm-verify/verify-sdk-go/pkg/core/context"
@@ -26,8 +27,8 @@ type ApplicationTestSuite struct {
 	ctx               context.Context
 	vctx              *contextx.VerifyContext
 	client            *applications.ApplicationClient
-	applicationCreate *applications.Application
-	applicationPatch  *applications.Application
+	applicationCreate *models.ApplicationSettings
+	applicationPatch  *models.ApplicationSettings
 }
 
 func (s *ApplicationTestSuite) SetupTest() {
@@ -57,78 +58,11 @@ providers:
   sso:
     domainName: aclc-target-fed-prod-us01b.verify.ibmforusgov.com
     userOptions: applicationBookmark
-    spssoUrl: ''
-    targetUrl: ''
-    idpInitiatedSSOSupport: 'false'
   saml:
-    justInTimeProvisioning: 'false'
     properties:
       companyName: IBM
-    assertionConsumerService: []
-    singleLogoutService: []
-    additionalProperties: []
-    manageNameIDService:
-      url: ''
   bookmark:
     bookmarkUrl: https://aclc-prov-fed-prod-us01b.verify.ibmforusgov.com
-  oidc:
-    properties:
-      grantTypes:
-        authorizationCode: false
-        implicit: false
-        deviceFlow: false
-        ropc: false
-        jwtBearer: false
-        policyAuth: false
-        clientCredentials: false
-        tokenExchange: false
-      redirectUris: []
-      idTokenSigningAlg: ''
-      accessTokenExpiry: 0
-      refreshTokenExpiry: 0
-      doNotGenerateClientSecret: ''
-      generateRefreshToken: ''
-      renewRefreshTokenExpiry: 0
-      signIdToken: ''
-      signingCertificate: ''
-      clientId: ''
-      clientSecret: ''
-      sendAllKnownUserAttributes: ''
-      jwksUri: ''
-      consentType: ''
-      renewRefreshToken: ''
-      idTokenEncryptAlg: ''
-      idTokenEncryptEnc: ''
-      idTokenEncryptKey: ''
-    grantProperties:
-      generateDeviceFlowQRCode: ''
-    token:
-      accessTokenType: ''
-      audiences: []
-      attributeMappings: []
-    jwtBearerProperties:
-      userIdentifier: ''
-      identitySource: ''
-    applicationUrl: ''
-    restrictScopes: ''
-    scopes: []
-    entitlements: []
-    restrictEntitlements: false
-    consentAction: ''
-    requirePkceVerification: ''
-  wsfed:
-    properties:
-      activeProfile:
-        defaultRealm: ''
-      signingSettings:
-        signSamlAssertion: ''
-        keyLabel: ''
-        signatureAlgorithm: ''
-      callbackURL: ''
-      providerId: ''
-      multipleDomainsEnabled: ''
-      ici_reserved_subjectNameID: ''
-      additionalProperties: []
 provisioning:
   extension:
     properties:
@@ -315,12 +249,17 @@ apiAccessClients:
 	s.client = applications.NewApplicationClient()
 
 	// delete the applications if found
-	if apps, _, err := s.client.GetApplications(s.ctx, fmt.Sprintf("name=%s", s.applicationCreate.Name), "", 1, 1); err == nil && apps.UnderscoreEmbedded != nil && apps.UnderscoreEmbedded.Applications != nil {
+	criteria := &models.SearchApplicationsParams{
+		Search: fmt.Sprintf("q=%s", s.applicationCreate.Name),
+		Limit:  "1",
+		Page:   "1",
+	}
+	if apps, err := s.client.GetApplications(s.ctx, criteria); err == nil && apps.UnderscoreEmbedded != nil && apps.UnderscoreEmbedded.Applications != nil {
 
 		for _, v := range apps.UnderscoreEmbedded.Applications {
 			appID := v.UnderscoreLinks.Self.Href[strings.LastIndex(v.UnderscoreLinks.Self.Href, "/")+1:]
 			logger.Infof("Deleting application with ID: %s", appID)
-			_ = s.client.DeleteApplicationByID(s.ctx, appID)
+			_ = s.client.DeleteApplication(s.ctx, appID)
 		}
 	}
 }
@@ -334,12 +273,8 @@ func (s *ApplicationTestSuite) TestApplication() {
 	applicationID := strings.Split(resp, "/")[len(strings.Split(resp, "/"))-1]
 
 	// Get Application details
-	_, _, err = s.client.GetApplicationByID(s.ctx, applicationID)
+	_, err = s.client.GetApplication(s.ctx, applicationID)
 	require.NoError(s.T(), err, "unable to get Application %s; err=%v", applicationID, err)
-
-	// Get Application list
-	_, _, err = s.client.GetApplications(s.ctx, "", "", 0, 0)
-	require.NoError(s.T(), err, "unable to list Applications; err=%v", err)
 
 	// Update Application
 	for {
@@ -361,7 +296,7 @@ func (s *ApplicationTestSuite) TestApplication() {
 	require.NoError(s.T(), err, "unable to update Application %s; err=%v", applicationID, err)
 
 	// Delete Application
-	err = s.client.DeleteApplicationByID(s.ctx, applicationID)
+	err = s.client.DeleteApplication(s.ctx, applicationID)
 	require.NoError(s.T(), err, "unable to delete Application %s; err=%v", applicationID, err)
 }
 

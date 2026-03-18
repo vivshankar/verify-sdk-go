@@ -13,14 +13,12 @@ import (
 
 	contextx "github.com/ibm-verify/verify-sdk-go/pkg/core/context"
 	errorsx "github.com/ibm-verify/verify-sdk-go/pkg/core/errors"
+	. "github.com/ibm-verify/verify-sdk-go/pkg/core/models"
 )
 
 type AttributeClient struct {
 	Client *http.Client
 }
-
-type Attribute = openapi.Attribute0
-type AttributeList = openapi.PaginatedAttribute0
 
 type AttributesSearchCriteria struct {
 	// Search is the criteria used to filter the attributes. The format to use the search query parameter is 'search={parameter}{operator}{value}
@@ -59,66 +57,69 @@ func NewAttributeClient() *AttributeClient {
 	return &AttributeClient{}
 }
 
-func (c *AttributeClient) GetAttribute(ctx context.Context, id string) (*Attribute, string, error) {
+func (c *AttributeClient) GetAttribute(ctx context.Context, id string) (*Attribute, error) {
 	vc := contextx.GetVerifyContext(ctx)
 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
-	params := openapi.GetAttribute0Params{
+	params := GetAttribute0Params{
 		Authorization: fmt.Sprintf("Bearer %s", vc.Token),
 	}
 	resp, err := client.GetAttribute0WithResponse(ctx, id, &params)
 	if err != nil {
 		vc.Logger.Errorf("unable to get the attribute; err=%s", err.Error())
-		return nil, "", err
+		return nil, err
 	}
 
 	if e := resp.JSON400; e != nil {
 		err := e.ConvertToError()
 		vc.Logger.Errorf("bad request: err=%s", err.Error())
-		return nil, "", err
+		return nil, err
 	}
 
 	if e := resp.JSON404; e != nil {
 		err := e.ConvertToError()
 		vc.Logger.Errorf("not found: err=%s", err.Error())
-		return nil, "", err
+		return nil, err
 	}
 
 	if e := resp.JSON500; e != nil {
 		err := e.ConvertToError()
 		vc.Logger.Errorf("internal server error: err=%s", err.Error())
-		return nil, "", err
+		return nil, err
 	}
 
 	if resp.StatusCode() != http.StatusOK {
 		vc.Logger.Errorf("unable to get the attribute; code=%d, body=%s", resp.StatusCode(), string(resp.Body))
-		return nil, "", errorsx.G11NError("unable to get the attribute")
+		return nil, errorsx.G11NError("unable to get the attribute")
 	}
 
 	attribute := &Attribute{}
 	if err := json.Unmarshal(resp.Body, attribute); err != nil {
 		vc.Logger.Errorf("unable to unmarshal the body; err=%v, body=%s", err, string(resp.Body))
-		return nil, "", errorsx.G11NError("unable to get the attribute")
+		return nil, errorsx.G11NError("unable to get the attribute")
 	}
 
-	return attribute, resp.HTTPResponse.Request.URL.String(), nil
+	return attribute, nil
 }
 
 func (c *AttributeClient) GetAttributes(ctx context.Context, criteria *AttributesSearchCriteria) (*AttributeList, error) {
 	vc := contextx.GetVerifyContext(ctx)
 	client := openapi.NewClientWithOptions(ctx, vc.Tenant, c.Client)
 
-	params := &openapi.GetAllAttributesParams{
+	params := &GetAllAttributesParams{
 		Authorization: fmt.Sprintf("Bearer %s", vc.Token),
 	}
 
+	hasCriteria := false
 	pagination := url.Values{}
 	if criteria != nil {
 		if len(criteria.Search) > 0 {
 			params.Search = criteria.Search
+			hasCriteria = true
 		}
 
 		if len(criteria.Sort) > 0 {
 			params.Sort = criteria.Sort
+			hasCriteria = true
 		}
 
 		if criteria.Page > 0 {
@@ -131,6 +132,7 @@ func (c *AttributeClient) GetAttributes(ctx context.Context, criteria *Attribute
 
 		if len(pagination) > 0 {
 			params.Pagination = pagination.Encode()
+			hasCriteria = true
 		}
 	}
 

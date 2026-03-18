@@ -57,9 +57,9 @@ def transform(doc):
 
     # 4) change ref to eliminate duplicates
     ref_map = {
-        "#/components/schemas/Attribute1": "#/components/schemas/Attribute",
-        "#/components/schemas/ErrorBean1": "#/components/schemas/ErrorBean",
-        "#/components/schemas/OperationAndValue_0": "#/components/schemas/OperationAndValue",
+        "\"#/components/schemas/Attribute1\"": "\"#/components/schemas/Attribute\"",
+        "\"#/components/schemas/ErrorBean1\"": "\"#/components/schemas/ErrorBean\"",
+        "\"#/components/schemas/OperationAndValue_0\"": "\"#/components/schemas/OperationAndValue\"",
         "OperationAndValue\"": "DynamicGroupCondition\"",
         "\"RequestOperation\":": "\"AccessRequestOperation\":",
         "/RequestOperation": "/AccessRequestOperation",
@@ -78,7 +78,36 @@ def transform(doc):
         print(f"Replacing {key} => {value}")
         text = text.replace(key, value)
 
-    doc = json.loads(text)    
+    # 4.5) Object name for cleanliness
+    obj_map: dict[str, str] = {
+        "SearchAdminApplicationWithoutProvResponseBean": "ApplicationListResponse",
+        "ApplicationRequestBean": "ApplicationSettings",
+        "AdaptiveAuthenticationBean": "AdaptiveAuthentication",
+        "APIAccessClientBean": "APIAccessClient",
+        "AttributeMapBean": "AttributeMappings",
+        "AuthenticationPolicyBean": "ApplicationAuthPolicy",
+        "CustomizationBean": "ApplicationBranding",
+        "DevportalSettingsBean": "DeveloperPortalSettings",
+        "ProviderBean": "ApplicationSignOnSettings",
+        "BookmarkBean": "ApplicationBookmarkSettings",
+        "SAMLBean": "ApplicationSAMLSettings",
+        "OIDCBean": "ApplicationOIDCSettings",
+        "WsFedBean": "ApplicationWSFedSettings",
+        "ProvisioningBean": "ApplicationProvisioningSettings",
+        "WsFedAdditionalPropetties": "WsFedAdditionalProperties",
+        "AttributeMapping_0": "IdentitySourceAttributeMapping",
+        "IdentitySource": "ExternalAgentIdentitySource",
+        "IdentitySourceInstancesData": "IdentitySource",
+        "IdentitySourceInstancesPropertiesData": "IdentitySourceProperty",
+        "IdentitySourceIntancesDataList": "IdentitySourceList",
+    }
+
+    for key, value in obj_map.items():
+        print(f"Replacing {key} => {value}")
+        text = text.replace(f"\"{key}\":", f"\"{value}\":")
+        text = text.replace(f"\"#/components/schemas/{key}\"", f"\"#/components/schemas/{value}\"")
+
+    doc = json.loads(text)
 
     # 5) delete specific objects
     del doc["components"]["schemas"]["HttpServletRequest"]
@@ -89,6 +118,7 @@ def transform(doc):
     del doc["components"]["schemas"]["ServletContext"]
     del doc["components"]["schemas"]["HttpSession"]
     del doc["components"]["schemas"]["ServletConfig"]
+    del doc["components"]["schemas"]["ProvisioningExtensionBean"]["properties"]
     
     # 6) Fix the attributes API response
     doc["paths"]["/v1.0/attributes"]["get"]["responses"]["200"]["content"]["application/json"]["schema"] = {
@@ -148,10 +178,11 @@ def transform(doc):
                         }
                     })
 
-    doc["components"]["schemas"]["IdentitySourceInstancesData"]["properties"]["id"] = {
+    doc["components"]["schemas"]["IdentitySource"]["properties"]["id"] = {
                         "type": "string",
                         "description": "The ID of the identity source",
-                        "example": "00000000-1111-2222-3333-444444444444"
+                        "example": "00000000-1111-2222-3333-444444444444",
+                        "x-go-type-skip-optional-pointer": True
                     }
 
     # 8) Fix the  CD objects
@@ -172,7 +203,35 @@ def transform(doc):
     doc["components"]["schemas"]["AdminApplicationWithoutProv"]["properties"]["applicationState"]["x-go-type"] = "StringOrBoolean"
     doc["components"]["schemas"]["AdminApplicationWithoutProv"]["properties"]["approvalRequired"]["x-go-type"] = "StringOrBoolean"
     doc["components"]["schemas"]["AdminApplicationWithoutProv"]["properties"]["visibleOnLaunchpad"]["x-go-type"] = "StringOrBoolean"
+    doc["components"]["schemas"]["ApplicationSettings"]["properties"]["applicationState"]["x-go-type"] = "StringOrBoolean"
+    doc["components"]["schemas"]["ApplicationSettings"]["properties"]["visibleOnLaunchpad"]["x-go-type"] = "StringOrBoolean"
+    doc["components"]["schemas"]["ApplicationSettings"]["properties"]["owners"]["x-go-type"] = "[]ApplicationOwner"
+    doc["components"]["schemas"]["ApplicationSettings"]["properties"]["owners"]["x-go-type-skip-optional-pointer"] = True
+    doc["components"]["schemas"]["APIAccessClient"]["properties"]["additionalConfig"]["$ref"] = "#/components/schemas/AdditionalConfiguration"
     doc["components"]["schemas"]["OIDCPropertiesBean"]["properties"]["additionalConfig"]["$ref"] = "#/components/schemas/AdditionalConfiguration"
+    doc["components"]["schemas"]["OIDCPropertiesBean"]["properties"]["renewRefreshToken"]["x-go-type"] = "StringOrBoolean"
+    doc["components"]["schemas"]["OIDCPropertiesBean"]["properties"]["generateRefreshToken"]["x-go-type"] = "StringOrBoolean"
+    doc["components"]["schemas"]["SAMLPropertiesBean"]["properties"]["generateUniqueID"]["x-go-type"] = "StringOrBoolean"
+    doc["components"]["schemas"]["SAMLPropertiesBean"]["properties"]["signAuthnResponse"]["x-go-type"] = "StringOrBoolean"
+    doc["components"]["schemas"]["SAMLPropertiesBean"]["properties"]["validateAuthnRequest"]["x-go-type"] = "StringOrBoolean"
+    doc["components"]["schemas"]["SAMLPropertiesBean"]["properties"]["encryptAssertion"]["x-go-type"] = "StringOrBoolean"
+    doc["components"]["schemas"]["SAMLPropertiesBean"]["properties"]["includeAllAttributes"]["x-go-type"] = "StringOrBoolean"
+    doc["components"]["schemas"]["SAMLPropertiesBean"]["properties"]["encryptAssertion"]["x-go-type"] = "StringOrBoolean"
+    doc["components"]["schemas"]["SAMLPropertiesBean"]["properties"]["encryptAssertion"]["x-go-type"] = "StringOrBoolean"
+    doc["components"]["schemas"]["SAMLPropertiesBean"]["properties"]["sessionNotOnOrAfter"]["type"] = "integer"
+    doc["components"]["schemas"]["SAMLPropertiesBean"]["properties"]["ici_reserved_subjectNameID"]["x-go-name"] = "subjectNameID"
+    doc["components"]["schemas"]["WsFedPropertiesBean"]["properties"]["multipleDomainsEnabled"]["x-go-type"] = "StringOrBoolean"
+    doc["components"]["schemas"]["WsFedPropertiesBean"]["properties"]["ici_reserved_subjectNameID"]["x-go-name"] = "subjectNameID"
+    doc["components"]["schemas"]["WsFedSigningSettingsBean"]["properties"]["signSamlAssertion"]["x-go-type"] = "StringOrBoolean"
+    doc["components"]["schemas"]["SSOBean"]["properties"]["idpInitiatedSSOSupport"]["x-go-type"] = "StringOrBoolean"
+    doc["components"]["schemas"]["GrantTypesBean"]["properties"]["authorizationCode"]["x-go-type"] = "StringOrBoolean"
+    doc["components"]["schemas"]["GrantTypesBean"]["properties"]["implicit"]["x-go-type"] = "StringOrBoolean"
+    doc["components"]["schemas"]["GrantTypesBean"]["properties"]["deviceFlow"]["x-go-type"] = "StringOrBoolean"
+    doc["components"]["schemas"]["GrantTypesBean"]["properties"]["ropc"]["x-go-type"] = "StringOrBoolean"
+    doc["components"]["schemas"]["GrantTypesBean"]["properties"]["jwtBearer"]["x-go-type"] = "StringOrBoolean"
+    doc["components"]["schemas"]["GrantTypesBean"]["properties"]["policyAuth"]["x-go-type"] = "StringOrBoolean"
+    doc["components"]["schemas"]["GrantTypesBean"]["properties"]["clientCredentials"]["x-go-type"] = "StringOrBoolean"
+    doc["components"]["schemas"]["GrantTypesBean"]["properties"]["tokenExchange"]["x-go-type"] = "StringOrBoolean"
 
     return doc
 

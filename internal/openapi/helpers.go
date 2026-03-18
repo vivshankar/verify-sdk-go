@@ -2,11 +2,8 @@ package openapi
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"net/http"
-
-	errorsx "github.com/ibm-verify/verify-sdk-go/pkg/core/errors"
 )
 
 type Headers struct {
@@ -48,35 +45,4 @@ func DefaultRequestEditors(ctx context.Context, headers *Headers) []RequestEdito
 			return nil
 		},
 	}
-}
-
-func (e *TemplateError) ConvertToError() *errorsx.VerifyError {
-	return &errorsx.VerifyError{
-		MessageID:          e.MessageID,
-		MessageDescription: e.MessageDescription,
-	}
-}
-
-func (e *ErrorBean) ConvertToError() *errorsx.VerifyError {
-	return &errorsx.VerifyError{
-		MessageID:          e.MessageID,
-		MessageDescription: e.MessageDescription,
-	}
-}
-
-type StringOrBoolean bool
-
-func (o *StringOrBoolean) UnmarshalJSON(data []byte) error {
-	var b bool
-	if err := json.Unmarshal(data, &b); err != nil {
-		var s string
-		if err := json.Unmarshal(data, &s); err != nil {
-			return fmt.Errorf("failed to unmarshal boolean: %w", err)
-		}
-
-		b = "true" == s
-	}
-
-	*o = StringOrBoolean(b)
-	return nil
 }

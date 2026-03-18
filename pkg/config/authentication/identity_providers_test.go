@@ -13,6 +13,7 @@ import (
 	"gopkg.in/yaml.v3"
 
 	contextx "github.com/ibm-verify/verify-sdk-go/pkg/core/context"
+	"github.com/ibm-verify/verify-sdk-go/pkg/core/models"
 	"github.com/ibm-verify/verify-sdk-go/x/logx"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
@@ -24,11 +25,11 @@ type IdentityProvidersTestSuite struct {
 	ctx                    context.Context
 	vctx                   *contextx.VerifyContext
 	client                 *authentication.IdentitySourceClient
-	identityProviderCreate *authentication.IdentitySource
-	identityProviderPatch  *authentication.IdentitySource
+	identityProviderCreate *models.IdentitySource
+	identityProviderPatch  *models.IdentitySource
 }
 
-func (s *IdentityProvidersTestSuite) SetupTest() {
+func (s *IdentityProvidersTestSuite) SetupSuite() {
 	var err error
 	// initialize the logger
 	contextID := uuid.NewString()
@@ -111,6 +112,15 @@ sourceTypeId: 8
 	_ = yaml.Unmarshal([]byte(identityProviderPatchRawData), &s.identityProviderPatch)
 
 	s.client = authentication.NewIdentitySourceClient()
+
+	// clean up the identity sources if found
+	if list, err := s.client.GetIdentitySources(s.ctx, &models.GetInstancesV2Params{
+		Search: "instanceName = \"TestIdentityProvider\"",
+		Filter: "enduser",
+		Count:  1,
+	}); err == nil && list.Total > 0 {
+		_ = s.client.DeleteIdentitySource(s.ctx, list.IdentitySources[0].ID)
+	}
 }
 
 func (s *IdentityProvidersTestSuite) TestIdentityProviders() {
@@ -118,23 +128,19 @@ func (s *IdentityProvidersTestSuite) TestIdentityProviders() {
 	// Create Identity Provider
 	resp, err := s.client.CreateIdentitySource(s.ctx, s.identityProviderCreate)
 	require.NoError(s.T(), err, "unable to create Identity Provider; err=%v", err)
-	// set the access policy ID
+	// extract the ID from the response
 	identitySourceID := strings.Split(resp, "/")[len(strings.Split(resp, "/"))-1]
 
 	// Get Identity Provider details
-	_, _, err = s.client.GetIdentitySourceByID(s.ctx, identitySourceID)
+	_, err = s.client.GetIdentitySource(s.ctx, identitySourceID)
 	require.NoError(s.T(), err, "unable to get Identity Provider %s; err=%v", identitySourceID, err)
-
-	// Get Identity Provider list
-	_, _, err = s.client.GetIdentitySources(s.ctx, "", 0, 1, 1)
-	require.NoError(s.T(), err, "unable to list Identity Providers; err=%v", err)
 
 	// Update Identity Provider
 	err = s.client.UpdateIdentitySource(s.ctx, identitySourceID, s.identityProviderPatch)
 	require.NoError(s.T(), err, "unable to update Identity Provider %s; err=%v", identitySourceID, err)
 
 	// Delete Identity Provider
-	err = s.client.DeleteIdentitySourceByID(s.ctx, identitySourceID)
+	err = s.client.DeleteIdentitySource(s.ctx, identitySourceID)
 	require.NoError(s.T(), err, "unable to delete Identity Provider %s; err=%v", identitySourceID, err)
 }
 

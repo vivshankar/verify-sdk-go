@@ -1,11 +1,9 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/oapi-codegen/oapi-codegen/HEAD/configuration-schema.json
-package: openapi
-output: ../../internal/openapi/openapi.gen.go
+package: models
+output: ../../pkg/core/models/openapi_models.gen.go
 generate:
   models: true
-  client: true
-import-mapping:
-  "#/components/schemas": "github.com/ibm-verify/verify-sdk-go/pkg/core/models"
+  client: false
 compatibility:
   disable-required-readonly-as-pointer: true
   always-prefix-enum-values: true
@@ -15,3 +13,4 @@ output-options:
   response-type-suffix: "Object"
   prefer-skip-optional-pointer-on-container-types: true
   yaml-tags: true
+  
